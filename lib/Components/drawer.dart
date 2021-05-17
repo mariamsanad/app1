@@ -1,5 +1,4 @@
 import 'package:app1/Services/crudUser.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -56,7 +55,7 @@ class MyDrawer extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      child: ListTile(
+                      child: snapshot.data=='nouser'?null:ListTile(
                         title: Text("Profile"),
                         leading: Image.asset(
                           "assets/images/profile.png",
@@ -124,16 +123,6 @@ class MyDrawer extends StatelessWidget {
                                 builder: (context) => SupervisorsList(
                                     FirebaseAuth.instance.currentUser.uid),
                               ));
-                        },
-                      ),
-                    ),
-                    Container(
-                      child: ListTile(
-                        title: Text("Services"),
-                        leading:
-                            Icon(Icons.design_services, color: Colors.cyan, size: 25),
-                        onTap: () {
-                          Navigator.of(context).pushNamed('services');
                         },
                       ),
                     ),
