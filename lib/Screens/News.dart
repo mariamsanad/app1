@@ -1,3 +1,4 @@
+import 'package:app1/Components/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:web_scraper/web_scraper.dart';
 // import 'package:html/parser.dart' show parse;
@@ -36,7 +37,7 @@ class _NewsState extends State<News> {
               }
 
             }
-            return Center(child: CircularProgressIndicator());
+            return Center(child: Loading());
           },
         ),
       ),
