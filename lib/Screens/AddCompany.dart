@@ -127,7 +127,7 @@ class _CompanyAddState extends State<CompanyAdd> {
                       padding: const EdgeInsets.only(top: 16),
                       alignment: Alignment.center,
                       child: ElevatedButton(
-                        child: Text('Sign In'),
+                        child: Text('Add'),
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
 
