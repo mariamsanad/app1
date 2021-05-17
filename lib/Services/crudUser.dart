@@ -1,3 +1,4 @@
+import 'package:app1/Components/loading.dart';
 import 'package:app1/Screens/Companies.dart';
 import 'package:app1/Screens/Position.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,6 +21,13 @@ checkRole() async {
 
   return v;
 }
+/*
+getCompanyName(cid) async {
+  var v = await companies.doc(cid).get().then((value) {
+    return value.data()['name'];
+  }).onError((error, stackTrace){return error;});
+  return v;
+}*/
 
 
 CollectionReference users = FirebaseFirestore.instance.collection('users');
@@ -186,12 +194,6 @@ class Auth{
       return e.toString();
     }
   }
-
-
-
-
-
-
 }
 
 
@@ -223,18 +225,60 @@ class UsersList extends StatelessWidget {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return Loading();
         }
 
-        return new ListView(
-          children: snapshot.data!.docs.map((DocumentSnapshot document) {
-            return new ListTile(
-              title: new Text(document.data()['age'].toString()),
-              subtitle: new Text(document.data()['username'].toString()),
-              trailing: new Text(document.data()['user_id'].toString()),
-            );
+        return snapshot.hasData?SizedBox(
+          width: double.infinity,
+          child: DataTable(
+            showCheckboxColumn: false,
+            sortColumnIndex : 0,
+            sortAscending: true,columns: [
+            DataColumn(
+              label: Text(
+                'Name',
+                style: TextStyle(fontStyle: FontStyle.italic),
+              ),
+            ),
+            DataColumn(
+              numeric : true,
+              label: Text(
+                'Phone',
+                style: TextStyle(fontStyle: FontStyle.italic),
+              ),
+            ),
+            DataColumn(
+              label: Text(
+                'Type',
+                style: TextStyle(fontStyle: FontStyle.italic),
+              ),
+            ),
+          ], rows:  snapshot.data!.docs.map((DocumentSnapshot document) {
+            return DataRow(
+                onSelectChanged: (b){
+                  if(document.data()['type']=='supervisor'){
+                    showDialog(context: context, builder: (context)=>StreamBuilder<DocumentSnapshot>(
+                      stream: companies.doc(document.data()['company_id']).snapshots(),
+                      builder: (context, snapshot) {
+                        return AlertDialog(
+                          content: snapshot.hasData?Text('Company: '+ snapshot.data!['name']):Loading(),
+                          actions: [
+                          FlatButton( onPressed: () {
+                            Navigator.pop(context);
+                          }, child: Text("OK"))
+                        ],
+                        );
+                      }
+                    ));
+                  }
+                },
+                cells: [DataCell(Text(document.data()['user_name'].toString())),
+                  DataCell(Text(document.data()['phone'].toString())),
+                  DataCell(Text(document.data()['type'])),]);
           }).toList(),
-        );
+          ),
+        ):Container(child: Text('No Supervisors found'),);
+
       },
     );
   }
@@ -269,7 +313,7 @@ class _UsersForSState extends State<UsersForS> {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return Loading();
         }
 
         return new ListView(
@@ -299,7 +343,7 @@ class CompaniesList extends StatelessWidget {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return Center(child: Loading());
         }
 
         return SizedBox(
@@ -341,25 +385,6 @@ class CompaniesList extends StatelessWidget {
           }).toList(),
           ),
         );
-
-
-        /*new ListView(
-          children: snapshot.data!.docs.map((DocumentSnapshot document) {
-            return InkWell(
-              child: new ListTile(
-                title: new Text('company id ' +document.data()['company_id'].toString()),
-                subtitle: new Text('company name '+document.data()['name'].toString()+'\nphone: '+document.data()['phone'].toString()+'\ntype: '+document.data()['type']),
-                //trailing: new Text(document.data()['user_id'].toString()),
-              ),
-              onTap: (){
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Supervisors(document.data()['company_id'].toString()),
-                    ));
-              },
-            );
-          }).toList(),
-        );*/
       },
     );
   }
@@ -379,25 +404,49 @@ class SupervisorsList extends StatelessWidget {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return Center(child: Loading());
         }
 
-        return new ListView(
-          children: snapshot.data!.docs.map((DocumentSnapshot document) {
-            return InkWell(
-              child: new ListTile(
-                title: new Text('Name: ' +document.data()['name'].toString()),
-                subtitle: new Text('email '+document.data()['email'].toString()+'\nphone: '+document.data()['phone'].toString()+'\nposition: '+document.data()['position']),
+        return snapshot.hasData?SizedBox(
+          width: double.infinity,
+          child: DataTable(
+            showCheckboxColumn: false,
+            sortColumnIndex : 0,
+            sortAscending: true,columns: [
+            DataColumn(
+              label: Text(
+                'Name',
+                style: TextStyle(fontStyle: FontStyle.italic),
               ),
-              onTap: (){
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Positions(document.id.toString()),
-                    ));
-              },
-            );
+            ),
+            DataColumn(
+              numeric : true,
+              label: Text(
+                'Phone',
+                style: TextStyle(fontStyle: FontStyle.italic),
+              ),
+            ),
+            DataColumn(
+              label: Text(
+                'Type',
+                style: TextStyle(fontStyle: FontStyle.italic),
+              ),
+            ),
+          ], rows:  snapshot.data!.docs.map((DocumentSnapshot document) {
+            return DataRow(
+                onSelectChanged: (b){
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Positions(document.id.toString())
+                      ));
+                },
+                cells: [DataCell(Text(document.data()['name'].toString())),
+                  DataCell(Text(document.data()['phone'].toString())),
+                  DataCell(Text(document.data()['position'])),]);
           }).toList(),
-        );
+          ),
+        ):Container(child: Text('No Supervisors found'),);
+
       },
     );
   }
