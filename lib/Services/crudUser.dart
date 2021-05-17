@@ -60,10 +60,10 @@ updateProfile(userid, name, phone) async {
       .catchError((error) => print("Failed to update user: $error"));
 }
 
-updateCompanyProfile(cid, name, phone,type) async {
+updateCompanyProfile(cid, name, phone, type) async {
   await companies
       .doc(cid)
-      .update({'name': name, 'phone': phone,'type':type})
+      .update({'name': name, 'phone': phone, 'type': type})
       .then((value) => print("Company Updated"))
       .catchError((error) => print("Failed to update company: $error"));
   return users
@@ -370,7 +370,7 @@ class CompaniesList extends StatelessWidget {
                   style: TextStyle(fontStyle: FontStyle.italic),
                 ),
               ),
-             /* DataColumn(
+              /* DataColumn(
                 numeric: true,
                 label: Text(
                   'Phone',
@@ -394,9 +394,11 @@ class CompaniesList extends StatelessWidget {
               return DataRow(
                   onSelectChanged: (b) {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => CompanyProfile(document.data()['company_id']),
-                      ));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              CompanyProfile(document.data()['company_id']),
+                        ));
                   },
                   cells: [
                     DataCell(Text(document.data()['name'].toString())),
