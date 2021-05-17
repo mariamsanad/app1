@@ -302,7 +302,48 @@ class CompaniesList extends StatelessWidget {
           return Center(child: CircularProgressIndicator());
         }
 
-        return new ListView(
+        return SizedBox(
+          width: double.infinity,
+          child: DataTable(
+            showCheckboxColumn: false,
+              sortColumnIndex : 0,
+            sortAscending: true,columns: [
+            DataColumn(
+              label: Text(
+                'Name',
+                style: TextStyle(fontStyle: FontStyle.italic),
+              ),
+            ),
+            DataColumn(
+            numeric : true,
+              label: Text(
+                'Phone',
+                style: TextStyle(fontStyle: FontStyle.italic),
+              ),
+            ),
+            DataColumn(
+              label: Text(
+                'Type',
+                style: TextStyle(fontStyle: FontStyle.italic),
+              ),
+            ),
+          ], rows:  snapshot.data!.docs.map((DocumentSnapshot document) {
+            return DataRow(
+                onSelectChanged: (b){
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Supervisors(document.data()['company_id'].toString()),
+                      ));
+                },
+                cells: [DataCell(Text(document.data()['name'].toString())),
+              DataCell(Text(document.data()['phone'].toString())),
+              DataCell(Text(document.data()['type'])),]);
+          }).toList(),
+          ),
+        );
+
+
+        /*new ListView(
           children: snapshot.data!.docs.map((DocumentSnapshot document) {
             return InkWell(
               child: new ListTile(
@@ -318,7 +359,7 @@ class CompaniesList extends StatelessWidget {
               },
             );
           }).toList(),
-        );
+        );*/
       },
     );
   }
