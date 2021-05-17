@@ -7,7 +7,6 @@ import 'Screens/Login.dart';
 import 'Screens/AddCompany.dart';
 import 'Screens/News.dart';
 import 'Screens/RecordMySituation.dart';
-import 'Screens/Services.dart';
 import 'Screens/Statistics.dart';
 import 'Screens/AddSupervisor.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,6 @@ import 'Home.dart';
 import 'Screens/Register.dart';
 import 'Screens/users.dart';
 import 'Screens/Details.dart';
-import 'Screens/testgraph.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
@@ -63,9 +61,6 @@ class MyApp extends StatelessWidget {
                 'register': (context) {
                   return Register();
                 },
-                'services': (context) {
-                  return Services();
-                },
                 'login': (context) {
                   return SignIn(null);
                 },
@@ -100,9 +95,6 @@ class OldMain extends StatelessWidget {
       title: 'Covid-19',
       home: Home(),
       routes: {
-        'services': (context) {
-          return Services();
-        },
         'login': (context) {
           return SignIn(null);
         },
@@ -118,9 +110,6 @@ class OldMain extends StatelessWidget {
         "statistics": (context) {
           return Statistics();
         },
-        "graph": (context) {
-          return BarChartSample1();
-        }
       },
     );
   }
