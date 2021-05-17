@@ -95,7 +95,7 @@ class _ProfileState extends State<Profile> {
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: !edit?Text(_type.text):TextFormField(
-                          // enabled: false,
+                           enabled: false,
                           controller: _type,
                           decoration: const InputDecoration(labelText: 'Type',border: OutlineInputBorder(),),
                           //obscureText: true,
@@ -197,14 +197,14 @@ class _CompanyProfileState extends State<CompanyProfile> {
         ),
         body: StreamBuilder<DocumentSnapshot>(
 
-          stream: users.doc(this.widget.user_id).snapshots(includeMetadataChanges: true),
+          stream: companies.doc(this.widget.user_id).snapshots(includeMetadataChanges: true),
           builder:
               (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
 
 
             GlobalKey<FormState> _formKey = GlobalKey<FormState>();
             TextEditingController _email = TextEditingController(text:snapshot.data!.data()['email'].toString());
-            TextEditingController _name = TextEditingController(text:snapshot.data!.data()['user_name'].toString());
+            TextEditingController _name = TextEditingController(text:snapshot.data!.data()['name'].toString());
             TextEditingController _phone = TextEditingController(text:snapshot.data!.data()['phone'].toString());
             TextEditingController _type = TextEditingController(text:snapshot.data!.data()['type'].toString());
 
@@ -267,7 +267,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: !edit?Text(_type.text):TextFormField(
-                          enabled: false,
+                          // enabled: false,
                           controller: _type,
                           decoration: const InputDecoration(labelText: 'Type',border: OutlineInputBorder(),),
                           //obscureText: true,
