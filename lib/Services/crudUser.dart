@@ -491,22 +491,6 @@ class SupervisorsList extends StatelessWidget {
   }
 }
 
-Future<void> addCovidRecord(id, cough, headache, infected, start, end) {
-  CollectionReference rec = users.doc(id).collection("covidrecord");
-  // Call the user's CollectionReference to add a new user
-  return rec
-      .add({
-        //'userid': id,
-        'cough': cough,
-        'headache': headache,
-        'infected': infected,
-        'start': start,
-        'end': end
-      })
-      .then((value) => print("Record Added"))
-      .catchError((error) => print("Failed to add record: $error"));
-}
-
 Future<void> addCompany(name, type, address, cpr, email, phone) async {
   final UserCredential userCredential =
       await _auth2.createUserWithEmailAndPassword(email: email, password: cpr);
@@ -633,4 +617,35 @@ Future UserAdd1(String companyid, String supervisorid, String name,
       })
       .then((value) => print("User Added to position Succesfully"))
       .catchError((error) => print("Failed to add user to position: $error"));
+}
+
+Future<void> addCovidRecord(id, date, cough, headache, fever) {
+  CollectionReference rec = users.doc(id).collection("covidrecord");
+  return rec
+      .doc(date)
+      .set({
+        'cough': cough,
+        'headache': headache,
+        'fever': fever,
+      })
+      .then((value) => print("Record Added"))
+      .catchError((error) => print("Failed to add record: $error"));
+}
+
+getCovidRecord(date, id) {
+  users
+      .doc(id)
+      .collection('covidrecords')
+      .doc(date.toString())
+      .get()
+      .then((value) {
+    print(value);
+  });
+}
+
+getCovidDetails(date, id) {
+  return StreamBuilder<DocumentSnapshot>(
+      stream: users.doc(id).snapshots(includeMetadataChanges: true),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {});
 }
