@@ -1,3 +1,4 @@
+import 'package:app1/Components/loading.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -319,7 +320,7 @@ class _StatisticsState extends State<Statistics> {
                         }
 
                       }
-                      return Center(child: CircularProgressIndicator());
+                      return Center(child: Loading());
 
                     },
                   )
@@ -348,7 +349,7 @@ class _StatisticsState extends State<Statistics> {
     }
 
   }
-   return Center(child: CircularProgressIndicator());
+   return Center(child: Loading());
 
   },
   );
