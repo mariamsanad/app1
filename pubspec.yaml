@@ -33,8 +33,6 @@ dependencies:
   flutter_signin_button:
   flutter_spinkit: "^4.1.2"
   table_calendar:
-  fl_chart: ^0.35.0
-  #flutter_offline: ^2.0.0
   connectivity: ^3.0.3
   shared_preferences: ^2.0.5
   flutter_native_splash: ^1.1.8+4
@@ -42,7 +40,7 @@ dependencies:
   intl: ^0.16.0
   web_scraper: ^0.0.6
   html:
-  #flushbar: ^1.10.4
+
 
 flutter_native_splash:
   color: "#ffffff"
