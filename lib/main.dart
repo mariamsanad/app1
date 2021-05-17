@@ -87,30 +87,3 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class OldMain extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Covid-19',
-      home: Home(),
-      routes: {
-        'login': (context) {
-          return SignIn(null);
-        },
-        'homepage': (context) {
-          return Home();
-        },
-        "users": (context) {
-          return Users();
-        },
-        "usersdetails": (context) {
-          return UsersDetails();
-        },
-        "statistics": (context) {
-          return Statistics();
-        },
-      },
-    );
-  }
-}
