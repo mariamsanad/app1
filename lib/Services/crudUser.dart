@@ -30,6 +30,7 @@ CollectionReference records = FirebaseFirestore.instance.collection('covidrecord
 FirebaseApp secondaryApp = Firebase.app('SecondaryApp');
 FirebaseAuth _auth2 = FirebaseAuth.instanceFor(app: secondaryApp);
 
+
 updateProfile(userid,name,phone) async {
 
   await _auth.currentUser.updateProfile(displayName: name,photoURL: _auth.currentUser.photoURL).onError((error, stackTrace){
