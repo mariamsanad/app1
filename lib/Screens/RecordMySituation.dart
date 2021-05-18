@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:app1/Services/crudUser.dart';
@@ -18,7 +19,9 @@ class _RecordCovidState extends State<RecordCovid> {
   late SharedPreferences prefs;
   Map<DateTime, List<dynamic>> _events = {};
   List<dynamic> _selectedEvents = [];
-  var _selectedDate;
+  var _selectedDate = DateTime.now();
+  var userid = FirebaseAuth.instance.currentUser.uid;
+  var covid = false;
 
   initPref() async {
     prefs = await SharedPreferences.getInstance();
@@ -55,11 +58,8 @@ class _RecordCovidState extends State<RecordCovid> {
   var _cimage = 'caugh-bw.png';
   bool _H = false;
   var _himage = 'head-bw.png';
-  bool  _F = false;
+  bool _F = false;
   var _fimage = 'fever-bw.png';
-
-  DateTime start = DateTime.now();
-  DateTime end = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +101,8 @@ class _RecordCovidState extends State<RecordCovid> {
                               formatButtonDecoration: BoxDecoration(
                                   color: Colors.orange,
                                   borderRadius: BorderRadius.circular(20.0)),
-                              formatButtonTextStyle: TextStyle(color: Colors.white),
+                              formatButtonTextStyle:
+                                  TextStyle(color: Colors.white),
                               formatButtonShowsNext: false),
                           builders: CalendarBuilders(
                             selectedDayBuilder: (context, date, events) =>
@@ -111,9 +112,11 @@ class _RecordCovidState extends State<RecordCovid> {
                                     decoration: BoxDecoration(
                                         color: Theme.of(context).primaryColor,
                                         //shape: BoxShape.circle
-                                        borderRadius: BorderRadius.circular(10.0)),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0)),
                                     child: Text(date.day.toString())),
-                            todayDayBuilder: (context, date, events) => Container(
+                            todayDayBuilder: (context, date, events) =>
+                                Container(
                               margin: EdgeInsets.all(4.0),
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
@@ -139,66 +142,159 @@ class _RecordCovidState extends State<RecordCovid> {
                             });
                           },
                         ),
-                        FutureBuilder(
-                          future: getCovidRecord(_selectedDate,FirebaseAuth.instance.currentUser.uid),
-                          builder: (context, snapshot) {
-                            return SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                              children: [
-                               Container(
-                                    height: 150,
-                                    width: 150,
-                                    child: ListTile(
-                                      title: InkWell(child: Image.asset('assets/images/'+_cimage, width: 80, height: 80,),onTap: (){
-                                        _C = !_C;
-                                        setState(() {
-                                          if(_C)
-                                            _cimage = 'caugh.png';
-                                          else
-                                            _cimage = 'caugh-bw.png';
-                                        });
-                                      },),
-                                      subtitle: Text("Caugh", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.w700),),
-                                    ),),
-                                Container(
-                                  height: 150,
-                                  width: 150,
-                                  child: ListTile(
-                                    title: InkWell(child: Image.asset('assets/images/'+_himage, width: 80, height: 80,),onTap: (){
-                                      _H = !_H;
-                                      setState(() {
-                                        if(_H)
-                                          _himage = 'head.png';
-                                        else
-                                          _himage = 'head-bw.png';
-                                      });
-                                    },),
-                                    subtitle: Text("Headache", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.w700),),
-                                  ),),
-                                Container(
-                                  height: 150,
-                                  width: 150,
-                                  child: ListTile(
-                                    title: InkWell(child: Image.asset('assets/images/'+_fimage, width: 80, height: 80,),onTap: (){
-                                      _F = !_F;
-                                      setState(() {
-                                        if(_F)
-                                          _fimage = 'fever.png';
-                                        else
-                                          _fimage = 'fever-bw.png';
-                                      });
-                                    },),
-                                    subtitle: Text("Fever", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.w700),),
-                                  ),),
-                              ],
-                              ),
-                            );
-                          }
-                        ),
+
+                        Column(
+                                    children: [
+
+                                      Container(
+                                        child: StreamBuilder<DocumentSnapshot>(
+                                            stream: users
+                                                .doc(userid)
+                                                .collection('covidrecord')
+                                                .doc(_selectedDate.toString())
+                                                .snapshots(),
+                                            builder: (context, snapshot) {
+
+                                              _C = snapshot.data!.data()['cough'];
+                                              _H = snapshot.data!.data()['headache'];
+                                              _F = snapshot.data!.data()['fever'];
+
+                                              !_C?_cimage = 'caugh-bw.png':_cimage = 'caugh.png';
+                                              !_H?_himage = 'head-bw.png':_himage = 'head.png';
+                                              !_F?_fimage = 'fever-bw.png':_fimage = 'fever.png';
+
+
+                                              print(_C);
+
+                                              return Column(
+                                               children: [
+                                                 Container(
+                                                     child: ElevatedButton(
+                                                       child:
+                                                       !covid ? Text('not infected') : Text('infected'),
+                                                       onPressed: () {
+                                                         setState(() {
+                                                           covid = !covid;
+                                                         });
+                                                       },
+                                                     )),
+                                                 covid
+                                                     ? Text('Thank you, please be safe!')
+                                                     : Container(
+                                                   child: SingleChildScrollView(
+                                                     scrollDirection: Axis.horizontal,
+                                                     child: Row(
+                                                       children: [
+                                                         Container(
+                                                           height: 150,
+                                                           width: 150,
+                                                           child: ListTile(
+                                                             title: InkWell(
+                                                               child: Image.asset(
+                                                                 'assets/images/' +
+                                                                     _cimage,
+                                                                 width: 80,
+                                                                 height: 80,
+                                                               ),
+                                                               onTap: () {
+                                                                 _C = !_C;
+                                                                 addCovidRecord(userid, _selectedDate, _C, _H, _F,covid);
+                                                                 setState(() {
+                                                                   if (_C)
+                                                                     _cimage = 'caugh.png';
+                                                                   else
+                                                                     _cimage =
+                                                                     'caugh-bw.png';
+                                                                 });
+                                                               },
+                                                             ),
+                                                             subtitle: Text(
+                                                               "Caugh",
+                                                               textAlign: TextAlign.center,
+                                                               style: TextStyle(
+                                                                   fontWeight:
+                                                                   FontWeight.w700),
+                                                             ),
+                                                           ),
+                                                         ),
+                                                         Container(
+                                                           height: 150,
+                                                           width: 150,
+                                                           child: ListTile(
+                                                             title: InkWell(
+                                                               child: Image.asset(
+                                                                 'assets/images/' +
+                                                                     _himage,
+                                                                 width: 80,
+                                                                 height: 80,
+                                                               ),
+                                                               onTap: () {
+                                                                 _H = !_H;
+                                                                 addCovidRecord(userid, _selectedDate, _C, _H, _F,covid);
+                                                                 setState(() {
+                                                                   if (_H)
+                                                                     _himage = 'head.png';
+                                                                   else
+                                                                     _himage =
+                                                                     'head-bw.png';
+                                                                 });
+                                                               },
+                                                             ),
+                                                             subtitle: Text(
+                                                               "Headache",
+                                                               textAlign: TextAlign.center,
+                                                               style: TextStyle(
+                                                                   fontWeight:
+                                                                   FontWeight.w700),
+                                                             ),
+                                                           ),
+                                                         ),
+                                                         Container(
+                                                           height: 150,
+                                                           width: 150,
+                                                           child: ListTile(
+                                                             title: InkWell(
+                                                               child: Image.asset(
+                                                                 'assets/images/' +
+                                                                     _fimage,
+                                                                 width: 80,
+                                                                 height: 80,
+                                                               ),
+                                                               onTap: () {
+                                                                 _F = !_F;
+                                                                 addCovidRecord(userid, _selectedDate, _C, _H, _F,covid);
+                                                                 setState(() {
+                                                                   if (_F)
+                                                                     _himage = 'fever.png';
+                                                                   else
+                                                                     _himage =
+                                                                     'fever-bw.png';
+                                                                 });
+                                                               },
+                                                             ),
+                                                             subtitle: Text(
+                                                               "Fever",
+                                                               textAlign: TextAlign.center,
+                                                               style: TextStyle(
+                                                                   fontWeight:
+                                                                   FontWeight.w700),
+                                                             ),
+                                                           ),
+                                                         ),
+                                                       ],
+                                                     ),
+                                                   ),
+                                                 ),
+                                               ],
+                                              );
+                                            }),
+                                      ),
+                                    ],
+                                  )
+
                       ],
                     ),
-                   /* Row(
+                    /* Row(
                       children: [
                         SizedBox(
                           height: 20,
@@ -219,8 +315,8 @@ class _RecordCovidState extends State<RecordCovid> {
                         child: Text('Record'),
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            var id = FirebaseAuth.instance.currentUser.uid;
-                           // await addCovidRecord(id, _C, _H, _F, start, end);
+                            await addCovidRecord(
+                                userid, _selectedDate, _C, _H, _F,true);
                           }
                         },
                       ),
@@ -271,22 +367,7 @@ class _RecordCovidState extends State<RecordCovid> {
     });
   }
 
-  _selectDate1(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: start,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2025),
-      //initialEntryMode: DatePickerEntryMode.input
-    );
-
-    if (picked != null && picked != start)
-      setState(() {
-        start = picked;
-      });
-  }
-
-  _selectDate2(BuildContext context) async {
+  /*_selectDate2(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: end,
@@ -298,5 +379,5 @@ class _RecordCovidState extends State<RecordCovid> {
       setState(() {
         end = picked;
       });
-  }
+  }*/
 }
