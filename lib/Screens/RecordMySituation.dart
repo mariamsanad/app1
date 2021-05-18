@@ -14,7 +14,6 @@ class RecordCovid extends StatefulWidget {
 class _RecordCovidState extends State<RecordCovid> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final CalendarController _CController = CalendarController();
-  final TextEditingController _eventController = TextEditingController();
   late SharedPreferences prefs;
   Map<DateTime, List<dynamic>> _events = {};
   List<dynamic> _selectedEvents = [];
@@ -22,13 +21,14 @@ class _RecordCovidState extends State<RecordCovid> {
   var userid = FirebaseAuth.instance.currentUser.uid;
   var covid = false;
 
-  initPref() async {
+  /*initPref() async {
     prefs = await SharedPreferences.getInstance();
     setState(() {
       _events = Map<DateTime, List<dynamic>>.from(
           decodeMap(json.decode(prefs.getString("events") ?? "{}")));
     });
   }
+
 
   Map<DateTime, dynamic> decodeMap(Map<String, dynamic> map) {
     Map<DateTime, dynamic> newMap = {};
@@ -44,12 +44,12 @@ class _RecordCovidState extends State<RecordCovid> {
       newMap[key.toString()] = map[key];
     });
     return newMap;
-  }
+  }*/
 
   void initState() {
     super.initState();
     _selectedEvents = [];
-    initPref();
+    // initPref();
     _events = {};
   }
 
@@ -184,7 +184,7 @@ class _RecordCovidState extends State<RecordCovid> {
                                               ? Text('not infected')
                                               : Text('infected'),
                                           onPressed: () {
-                                            if(!covid)
+                                            if(!covid){
                                               addCovidRecord(
                                                   userid,
                                                   _selectedDate,
@@ -192,6 +192,12 @@ class _RecordCovidState extends State<RecordCovid> {
                                                   false,
                                                   false,
                                                   false);
+/*
+                                              var s = json.encode({'cough':false,'head':false,'fever':false,'infected':false});
+
+                                              prefs.setString(_selectedDate.toString(), s);*/
+                                            }
+
                                             setState(() {
                                               covid = !covid;
                                             });
@@ -343,64 +349,13 @@ class _RecordCovidState extends State<RecordCovid> {
                     ..._selectedEvents.map((e) => ListTile(
                           title: Text(e),
                         )),
-
                   ],
                 ),
               ),
             ),
           )),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          _showEventForm();
-        },
-      ),
     );
   }
 
-  _showEventForm() {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              content: TextField(
-                controller: _eventController,
-              ),
-              actions: [
-                FlatButton(
-                    onPressed: () {
-                      if (_eventController.text.isEmpty) return;
-                      if (_events[_CController.selectedDay] != null) {
-                        _events[_CController.selectedDay]!
-                            .add(_eventController.text);
-                      } else {
-                        _events[_CController.selectedDay] = [
-                          _eventController.text
-                        ];
-                      }
-                      prefs.setString(
-                          "events", json.encode(encodeMap(_events)));
-                      _eventController.clear();
-                      Navigator.pop(context);
-                    },
-                    child: Text("Save"))
-              ],
-            ));
-    setState(() {
-      _selectedEvents = _events[_CController.selectedDay]!;
-    });
-  }
 
-  /*_selectDate2(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: end,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2025),
-    );
-
-    if (picked != null && picked != end)
-      setState(() {
-        end = picked;
-      });
-  }*/
 }
