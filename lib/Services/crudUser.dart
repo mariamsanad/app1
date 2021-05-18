@@ -619,7 +619,7 @@ Future UserAdd1(String companyid, String supervisorid, String name,
       .catchError((error) => print("Failed to add user to position: $error"));
 }
 
-Future<void> addCovidRecord(id, date, cough, headache, fever) {
+Future<void> addCovidRecord(id, date, cough, headache, fever,infected) {
   CollectionReference rec = users.doc(id).collection("covidrecord");
   return rec
       .doc(date.toString())
@@ -627,6 +627,7 @@ Future<void> addCovidRecord(id, date, cough, headache, fever) {
         'cough': cough,
         'headache': headache,
         'fever': fever,
+        'infected':infected
       })
       .then((value) => print("Record Added"))
       .catchError((error) => print("Failed to add record: $error"));
