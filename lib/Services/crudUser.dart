@@ -622,7 +622,7 @@ Future UserAdd1(String companyid, String supervisorid, String name,
 Future<void> addCovidRecord(id, date, cough, headache, fever) {
   CollectionReference rec = users.doc(id).collection("covidrecord");
   return rec
-      .doc(date)
+      .doc(date.toString())
       .set({
         'cough': cough,
         'headache': headache,
@@ -643,9 +643,3 @@ getCovidRecord(date, id) {
   });
 }
 
-getCovidDetails(date, id) {
-  return StreamBuilder<DocumentSnapshot>(
-      stream: users.doc(id).snapshots(includeMetadataChanges: true),
-      builder:
-          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {});
-}
