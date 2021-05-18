@@ -1,11 +1,8 @@
 import 'package:app1/Components/loading.dart';
 import 'package:app1/Screens/Login.dart';
-import 'package:app1/Services/User.dart';
 import 'package:app1/Services/crudUser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class CompanyAdd extends StatefulWidget {
   @override
@@ -24,7 +21,6 @@ class _CompanyAddState extends State<CompanyAdd> {
 
   @override
   Widget build(BuildContext context) {
-   // final active_user = Provider.of<user>(context);
 
     if(FirebaseAuth.instance.currentUser== null){
       return SignIn(null);
