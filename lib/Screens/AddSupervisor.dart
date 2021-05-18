@@ -2,6 +2,7 @@ import 'package:app1/Components/loading.dart';
 import 'package:app1/Services/crudUser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class SupervisorAdd extends StatefulWidget {
@@ -77,9 +78,9 @@ class _SupervisorAddState extends State<SupervisorAdd> {
                         controller: _cpr,
                         decoration: const InputDecoration(labelText: 'Admin\'s cpr(password he can change it)',border: OutlineInputBorder(),),
                         validator: (String? value) {
-                          if (value!.isEmpty ) return 'Please enter a cpr';
-                          else if(value.length !=9) return 'Please enter a valid cpr';
-                          return null;
+                          //if (value!.isEmpty ) return 'Please enter a cpr';
+                          return RegExp(r'^[0-9]{9}$').hasMatch(value!)?null:"enter a valid cpr";
+
                         },
                         //obscureText: true,
                       ),
