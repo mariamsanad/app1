@@ -2,9 +2,6 @@ import 'package:app1/Components/loading.dart';
 import 'package:app1/Services/crudUser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-
 class SupervisorAdd extends StatefulWidget {
   final cid;
 
