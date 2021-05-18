@@ -130,7 +130,7 @@ class _SupervisorAddState extends State<SupervisorAdd> {
                             });
 
                             try{
-                              await addSupervisor(this.widget.cid,_name.text, _email.text, _cpr.text,_phone.text,_position.text).then((value){
+                              await addSupervisor(this.widget.cid,_name.text, _email.text, _cpr.text,_phone.text,_position.text,false).then((value){
                                 setState(() {
                                   isLoading = false;
                                 });
