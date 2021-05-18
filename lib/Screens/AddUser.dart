@@ -17,6 +17,7 @@ class UserAdd extends StatefulWidget {
 class _UserAddState extends State<UserAdd> {
 
   bool isLoading = false;
+  bool vac = false;
   String comId='';
   String userId=FirebaseAuth.instance.currentUser.uid;
 
@@ -123,6 +124,13 @@ class _UserAddState extends State<UserAdd> {
                         //obscureText: true,
                       ),
                     ),
+                      CheckboxListTile(
+                        title: Text('Vaccined'),
+                        value: vac, onChanged: (v){
+                        setState(() {
+                          vac = v!;
+                        });
+                      },),
                     Container(
                       padding: const EdgeInsets.only(top: 16),
                       alignment: Alignment.center,
@@ -136,7 +144,7 @@ class _UserAddState extends State<UserAdd> {
 
                             try{
 
-                              await UserAdd1(comId,FirebaseAuth.instance.currentUser.uid,_name.text, _email.text, _cpr.text,_phone.text,this.widget.pos).then((value){
+                              await UserAdd1(comId,FirebaseAuth.instance.currentUser.uid,_name.text, _email.text, _cpr.text,_phone.text,this.widget.pos,vac).then((value){
                                 setState(() {
                                   isLoading = false;
                                 });
