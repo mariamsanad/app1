@@ -16,6 +16,7 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   bool edit = false, isLoading = false;
+  bool vac = false;
 
   @override
   Widget build(BuildContext context) {
@@ -24,17 +25,20 @@ class _ProfileState extends State<Profile> {
           title: Text('Profile'),
         ),
         body: StreamBuilder<DocumentSnapshot>(
-
-          stream: users.doc(this.widget.user_id).snapshots(includeMetadataChanges: true),
+          stream: users
+              .doc(this.widget.user_id)
+              .snapshots(includeMetadataChanges: true),
           builder:
               (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-
-
             GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-            TextEditingController _email = TextEditingController(text:snapshot.data!.data()['email'].toString());
-            TextEditingController _name = TextEditingController(text:snapshot.data!.data()['user_name'].toString());
-            TextEditingController _phone = TextEditingController(text:snapshot.data!.data()['phone'].toString());
-            TextEditingController _type = TextEditingController(text:snapshot.data!.data()['type'].toString());
+            TextEditingController _email = TextEditingController(
+                text: snapshot.data!.data()['email'].toString());
+            TextEditingController _name = TextEditingController(
+                text: snapshot.data!.data()['user_name'].toString());
+            TextEditingController _phone = TextEditingController(
+                text: snapshot.data!.data()['phone'].toString());
+            TextEditingController _type = TextEditingController(
+                text: snapshot.data!.data()['type'].toString());
 
             if (snapshot.hasError) {
               return Text('Something went wrong, you may be not authenticated');
@@ -61,59 +65,95 @@ class _ProfileState extends State<Profile> {
                       ),
                       Padding(
                         padding: EdgeInsets.all(12),
-                        child: !edit?Text(_name.text):TextFormField(
-                          controller: _name,
-                          decoration: const InputDecoration(
-                            labelText: 'Name',border: OutlineInputBorder(),
-                          ),
-                          validator: (String? value) {
-                            if (value!.isEmpty) return 'Please enter the company name';
-                            return null;
-                          },
-                        ),
+                        child: !edit
+                            ? Text(_name.text)
+                            : TextFormField(
+                                controller: _name,
+                                decoration: const InputDecoration(
+                                  labelText: 'Name',
+                                  border: OutlineInputBorder(),
+                                ),
+                                validator: (String? value) {
+                                  if (value!.isEmpty)
+                                    return 'Please enter the company name';
+                                  return null;
+                                },
+                              ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(12.0),
-                        child: !edit?Text(_email.text):TextFormField(
-                           enabled: false,
-                          controller: _email,
-                          decoration: const InputDecoration(labelText: 'Email',border: OutlineInputBorder(),),
-                        ),
+                        child: !edit
+                            ? Text(_email.text)
+                            : TextFormField(
+                                enabled: false,
+                                controller: _email,
+                                decoration: const InputDecoration(
+                                  labelText: 'Email',
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(12.0),
-                        child: !edit?Text(_phone.text):TextFormField(
-                          controller: _phone,
-                          decoration: const InputDecoration(labelText: 'phone',border: OutlineInputBorder(),),
-                          validator: (String? value) {
-                            if (value!.isEmpty) return 'Please enter the phone number';
-                            return null;
-                          },
-                          //obscureText: true,
-                        ),
+                        child: !edit
+                            ? Text(_phone.text)
+                            : TextFormField(
+                                controller: _phone,
+                                decoration: const InputDecoration(
+                                  labelText: 'phone',
+                                  border: OutlineInputBorder(),
+                                ),
+                                validator: (String? value) {
+                                  if (value!.isEmpty)
+                                    return 'Please enter the phone number';
+                                  return null;
+                                },
+                                //obscureText: true,
+                              ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(12.0),
-                        child: !edit?Text(_type.text):TextFormField(
-                           enabled: false,
-                          controller: _type,
-                          decoration: const InputDecoration(labelText: 'Type',border: OutlineInputBorder(),),
-                          //obscureText: true,
-                        ),
+                        child: !edit
+                            ? Text(_type.text)
+                            : TextFormField(
+                                enabled: false,
+                                controller: _type,
+                                decoration: const InputDecoration(
+                                  labelText: 'Type',
+                                  border: OutlineInputBorder(),
+                                ),
+                                //obscureText: true,
+                              ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: !edit
+                            ? null
+                            : CheckboxListTile(
+                                title: Text('Vaccined(two injections)'),
+                                value: vac,
+                                onChanged: (v) {
+                                  setState(() {
+                                    vac = v!;
+                                  });
+                                },
+                              ),
                       ),
                       Center(
                         child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: !edit?null:ElevatedButton(
-                            child: Text('Reset Password'),
-                            onPressed: (){
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ForgotPass()),
-                              );
-                            },
-                          )
-                        ),
+                            padding: const EdgeInsets.all(12.0),
+                            child: !edit
+                                ? null
+                                : ElevatedButton(
+                                    child: Text('Reset Password'),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ForgotPass()),
+                                      );
+                                    },
+                                  )),
                       ),
                       Container(
                         padding: const EdgeInsets.only(top: 16),
@@ -121,28 +161,29 @@ class _ProfileState extends State<Profile> {
                         child: ElevatedButton(
                           child: Text('Update Profile'),
                           onPressed: () async {
-
-                            if(edit){
+                            if (edit) {
                               if (_formKey.currentState!.validate()) {
-                                try{
+                                try {
                                   setState(() {
                                     edit = !edit;
                                     isLoading = false;
                                   });
 
-                                  updateProfile(this.widget.user_id,_name.text,_phone.text);
+                                  updateProfile(this.widget.user_id, _name.text,
+                                      _phone.text, vac);
 
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       duration: const Duration(seconds: 5),
-                                      content: Text('Profile updated successfully'),
+                                      content:
+                                          Text('Profile updated successfully'),
                                       backgroundColor: Colors.green,
                                       behavior: SnackBarBehavior.floating,
                                       shape: StadiumBorder(),
                                     ),
                                   );
                                   // Navigator.of(context).pop();
-                                }on FirebaseAuthException catch(e){
+                                } on FirebaseAuthException catch (e) {
                                   setState(() {
                                     isLoading = false;
                                   });
@@ -155,27 +196,25 @@ class _ProfileState extends State<Profile> {
                                       shape: StadiumBorder(),
                                     ),
                                   );
-
                                 }
-
                               }
-                            }else{
+                            } else {
                               setState(() {
-                                edit=!edit;
+                                edit = !edit;
                               });
                             }
-                            },
+                          },
                         ),
                       ),
                     ],
                   ),
                 ),
-              ), );
+              ),
+            );
           },
         ));
   }
 }
-
 
 class CompanyProfile extends StatefulWidget {
   final user_id;
@@ -196,17 +235,20 @@ class _CompanyProfileState extends State<CompanyProfile> {
           title: Text('Company Information'),
         ),
         body: StreamBuilder<DocumentSnapshot>(
-
-          stream: companies.doc(this.widget.user_id).snapshots(includeMetadataChanges: true),
+          stream: companies
+              .doc(this.widget.user_id)
+              .snapshots(includeMetadataChanges: true),
           builder:
               (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-
-
             GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-            TextEditingController _email = TextEditingController(text:snapshot.data!.data()['email'].toString());
-            TextEditingController _name = TextEditingController(text:snapshot.data!.data()['name'].toString());
-            TextEditingController _phone = TextEditingController(text:snapshot.data!.data()['phone'].toString());
-            TextEditingController _type = TextEditingController(text:snapshot.data!.data()['type'].toString());
+            TextEditingController _email = TextEditingController(
+                text: snapshot.data!.data()['email'].toString());
+            TextEditingController _name = TextEditingController(
+                text: snapshot.data!.data()['name'].toString());
+            TextEditingController _phone = TextEditingController(
+                text: snapshot.data!.data()['phone'].toString());
+            TextEditingController _type = TextEditingController(
+                text: snapshot.data!.data()['type'].toString());
 
             if (snapshot.hasError) {
               return Text('Something went wrong, you may be not authenticated');
@@ -233,59 +275,81 @@ class _CompanyProfileState extends State<CompanyProfile> {
                       ),
                       Padding(
                         padding: EdgeInsets.all(12),
-                        child: !edit?Text(_name.text):TextFormField(
-                          controller: _name,
-                          decoration: const InputDecoration(
-                            labelText: 'Name',border: OutlineInputBorder(),
-                          ),
-                          validator: (String? value) {
-                            if (value!.isEmpty) return 'Please enter the company name';
-                            return null;
-                          },
-                        ),
+                        child: !edit
+                            ? Text(_name.text)
+                            : TextFormField(
+                                controller: _name,
+                                decoration: const InputDecoration(
+                                  labelText: 'Name',
+                                  border: OutlineInputBorder(),
+                                ),
+                                validator: (String? value) {
+                                  if (value!.isEmpty)
+                                    return 'Please enter the company name';
+                                  return null;
+                                },
+                              ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(12.0),
-                        child: !edit?Text(_email.text):TextFormField(
-                          enabled: false,
-                          controller: _email,
-                          decoration: const InputDecoration(labelText: 'Email',border: OutlineInputBorder(),),
-                        ),
+                        child: !edit
+                            ? Text(_email.text)
+                            : TextFormField(
+                                enabled: false,
+                                controller: _email,
+                                decoration: const InputDecoration(
+                                  labelText: 'Email',
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(12.0),
-                        child: !edit?Text(_phone.text):TextFormField(
-                          controller: _phone,
-                          decoration: const InputDecoration(labelText: 'phone',border: OutlineInputBorder(),),
-                          validator: (String? value) {
-                            if (value!.isEmpty) return 'Please enter the phone number';
-                            return null;
-                          },
-                          //obscureText: true,
-                        ),
+                        child: !edit
+                            ? Text(_phone.text)
+                            : TextFormField(
+                                controller: _phone,
+                                decoration: const InputDecoration(
+                                  labelText: 'phone',
+                                  border: OutlineInputBorder(),
+                                ),
+                                validator: (String? value) {
+                                  if (value!.isEmpty)
+                                    return 'Please enter the phone number';
+                                  return null;
+                                },
+                                //obscureText: true,
+                              ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(12.0),
-                        child: !edit?Text(_type.text):TextFormField(
-                          // enabled: false,
-                          controller: _type,
-                          decoration: const InputDecoration(labelText: 'Type',border: OutlineInputBorder(),),
-                          //obscureText: true,
-                        ),
+                        child: !edit
+                            ? Text(_type.text)
+                            : TextFormField(
+                                // enabled: false,
+                                controller: _type,
+                                decoration: const InputDecoration(
+                                  labelText: 'Type',
+                                  border: OutlineInputBorder(),
+                                ),
+                                //obscureText: true,
+                              ),
                       ),
                       Center(
                         child: Padding(
                             padding: const EdgeInsets.all(12.0),
-                            child: !edit?null:ElevatedButton(
-                              child: Text('Reset Password'),
-                              onPressed: (){
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => ForgotPass()),
-                                );
-                              },
-                            )
-                        ),
+                            child: !edit
+                                ? null
+                                : ElevatedButton(
+                                    child: Text('Reset Password'),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ForgotPass()),
+                                      );
+                                    },
+                                  )),
                       ),
                       Container(
                         padding: const EdgeInsets.only(top: 16),
@@ -293,28 +357,29 @@ class _CompanyProfileState extends State<CompanyProfile> {
                         child: ElevatedButton(
                           child: Text('Update Company information'),
                           onPressed: () async {
-
-                            if(edit){
+                            if (edit) {
                               if (_formKey.currentState!.validate()) {
-                                try{
+                                try {
                                   setState(() {
                                     edit = !edit;
                                     isLoading = false;
                                   });
 
-                                  updateCompanyProfile(this.widget.user_id,_name.text,_phone.text,_type.text);
+                                  updateCompanyProfile(this.widget.user_id,
+                                      _name.text, _phone.text, _type.text);
 
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       duration: const Duration(seconds: 5),
-                                      content: Text('Profile updated successfully'),
+                                      content:
+                                          Text('Profile updated successfully'),
                                       backgroundColor: Colors.green,
                                       behavior: SnackBarBehavior.floating,
                                       shape: StadiumBorder(),
                                     ),
                                   );
                                   // Navigator.of(context).pop();
-                                }on FirebaseAuthException catch(e){
+                                } on FirebaseAuthException catch (e) {
                                   setState(() {
                                     isLoading = false;
                                   });
@@ -327,13 +392,11 @@ class _CompanyProfileState extends State<CompanyProfile> {
                                       shape: StadiumBorder(),
                                     ),
                                   );
-
                                 }
-
                               }
-                            }else{
+                            } else {
                               setState(() {
-                                edit=!edit;
+                                edit = !edit;
                               });
                             }
                           },
@@ -342,7 +405,8 @@ class _CompanyProfileState extends State<CompanyProfile> {
                     ],
                   ),
                 ),
-              ), );
+              ),
+            );
           },
         ));
   }
