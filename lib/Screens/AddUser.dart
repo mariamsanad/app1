@@ -94,9 +94,7 @@ class _UserAddState extends State<UserAdd> {
                         controller: _cpr,
                         decoration: const InputDecoration(labelText: 'user\'s cpr(password he can change it)',border: OutlineInputBorder(),),
                         validator: (String? value) {
-                          if (value!.isEmpty ) return 'Please enter a cpr';
-                          else if(value.length !=9) return 'Please enter a valid cpr';
-                          return null;
+                          return RegExp(r'^[0-9]{9}$').hasMatch(value!)?null:"enter a valid cpr";
                         },
                         //obscureText: true,
                       ),
