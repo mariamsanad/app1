@@ -48,7 +48,7 @@ CollectionReference records =
 FirebaseApp secondaryApp = Firebase.app('SecondaryApp');
 FirebaseAuth _auth2 = FirebaseAuth.instanceFor(app: secondaryApp);
 
-updateProfile(userid, name, phone,vac) async {
+updateProfile(userid, name, phone,vac,work) async {
   await _auth.currentUser
       .updateProfile(displayName: name, photoURL: _auth.currentUser.photoURL)
       .onError((error, stackTrace) {
@@ -57,7 +57,7 @@ updateProfile(userid, name, phone,vac) async {
 
   return users
       .doc(userid)
-      .update({'user_name': name, 'phone': phone,'vac':vac})
+      .update({'user_name': name, 'phone': phone,'vac':vac,'work':work})
       .then((value) => print("User Updated"))
       .catchError((error) => print("Failed to update user: $error"));
 }
@@ -118,7 +118,7 @@ class Auth {
     ))
         .user;
 
-    addUser(user.uid, user.displayName, email, type, '',false);
+    addUser(user.uid, user.displayName, email, type, '',false,'home');
 
     return _userfromfb(user);
   }
@@ -164,7 +164,7 @@ class Auth {
 
       if (await userExists(userCredential.user.email) != true) {
         addUser(
-            user.uid, user.displayName, user.email, 'normal', user.phoneNumber,false);
+            user.uid, user.displayName, user.email, 'normal', user.phoneNumber,false,'home');
       }
 
       return _userfromfb(user);
@@ -190,7 +190,7 @@ class Auth {
   }
 }
 
-Future<void> addUser(id, nome, name, type, phone,vac) {
+Future<void> addUser(id, nome, name, type, phone,vac,workfrom) {
   // Call the user's CollectionReference to add a new user
   return users
       .doc(id)
@@ -201,7 +201,8 @@ Future<void> addUser(id, nome, name, type, phone,vac) {
         'type': type,
         'role': 'user',
         'phone': phone,
-        'vac':vac
+        'vac':vac,
+        'work':workfrom
       })
       .then((value) => print("User Added"))
       .catchError((error) => print("Failed to add user: $error"));
@@ -524,7 +525,7 @@ Future<void> addCompany(name, type, address, cpr, email, phone) async {
 }
 
 Future addSupervisor(String companyid, String name, String email, String pass,
-    String phone, String position,vac) async {
+    String phone, String position,vac,workfrom) async {
   final UserCredential userCredential =
       await _auth2.createUserWithEmailAndPassword(email: email, password: pass);
 
@@ -538,7 +539,8 @@ Future addSupervisor(String companyid, String name, String email, String pass,
         'type': 'supervisor',
         'company_id': companyid,
         'role': 'supervisor',
-        'vac':vac
+        'vac':vac,
+        'work':workfrom
       })
       .then((value) => print("User Added"))
       .catchError((error) => print("Failed to add user: $error"));
