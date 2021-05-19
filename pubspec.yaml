@@ -40,6 +40,7 @@ dependencies:
   intl: ^0.16.0
   web_scraper: ^0.0.6
   html:
+  flutter_slidable: ^0.6.0
 
 
 flutter_native_splash:
