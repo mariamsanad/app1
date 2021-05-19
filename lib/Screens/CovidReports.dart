@@ -26,7 +26,7 @@ class _CovidReportUserState extends State<CovidReportUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('My graph'),) ,
+      appBar: AppBar(title: Text('My situation'),) ,
       body: Center(
         child: Container(
           child: SingleChildScrollView(
