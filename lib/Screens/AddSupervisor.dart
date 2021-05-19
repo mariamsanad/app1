@@ -2,6 +2,8 @@ import 'package:app1/Components/loading.dart';
 import 'package:app1/Services/crudUser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:group_radio_button/group_radio_button.dart';
+
 class SupervisorAdd extends StatefulWidget {
   final cid;
 
@@ -23,6 +25,8 @@ class _SupervisorAddState extends State<SupervisorAdd> {
   final TextEditingController _phone = TextEditingController();
   final TextEditingController _name = TextEditingController();
   final TextEditingController _position = TextEditingController();
+
+  var _verticalGroupValue = 'At Home';
 
   @override
   Widget build(BuildContext context) {
@@ -118,6 +122,19 @@ class _SupervisorAddState extends State<SupervisorAdd> {
                         //obscureText: true,
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: RadioGroup<String>.builder(
+                        groupValue: _verticalGroupValue,
+                        onChanged: (value) => setState(() {
+                          _verticalGroupValue = value!;
+                        }),
+                        items: ['At Home', 'Online','Both'],
+                        itemBuilder: (item) => RadioButtonBuilder(
+                          item,
+                        ),
+                      ),
+                    ),
                     Container(
                       padding: const EdgeInsets.only(top: 16),
                       alignment: Alignment.center,
@@ -130,7 +147,7 @@ class _SupervisorAddState extends State<SupervisorAdd> {
                             });
 
                             try{
-                              await addSupervisor(this.widget.cid,_name.text, _email.text, _cpr.text,_phone.text,_position.text,false).then((value){
+                              await addSupervisor(this.widget.cid,_name.text, _email.text, _cpr.text,_phone.text,_position.text,false,_verticalGroupValue).then((value){
                                 setState(() {
                                   isLoading = false;
                                 });
