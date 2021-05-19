@@ -104,8 +104,7 @@ class _SupervisorAddState extends State<SupervisorAdd> {
                         controller: _phone,
                         decoration: const InputDecoration(labelText: 'phone',border: OutlineInputBorder(),),
                         validator: (String? value) {
-                          if (value!.isEmpty) return 'Please enter the phone number';
-                          return null;
+                          return RegExp(r'^[0-9]{8}$').hasMatch(value!)?null:"enter a valid phone number";
                         },
                         //obscureText: true,
                       ),
