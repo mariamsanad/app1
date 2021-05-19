@@ -55,6 +55,19 @@ class MyDrawer extends StatelessWidget {
                       ),
                     ),
                     Container(
+                      child: ListTile(
+                        title: Text("My Graph"),
+                        leading: Image.asset(
+                          "assets/images/company.png",
+                          width: 40,
+                          height: 40,
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pushNamed("reportforuser");
+                        },
+                      ),
+                    ),
+                    Container(
                       child: snapshot.data=='nouser'?null:ListTile(
                         title: Text("Profile"),
                         leading: Image.asset(
