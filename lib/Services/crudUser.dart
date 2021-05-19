@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl/intl.dart';
 import 'User.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -636,14 +637,150 @@ Future<void> addCovidRecord(id, date, cough, headache, fever,infected) {
       .catchError((error) => print("Failed to add record: $error"));
 }
 
-getCovidRecord(date, id) {
-  users
+class DeathRec{
+  final deaths;
+  final date;
+  DeathRec(this.date, this.deaths);
+}
+
+getCovidRecord(id) {
+  var arr=[];
+  var val = users
       .doc(id)
-      .collection('covidrecords')
-      .doc(date.toString())
+      .collection('covidrecord')
       .get()
-      .then((value) {
-    print(value);
+      .then((QuerySnapshot snapshot) {
+        snapshot.docs.forEach((element) {
+          print(element.data().toString());
+          arr.add({element.id,element.data()});
+        });
+        return snapshot;
   });
+  return val;
+
+}
+getDate(d){
+ var m = users
+      .doc(FirebaseAuth.instance.currentUser.uid)
+      .collection('covidrecord').doc(d.toString()).get().then((value){
+        if(value.exists)
+          return value;
+        else
+          return false;
+ });
+  return m;
+}
+
+class RecordForUser extends StatefulWidget {
+  @override
+  _RecordForUserState createState() => _RecordForUserState();
+  final uid;
+
+  RecordForUser(this.uid);
+}
+
+class _RecordForUserState extends State<RecordForUser> {
+  bool isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return /*isLoading?SpinKitSquareCircle(
+      color: Colors.blue.withOpacity(0.6),
+      size: 50.0,
+    ):*/
+      StreamBuilder<QuerySnapshot>(
+        stream: users
+            .doc(this.widget.uid)
+            .collection('covidrecord')
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text('Something went wrong,you may be not authenticated');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Loading();
+          }
+
+          return snapshot.hasData
+              ? SizedBox(
+            width: double.infinity,
+            child: DataTable(
+              showCheckboxColumn: false,
+              sortColumnIndex: 0,
+              sortAscending: true,
+              columns: [
+                DataColumn(
+                  label: Text(
+                    'Date',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+                DataColumn(
+                  numeric: true,
+                  label: Text(
+                    'Infected',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+
+              ],
+              rows: snapshot.data!.docs.map((DocumentSnapshot document) {
+                return DataRow(
+                    /*onSelectChanged: *//*(b) {
+                      if (document.data()['type'] == 'supervisor') {
+                        showDialog(
+                            context: context,
+                            builder: (context) =>
+                                StreamBuilder<DocumentSnapshot>(
+                                    stream: companies
+                                        .doc(document.data()['company_id'])
+                                        .snapshots(),
+                                    builder: (context, snapshot) {
+                                      return AlertDialog(
+                                        content: snapshot.hasData
+                                            ? Text('Company: ' +
+                                            snapshot.data!['name'])
+                                            : Loading(),
+                                        actions: [
+                                          FlatButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text("OK"))
+                                        ],
+                                      );
+                                    }));
+                      }
+                    },*/
+                    cells: [
+                      DataCell(
+                          Text(DateFormat('EEEE, d-MMM-yyyy').format(DateTime.parse(document.id)))),
+                      DataCell(Text(document.data()['infected'].toString())),
+                    ]);
+              }).toList(),
+            ),
+          )
+              : Container(
+            child: Text('No Supervisors found'),
+          );
+
+          return new ListView(
+            children: snapshot.data!.docs.map((DocumentSnapshot document) {
+              return new ListTile(
+                title: new Text('Name: ' + document.data()['name'].toString()),
+                subtitle: new Text('Email: ' +
+                    document.data()['email'].toString() +
+                    '\nphone: ' +
+                    document.data()['phone'].toString() +
+                    '\ntype: ' +
+                    document.data()['type']),
+                trailing: new Text(document.id.toString()),
+              );
+            }).toList(),
+          );
+        },
+      );
+  }
 }
 
