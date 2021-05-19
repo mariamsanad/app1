@@ -92,7 +92,7 @@ class _CovidReportUserState extends State<CovidReportUser> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              StreamBuilder<QuerySnapshot>(
+             /* StreamBuilder<QuerySnapshot>(
                   stream: positions
                       .doc(this.widget.sid)
                       .collection('poses')
@@ -106,7 +106,7 @@ class _CovidReportUserState extends State<CovidReportUser> {
 
                     else
                       return Text('No data');
-                  }),
+                  }),*/
               RecordForUser(FirebaseAuth.instance.currentUser.uid)
             ],
           ),
