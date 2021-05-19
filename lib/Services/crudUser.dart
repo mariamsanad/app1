@@ -847,3 +847,19 @@ Future deleteRecord(uid, id) {
   return users.doc(uid).collection('covidrecord').doc(id).delete();
 }
 
+Future getCovidForS(sid) async {
+  var cid = await getCompanyid(sid).then((val){
+
+     companies.doc(val).collection('supervisors').doc(sid).get().then((value) {
+       print('sid is '+value.data()['company_id'].toString());
+      return value.data();
+    });
+
+  })/*.catchError((err){
+    return err;
+  })*/;
+
+
+   return cid;
+}
+
