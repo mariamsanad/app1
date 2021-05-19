@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
                   return RecordCovid();
                 },
                 'reportforuser': (context) {
-                  return CovidReportUser(FirebaseAuth.instance.currentUser.uid.toString());
+                  return CovidReportUser(FirebaseAuth.instance.currentUser.uid.toString(),'teacher');
                 },
                 'companies': (context) {
                   return Companies();
