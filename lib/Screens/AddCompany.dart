@@ -99,8 +99,7 @@ class _CompanyAddState extends State<CompanyAdd> {
                         controller: _phone,
                         decoration: const InputDecoration(labelText: 'phone',border: OutlineInputBorder(),),
                         validator: (String? value) {
-                          if (value!.isEmpty) return 'Please enter the phone number';
-                          return null;
+                          return RegExp(r'^[0-9]{9}$').hasMatch(value!)?null:"enter a valid phone number";
                         },
                         //obscureText: true,
                       ),
