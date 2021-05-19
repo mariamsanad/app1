@@ -4,6 +4,7 @@ import 'package:app1/Services/crudUser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:group_radio_button/group_radio_button.dart';
 
 class Profile extends StatefulWidget {
   final user_id;
@@ -17,6 +18,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   bool edit = false, isLoading = false;
   bool vac = false;
+  var _verticalGroupValue;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class _ProfileState extends State<Profile> {
                 text: snapshot.data!.data()['phone'].toString());
             TextEditingController _type = TextEditingController(
                 text: snapshot.data!.data()['type'].toString());
+             _verticalGroupValue = snapshot.data!.data()['work'];
 
             if (snapshot.hasError) {
               return Text('Something went wrong, you may be not authenticated');
@@ -155,6 +158,7 @@ class _ProfileState extends State<Profile> {
                                     },
                                   )),
                       ),
+
                       Container(
                         padding: const EdgeInsets.only(top: 16),
                         alignment: Alignment.center,
@@ -170,7 +174,7 @@ class _ProfileState extends State<Profile> {
                                   });
 
                                   updateProfile(this.widget.user_id, _name.text,
-                                      _phone.text, vac);
+                                      _phone.text, vac,_verticalGroupValue);
 
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
