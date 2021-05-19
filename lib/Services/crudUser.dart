@@ -48,7 +48,7 @@ CollectionReference records =
 FirebaseApp secondaryApp = Firebase.app('SecondaryApp');
 FirebaseAuth _auth2 = FirebaseAuth.instanceFor(app: secondaryApp);
 
-updateProfile(userid, name, phone,vac,work) async {
+updateProfile(userid, name, phone, vac, work) async {
   await _auth.currentUser
       .updateProfile(displayName: name, photoURL: _auth.currentUser.photoURL)
       .onError((error, stackTrace) {
@@ -57,7 +57,7 @@ updateProfile(userid, name, phone,vac,work) async {
 
   return users
       .doc(userid)
-      .update({'user_name': name, 'phone': phone,'vac':vac,'work':work})
+      .update({'user_name': name, 'phone': phone, 'vac': vac, 'work': work})
       .then((value) => print("User Updated"))
       .catchError((error) => print("Failed to update user: $error"));
 }
@@ -118,7 +118,7 @@ class Auth {
     ))
         .user;
 
-    addUser(user.uid, user.displayName, email, type, '',false,'home');
+    addUser(user.uid, user.displayName, email, type, '', false, 'home');
 
     return _userfromfb(user);
   }
@@ -163,8 +163,8 @@ class Auth {
       final user = userCredential.user;
 
       if (await userExists(userCredential.user.email) != true) {
-        addUser(
-            user.uid, user.displayName, user.email, 'normal', user.phoneNumber,false,'home');
+        addUser(user.uid, user.displayName, user.email, 'normal',
+            user.phoneNumber, false, 'home');
       }
 
       return _userfromfb(user);
@@ -190,7 +190,7 @@ class Auth {
   }
 }
 
-Future<void> addUser(id, nome, name, type, phone,vac,workfrom) {
+Future<void> addUser(id, nome, name, type, phone, vac, workfrom) {
   // Call the user's CollectionReference to add a new user
   return users
       .doc(id)
@@ -201,8 +201,8 @@ Future<void> addUser(id, nome, name, type, phone,vac,workfrom) {
         'type': type,
         'role': 'user',
         'phone': phone,
-        'vac':vac,
-        'work':workfrom
+        'vac': vac,
+        'work': workfrom
       })
       .then((value) => print("User Added"))
       .catchError((error) => print("Failed to add user: $error"));
@@ -253,36 +253,42 @@ class UsersList extends StatelessWidget {
                   rows: snapshot.data!.docs.map((DocumentSnapshot document) {
                     return DataRow(
                         onSelectChanged: (b) {
-                          if (document.data()['type'] == 'supervisor') {
-                            showDialog(
-                                context: context,
-                                builder: (context) =>
-                                    StreamBuilder<DocumentSnapshot>(
-                                        stream: companies
-                                            .doc(document.data()['company_id'])
-                                            .snapshots(),
-                                        builder: (context, snapshot) {
-                                          return AlertDialog(
-                                            content: snapshot.hasData
-                                                ? Text('Company: ' +
-                                                    snapshot.data!['name'])
-                                                : Loading(),
-                                            actions: [
-                                              FlatButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Text("OK"))
-                                            ],
-                                          );
-                                        }));
-                          }
+
                         },
                         cells: [
                           DataCell(
                               Text(document.data()['user_name'].toString())),
                           DataCell(Text(document.data()['phone'].toString())),
-                          DataCell(Text(document.data()['type'])),
+                          /*TextButton(onPressed: (){
+                      Navigator.of(context).pushNamed('reset');
+                    }, child: Text('Forgot password?'))*/
+                          DataCell(document.data()['type'] != 'supervisor'?Text(document.data()['type']):TextButton(child: Text(document.data()['type'],style: TextStyle(color: Colors.green),),onPressed: (){
+                            if (document.data()['type'] == 'supervisor') {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) =>
+                                      StreamBuilder<DocumentSnapshot>(
+                                          stream: companies
+                                              .doc(document.data()['company_id'])
+                                              .snapshots(),
+                                          builder: (context, snapshot) {
+                                            return AlertDialog(
+                                              content: snapshot.hasData
+                                                  ? Text('Company: ' +
+                                                  snapshot.data!['name'])
+                                                  : Loading(),
+                                              actions: [
+                                                FlatButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text("OK"))
+                                              ],
+                                            );
+                                          }));
+                            }
+
+                          },)),
                         ]);
                   }).toList(),
                 ),
@@ -525,7 +531,7 @@ Future<void> addCompany(name, type, address, cpr, email, phone) async {
 }
 
 Future addSupervisor(String companyid, String name, String email, String pass,
-    String phone, String position,vac,workfrom) async {
+    String phone, String position, vac, workfrom) async {
   final UserCredential userCredential =
       await _auth2.createUserWithEmailAndPassword(email: email, password: pass);
 
@@ -539,8 +545,8 @@ Future addSupervisor(String companyid, String name, String email, String pass,
         'type': 'supervisor',
         'company_id': companyid,
         'role': 'supervisor',
-        'vac':vac,
-        'work':workfrom
+        'vac': vac,
+        'work': workfrom
       })
       .then((value) => print("User Added"))
       .catchError((error) => print("Failed to add user: $error"));
@@ -577,7 +583,7 @@ Future deletePosition(uid, id) {
 }
 
 Future UserAdd1(String companyid, String supervisorid, String name,
-    String email, String pass, String phone, String position,vac) async {
+    String email, String pass, String phone, String position, vac) async {
   final UserCredential userCredential =
       await _auth2.createUserWithEmailAndPassword(
     email: email,
@@ -595,7 +601,7 @@ Future UserAdd1(String companyid, String supervisorid, String name,
         'company_id': companyid,
         'supervisor_id': supervisorid,
         'role': user,
-    'vac':vac
+        'vac': vac
       })
       .then((value) => print("User Added"))
       .catchError((error) => print("Failed to add user: $error"));
@@ -626,7 +632,7 @@ Future UserAdd1(String companyid, String supervisorid, String name,
       .catchError((error) => print("Failed to add user to position: $error"));
 }
 
-Future<void> addCovidRecord(id, date, cough, headache, fever,infected) {
+Future<void> addCovidRecord(id, date, cough, headache, fever, infected) {
   CollectionReference rec = users.doc(id).collection("covidrecord");
   return rec
       .doc(date.toString())
@@ -634,43 +640,46 @@ Future<void> addCovidRecord(id, date, cough, headache, fever,infected) {
         'cough': cough,
         'headache': headache,
         'fever': fever,
-        'infected':infected
+        'infected': infected
       })
       .then((value) => print("Record Added"))
       .catchError((error) => print("Failed to add record: $error"));
 }
 
-class DeathRec{
+class DeathRec {
   final deaths;
   final date;
   DeathRec(this.date, this.deaths);
 }
 
 getCovidRecord(id) {
-  var arr=[];
+  var arr = [];
   var val = users
       .doc(id)
       .collection('covidrecord')
       .get()
       .then((QuerySnapshot snapshot) {
-        snapshot.docs.forEach((element) {
-          print(element.data().toString());
-          arr.add({element.id,element.data()});
-        });
-        return snapshot;
+    snapshot.docs.forEach((element) {
+      print(element.data().toString());
+      arr.add({element.id, element.data()});
+    });
+    return snapshot;
   });
   return val;
-
 }
-getDate(d){
- var m = users
+
+getDate(d) {
+  var m = users
       .doc(FirebaseAuth.instance.currentUser.uid)
-      .collection('covidrecord').doc(d.toString()).get().then((value){
-        if(value.exists)
-          return value;
-        else
-          return false;
- });
+      .collection('covidrecord')
+      .doc(d.toString())
+      .get()
+      .then((value) {
+    if (value.exists)
+      return value;
+    else
+      return false;
+  });
   return m;
 }
 
@@ -691,93 +700,120 @@ class _RecordForUserState extends State<RecordForUser> {
       color: Colors.blue.withOpacity(0.6),
       size: 50.0,
     ):*/
-      StreamBuilder<QuerySnapshot>(
-        stream: users
-            .doc(this.widget.uid)
-            .collection('covidrecord')
-            .snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Text('Something went wrong,you may be not authenticated');
-          }
+        StreamBuilder<QuerySnapshot>(
+      stream: users.doc(this.widget.uid).collection('covidrecord').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text('Something went wrong,you may be not authenticated');
+        }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Loading();
-          }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Loading();
+        }
 
-          return snapshot.hasData
-              ? SizedBox(
-            width: double.infinity,
-            child: DataTable(
-              showCheckboxColumn: false,
-              sortColumnIndex: 0,
-              sortAscending: true,
-              columns: [
-                DataColumn(
-                  label: Text(
-                    'Date',
-                    style: TextStyle(fontStyle: FontStyle.italic),
-                  ),
-                ),
-                DataColumn(
-                  numeric: true,
-                  label: Text(
-                    'Infected',
-                    style: TextStyle(fontStyle: FontStyle.italic),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Delete',
-                    style: TextStyle(fontStyle: FontStyle.italic),
-                  ),
-                ),
-
-              ],
-              rows: snapshot.data!.docs.map((DocumentSnapshot document) {
-                return DataRow(
-                    onSelectChanged: (b) {
-                      var c =true;
-                      var infected=document.data()['infected'], head=document.data()['headache'],fever=document.data()['fever'],cough=document.data()['cough'];
-                      if(!cough&&!head&&!fever) c = false;
-                      // if (document.data()['type'] == 'supervisor') {
-                      !document.data()['infected']?null:showDialog(
-                            context: context,
-                            builder: (context) =>AlertDialog(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(32.0))),
+        return snapshot.hasData
+            ? SizedBox(
+                width: double.infinity,
+                child: DataTable(
+                  showCheckboxColumn: false,
+                  sortColumnIndex: 0,
+                  sortAscending: true,
+                  columns: [
+                    DataColumn(
+                      label: Text(
+                        'Date',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                    DataColumn(
+                      numeric: true,
+                      label: Text(
+                        'Infected',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Delete',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                  ],
+                  rows: snapshot.data!.docs.map((DocumentSnapshot document) {
+                    return DataRow(
+                        onSelectChanged: (b) {
+                          var c = true;
+                          var infected = document.data()['infected'],
+                              head = document.data()['headache'],
+                              fever = document.data()['fever'],
+                              cough = document.data()['cough'];
+                          if (!cough && !head && !fever) c = false;
+                          // if (document.data()['type'] == 'supervisor') {
+                          !document.data()['infected']
+                              ? null
+                              : showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(32.0))),
                                         content: snapshot.hasData
                                             ? SingleChildScrollView(
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              !c?Text('No Symptoms'):Container(),
-                                          head? Tooltip(
-                                            message: 'Headache',
-                                            child: ListTile(title: InkWell(
-                                                  child: Image.asset("assets/images/head.png",  width: 100,
-                                                    height: 100,),
-                                                ),),
-                                          ):Container(),
-                                              fever?Tooltip(
-                                                message: 'Fever',
-                                                child: ListTile(title: InkWell(
-                                                  child: Image.asset("assets/images/fever.png",  width: 100,
-                                                    height: 100,),
-                                                ),),
-                                              ):Container(),
-                                              cough?Tooltip(
-                                                message: 'Cough',
-                                                child: ListTile(title: InkWell(
-                                                  child: Image.asset("assets/images/caugh.png",  width: 100,
-                                                    height: 100,),
-                                                ),),
-                                              ):Container(),
-
-                                            ],
-                                          ),
-
-                                        )
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    !c
+                                                        ? Text('No Symptoms')
+                                                        : Container(),
+                                                    head
+                                                        ? Tooltip(
+                                                            message: 'Headache',
+                                                            child: ListTile(
+                                                              title: InkWell(
+                                                                child:
+                                                                    Image.asset(
+                                                                  "assets/images/head.png",
+                                                                  width: 100,
+                                                                  height: 100,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          )
+                                                        : Container(),
+                                                    fever
+                                                        ? Tooltip(
+                                                            message: 'Fever',
+                                                            child: ListTile(
+                                                              title: InkWell(
+                                                                child:
+                                                                    Image.asset(
+                                                                  "assets/images/fever.png",
+                                                                  width: 100,
+                                                                  height: 100,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          )
+                                                        : Container(),
+                                                    cough
+                                                        ? Tooltip(
+                                                            message: 'Cough',
+                                                            child: ListTile(
+                                                              title: InkWell(
+                                                                child:
+                                                                    Image.asset(
+                                                                  "assets/images/caugh.png",
+                                                                  width: 100,
+                                                                  height: 100,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          )
+                                                        : Container(),
+                                                  ],
+                                                ),
+                                              )
                                             : Loading(),
                                         actions: [
                                           FlatButton(
@@ -785,81 +821,107 @@ class _RecordForUserState extends State<RecordForUser> {
                                                 Navigator.pop(context);
                                               },
                                               child: Text("OK"))
-                                        ],));
-
-
+                                        ],
+                                      ));
                         },
-                    cells: [
-                      DataCell(
-                          Text(DateFormat('d-MMM-yy').format(DateTime.parse(document.id)))),
-                      document.data()['infected']?DataCell(Text('Covid',style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),)):DataCell(Center(child: Text('No Covid',style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold),))),
-                      DataCell(FlatButton(child: Icon(Icons.delete,color: Colors.red,),onPressed: (){
-
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(32.0))),
-                                contentPadding: EdgeInsets.only(top: 10.0),
-                                actions: [
-                                  ElevatedButton(
-                                    child: Text('Delete Covid Record'),
-                                    onPressed: () async {
-                                      await deleteRecord(FirebaseAuth.instance.currentUser.uid,document.id).then((value){
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
-                                            duration: const Duration(seconds: 5),
-                                            content: Text('Record deleted successfully'),
-                                            backgroundColor: Colors.orangeAccent,
-                                            behavior: SnackBarBehavior.floating,
-                                            shape: StadiumBorder(),
+                        cells: [
+                          DataCell(Text(DateFormat('d-MMM-yy')
+                              .format(DateTime.parse(document.id)))),
+                          document.data()['infected']
+                              ? DataCell(Text(
+                                  'Covid',
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold),
+                                ))
+                              : DataCell(Center(
+                                  child: Text(
+                                  'No Covid',
+                                  style: TextStyle(
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold),
+                                ))),
+                          DataCell(FlatButton(
+                            child: Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(32.0))),
+                                        contentPadding:
+                                            EdgeInsets.only(top: 10.0),
+                                        actions: [
+                                          ElevatedButton(
+                                            child: Text('Delete Covid Record'),
+                                            onPressed: () async {
+                                              await deleteRecord(
+                                                      FirebaseAuth.instance
+                                                          .currentUser.uid,
+                                                      document.id)
+                                                  .then((value) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    duration: const Duration(
+                                                        seconds: 5),
+                                                    content: Text(
+                                                        'Record deleted successfully'),
+                                                    backgroundColor:
+                                                        Colors.orangeAccent,
+                                                    behavior: SnackBarBehavior
+                                                        .floating,
+                                                    shape: StadiumBorder(),
+                                                  ),
+                                                );
+                                                Navigator.of(context).pop();
+                                              });
+                                            },
                                           ),
-                                        );
-                                        Navigator.of(context).pop();
-                                      }
-                                      );
-                                    },
-                                  ),
-                                ],
-                                content: Padding(
-                                  padding: const EdgeInsets.all(30.0),
-                                  child: Text('Are you sure you want to delete the record at  '+DateFormat('EEEE, d-MMM-yyyy').format(DateTime.parse(document.id)),
-                                ) ,
-
-                              ));
-                            });
-
-                      },)),
-                    ]);
-              }).toList(),
-            ),
-          )
-              : Container(
-            child: Text('No Supervisors found'),
-          );
-
-        },
-      );
+                                        ],
+                                        content: Padding(
+                                          padding: const EdgeInsets.all(30.0),
+                                          child: Text(
+                                            'Are you sure you want to delete the record at  ' +
+                                                DateFormat('EEEE, d-MMM-yyyy')
+                                                    .format(DateTime.parse(
+                                                        document.id)),
+                                          ),
+                                        ));
+                                  });
+                            },
+                          )),
+                        ]);
+                  }).toList(),
+                ),
+              )
+            : Container(
+                child: Text('No Supervisors found'),
+              );
+      },
+    );
   }
 }
+
 Future deleteRecord(uid, id) {
   return users.doc(uid).collection('covidrecord').doc(id).delete();
 }
 
 Future getCovidForS(sid) async {
-  var cid = await getCompanyid(sid).then((val){
-
-     companies.doc(val).collection('supervisors').doc(sid).get().then((value) {
-       print('sid is '+value.data()['company_id'].toString());
+  var cid = await getCompanyid(sid).then((val) {
+    companies.doc(val).collection('supervisors').doc(sid).get().then((value) {
+      print('sid is ' + value.data()['company_id'].toString());
       return value.data();
     });
-
-  })/*.catchError((err){
+  }) /*.catchError((err){
     return err;
-  })*/;
+  })*/
+      ;
 
-
-   return cid;
+  return cid;
 }
-
