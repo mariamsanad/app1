@@ -54,10 +54,9 @@ getChartData() async {
 
 class CovidReportUser extends StatefulWidget {
   @override
-  var companyid,sid;
+  var companyid, sid,position;
 
-
-  CovidReportUser(this.sid);
+  CovidReportUser(this.sid,this.position);
 
   _CovidReportUserState createState() => _CovidReportUserState();
 }
@@ -69,7 +68,7 @@ class _CovidReportUserState extends State<CovidReportUser> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getCompanyid(this.widget.sid).then((c){
+    getCompanyid(this.widget.sid).then((c) {
       setState(() {
         this.widget.companyid = c;
       });
@@ -82,24 +81,35 @@ class _CovidReportUserState extends State<CovidReportUser> {
       appBar: AppBar(
         title: Text('My situation'),
         actions: [
-          FlatButton(onPressed: (){
-            Navigator.of(context).pushNamed('situation');
-          }, child: Icon(Icons.add))
+          FlatButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('situation');
+              },
+              child: Icon(Icons.add))
         ],
       ),
       body: Container(
         child: SingleChildScrollView(
-          child: Column(children: [
-            StreamBuilder<DocumentSnapshot>(
-                stream: companies.doc(this.widget.companyid).collection('supervisors').doc(this.widget.sid).snapshots(),
-    builder: (context,  snapshot) {
-                  if (snapshot.hasData)
-                    return Text('The data is '+snapshot.data!.toString());
-                  else
-                    return Text('No data');
-    }),
-            RecordForUser(FirebaseAuth.instance.currentUser.uid)
-          ], ),
+          child: Column(
+            children: [
+              StreamBuilder<QuerySnapshot>(
+                  stream: positions
+                      .doc(this.widget.sid)
+                      .collection('poses')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData){
+
+                          return Text('The data is ' + snapshot.data!.toString());
+
+                    }
+
+                    else
+                      return Text('No data');
+                  }),
+              RecordForUser(FirebaseAuth.instance.currentUser.uid)
+            ],
+          ),
         ),
       ),
     );
