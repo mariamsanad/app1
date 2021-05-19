@@ -14,6 +14,7 @@ import 'Home.dart';
 import 'Screens/Register.dart';
 import 'Screens/users.dart';
 import 'Screens/Details.dart';
+import 'Screens/CovidReports.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
@@ -42,6 +43,9 @@ class MyApp extends StatelessWidget {
               routes: {
                 'news': (context) {
                   return News();
+                },
+                'reportforuser': (context) {
+                  return CovidReportUser();
                 },
                 'companies': (context) {
                   return Companies();
