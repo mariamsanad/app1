@@ -727,20 +727,20 @@ class _RecordForUserState extends State<RecordForUser> {
               ],
               rows: snapshot.data!.docs.map((DocumentSnapshot document) {
                 return DataRow(
-                    /*onSelectChanged: *//*(b) {
-                      if (document.data()['type'] == 'supervisor') {
-                        showDialog(
+                    onSelectChanged: (b) {
+                      // if (document.data()['type'] == 'supervisor') {
+                      !document.data()['infected']?null:showDialog(
                             context: context,
-                            builder: (context) =>
-                                StreamBuilder<DocumentSnapshot>(
-                                    stream: companies
-                                        .doc(document.data()['company_id'])
-                                        .snapshots(),
-                                    builder: (context, snapshot) {
-                                      return AlertDialog(
+                            builder: (context) =>AlertDialog(
                                         content: snapshot.hasData
-                                            ? Text('Company: ' +
-                                            snapshot.data!['name'])
+                                            ? Column(
+                                          children: [
+                                            Text('Infected: ' + document.data()['infected'].toString()),
+                                            Text('Headache: ' + document.data()['headache'].toString()),
+                                            Text('Fever: ' + document.data()['fever'].toString()),
+                                            Text('Cough: ' + document.data()['cough'].toString())
+                                          ],
+                                        )
                                             : Loading(),
                                         actions: [
                                           FlatButton(
@@ -748,11 +748,10 @@ class _RecordForUserState extends State<RecordForUser> {
                                                 Navigator.pop(context);
                                               },
                                               child: Text("OK"))
-                                        ],
-                                      );
-                                    }));
-                      }
-                    },*/
+                                        ],));
+
+
+                        },
                     cells: [
                       DataCell(
                           Text(DateFormat('EEEE, d-MMM-yyyy').format(DateTime.parse(document.id)))),
@@ -765,20 +764,6 @@ class _RecordForUserState extends State<RecordForUser> {
             child: Text('No Supervisors found'),
           );
 
-          return new ListView(
-            children: snapshot.data!.docs.map((DocumentSnapshot document) {
-              return new ListTile(
-                title: new Text('Name: ' + document.data()['name'].toString()),
-                subtitle: new Text('Email: ' +
-                    document.data()['email'].toString() +
-                    '\nphone: ' +
-                    document.data()['phone'].toString() +
-                    '\ntype: ' +
-                    document.data()['type']),
-                trailing: new Text(document.id.toString()),
-              );
-            }).toList(),
-          );
         },
       );
   }
