@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'User.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -723,23 +724,57 @@ class _RecordForUserState extends State<RecordForUser> {
                     style: TextStyle(fontStyle: FontStyle.italic),
                   ),
                 ),
+                DataColumn(
+                  label: Text(
+                    'Delete',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
 
               ],
               rows: snapshot.data!.docs.map((DocumentSnapshot document) {
                 return DataRow(
                     onSelectChanged: (b) {
+                      var c =true;
+                      var infected=document.data()['infected'], head=document.data()['headache'],fever=document.data()['fever'],cough=document.data()['cough'];
+                      if(!cough&&!head&&!fever) c = false;
                       // if (document.data()['type'] == 'supervisor') {
                       !document.data()['infected']?null:showDialog(
                             context: context,
                             builder: (context) =>AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(32.0))),
                                         content: snapshot.hasData
-                                            ? Column(
-                                          children: [
-                                            Text('Infected: ' + document.data()['infected'].toString()),
-                                            Text('Headache: ' + document.data()['headache'].toString()),
-                                            Text('Fever: ' + document.data()['fever'].toString()),
-                                            Text('Cough: ' + document.data()['cough'].toString())
-                                          ],
+                                            ? SingleChildScrollView(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              !c?Text('No Symptoms'):Container(),
+                                          head? Tooltip(
+                                            message: 'Headache',
+                                            child: ListTile(title: InkWell(
+                                                  child: Image.asset("assets/images/head.png",  width: 100,
+                                                    height: 100,),
+                                                ),),
+                                          ):Container(),
+                                              fever?Tooltip(
+                                                message: 'Fever',
+                                                child: ListTile(title: InkWell(
+                                                  child: Image.asset("assets/images/fever.png",  width: 100,
+                                                    height: 100,),
+                                                ),),
+                                              ):Container(),
+                                              cough?Tooltip(
+                                                message: 'Cough',
+                                                child: ListTile(title: InkWell(
+                                                  child: Image.asset("assets/images/caugh.png",  width: 100,
+                                                    height: 100,),
+                                                ),),
+                                              ):Container(),
+
+                                            ],
+                                          ),
+
                                         )
                                             : Loading(),
                                         actions: [
@@ -754,8 +789,46 @@ class _RecordForUserState extends State<RecordForUser> {
                         },
                     cells: [
                       DataCell(
-                          Text(DateFormat('EEEE, d-MMM-yyyy').format(DateTime.parse(document.id)))),
-                      DataCell(Text(document.data()['infected'].toString())),
+                          Text(DateFormat('d-MMM-yy').format(DateTime.parse(document.id)))),
+                      document.data()['infected']?DataCell(Text('Covid',style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),)):DataCell(Center(child: Text('No Covid',style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold),))),
+                      DataCell(FlatButton(child: Icon(Icons.delete,color: Colors.red,),onPressed: (){
+
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                                contentPadding: EdgeInsets.only(top: 10.0),
+                                actions: [
+                                  ElevatedButton(
+                                    child: Text('Delete Covid Record'),
+                                    onPressed: () async {
+                                      await deleteRecord(FirebaseAuth.instance.currentUser.uid,document.id).then((value){
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            duration: const Duration(seconds: 5),
+                                            content: Text('Record deleted successfully'),
+                                            backgroundColor: Colors.orangeAccent,
+                                            behavior: SnackBarBehavior.floating,
+                                            shape: StadiumBorder(),
+                                          ),
+                                        );
+                                        Navigator.of(context).pop();
+                                      }
+                                      );
+                                    },
+                                  ),
+                                ],
+                                content: Padding(
+                                  padding: const EdgeInsets.all(30.0),
+                                  child: Text('Are you sure you want to delete the record at  '+DateFormat('EEEE, d-MMM-yyyy').format(DateTime.parse(document.id)),
+                                ) ,
+
+                              ));
+                            });
+
+                      },)),
                     ]);
               }).toList(),
             ),
@@ -767,5 +840,8 @@ class _RecordForUserState extends State<RecordForUser> {
         },
       );
   }
+}
+Future deleteRecord(uid, id) {
+  return users.doc(uid).collection('covidrecord').doc(id).delete();
 }
 
