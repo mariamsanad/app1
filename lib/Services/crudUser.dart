@@ -1039,9 +1039,16 @@ getC() async {
       QuerySnapshot querySnapshot2 = await positions.doc(list1[j].id).collection('poses').get();
       list2 = querySnapshot2.docs;
       for(int k=0;k<list2.length;k++){
+        //get all users
         QuerySnapshot querySnapshot3 = await companies.doc(list[i].id).collection('supervisors').doc(list1[j].id).collection(list2[k].id).get();
         list3 = querySnapshot3.docs;
         arr.add(list3);
+        for(int m=0;m<list3.length;m++) {
+          //get all covid records
+          QuerySnapshot querySnapshot3 = await companies.doc(list[i].id).collection('supervisors').doc(list1[j].id).collection(list2[k].id).get();
+          list3 = querySnapshot3.docs;
+
+        }
       }
 
     }
