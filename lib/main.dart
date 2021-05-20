@@ -41,6 +41,23 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
               debugShowCheckedModeBanner: false,
               title: 'Covid-19',
+        theme: ThemeData(
+          // Define the default brightness and colors.
+          // brightness: Brightness.dark,
+          primaryColor: Colors.orange[800],
+          accentColor: Colors.amber[600],
+
+          // Define the default font family.
+          // fontFamily: 'Arial',
+
+          // Define the default TextTheme. Use this to specify the default
+          // text styling for headlines, titles, bodies of text, and more.
+          textTheme: TextTheme(
+            headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+            headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+            bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
+          ),
+        ),
               home: Home(),
               routes: {
                 'news': (context) {
