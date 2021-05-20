@@ -1,3 +1,4 @@
+import 'package:app1/Components/loading.dart';
 import 'package:app1/Services/crudUser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -5,9 +6,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 
 class UserAdd extends StatefulWidget {
-  final String pos;
+  final String pos,sid;
 
-  const UserAdd({Key? key, required this.pos}) : super(key: key);
+  const UserAdd({Key? key, required this.pos,required this.sid}) : super(key: key);
 
   @override
   _UserAddState createState() => _UserAddState();
@@ -23,10 +24,10 @@ class _UserAddState extends State<UserAdd> {
 
 
   @override
-  void initState() {
+  initState() {
     // TODO: implement initState
     super.initState();
-     getCompanyid(userId).then((c){
+    getCompanyid(this.widget.sid).then((c) {
       setState(() {
         comId = c;
       });
@@ -144,7 +145,8 @@ class _UserAddState extends State<UserAdd> {
 
                             try{
 
-                              await UserAdd1(comId,FirebaseAuth.instance.currentUser.uid,_name.text, _email.text, _cpr.text,_phone.text,this.widget.pos,vac).then((value){
+                              print('the company id is '+comId);
+                              await UserAdd1(comId,this.widget.sid,_name.text, _email.text, _cpr.text,_phone.text,this.widget.pos,vac).then((value){
                                 setState(() {
                                   isLoading = false;
                                 });
@@ -161,6 +163,7 @@ class _UserAddState extends State<UserAdd> {
                                 Navigator.of(context).pop();
                               });
 
+                               Loading();
 
 
                             }on FirebaseAuthException catch(e){
