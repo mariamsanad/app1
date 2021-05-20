@@ -47,7 +47,7 @@ class _UsersForSuperState extends State<UsersForSuper> {
           FlatButton(onPressed: (){
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => UserAdd(pos:this.widget.position)),
+              MaterialPageRoute(builder: (context) => UserAdd(pos:this.widget.position,sid:this.widget.supervisor_id)),
             );
           }, child: Icon(Icons.add))
         ],
