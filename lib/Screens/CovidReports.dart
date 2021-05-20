@@ -107,6 +107,20 @@ class _CovidReportUserState extends State<CovidReportUser> {
                     else
                       return Text('No data');
                   }),*/
+             FutureBuilder(future: getC(),builder: (BuildContext context, AsyncSnapshot snapshot){
+               var a =[];
+               if (!snapshot.hasData || snapshot.data.isEmpty)
+                 return Loading();  //CIRCULAR INDICATOR
+               else
+               for(int i=0;i<snapshot.data.length;i++){
+                 for(int j=0;j<snapshot.data[i].length;j++){
+                   a.add(snapshot.data[i][j].data());
+                 }
+               }
+
+               return Text(a.toString());
+               return Loading();
+             }),
               RecordForUser(FirebaseAuth.instance.currentUser.uid)
             ],
           ),
