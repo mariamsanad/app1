@@ -87,6 +87,7 @@ getUser(String userId) async =>
 getCompanyid(String userId) async =>
     users.doc(userId).get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
+        print('cid is '+documentSnapshot.data()['company_id'].toString());
         return documentSnapshot.data()['company_id'];
       } else {
         return 'there is no user with this id!';
@@ -251,31 +252,34 @@ class UsersList extends StatelessWidget {
                     ),
                   ],
                   rows: snapshot.data!.docs.map((DocumentSnapshot document) {
-                    return DataRow(
-                        onSelectChanged: (b) {
-
-                        },
-                        cells: [
-                          DataCell(
-                              Text(document.data()['user_name'].toString())),
-                          DataCell(Text(document.data()['phone'].toString())),
-                          /*TextButton(onPressed: (){
+                    return DataRow(onSelectChanged: (b) {}, cells: [
+                      DataCell(Text(document.data()['user_name'].toString())),
+                      DataCell(Text(document.data()['phone'].toString())),
+                      /*TextButton(onPressed: (){
                       Navigator.of(context).pushNamed('reset');
                     }, child: Text('Forgot password?'))*/
-                          DataCell(document.data()['type'] != 'supervisor'?Text(document.data()['type']):TextButton(child: Text(document.data()['type'],style: TextStyle(color: Colors.green),),onPressed: (){
-                            if (document.data()['type'] == 'supervisor') {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) =>
-                                      StreamBuilder<DocumentSnapshot>(
+                      DataCell(document.data()['type'] != 'supervisor'
+                          ? Text(document.data()['type'])
+                          : TextButton(
+                              child: Text(
+                                document.data()['type'],
+                                style: TextStyle(color: Colors.green),
+                              ),
+                              onPressed: () {
+                                if (document.data()['type'] == 'supervisor') {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => StreamBuilder<
+                                              DocumentSnapshot>(
                                           stream: companies
-                                              .doc(document.data()['company_id'])
+                                              .doc(
+                                                  document.data()['company_id'])
                                               .snapshots(),
                                           builder: (context, snapshot) {
                                             return AlertDialog(
                                               content: snapshot.hasData
                                                   ? Text('Company: ' +
-                                                  snapshot.data!['name'])
+                                                      snapshot.data!['name'])
                                                   : Loading(),
                                               actions: [
                                                 FlatButton(
@@ -286,10 +290,10 @@ class UsersList extends StatelessWidget {
                                               ],
                                             );
                                           }));
-                            }
-
-                          },)),
-                        ]);
+                                }
+                              },
+                            )),
+                    ]);
                   }).toList(),
                 ),
               )
@@ -334,7 +338,86 @@ class _UsersForSState extends State<UsersForS> {
           return Loading();
         }
 
-        return new ListView(
+        return snapshot.hasData
+            ? SizedBox(
+          width: double.infinity,
+          child: DataTable(
+            showCheckboxColumn: false,
+            sortColumnIndex: 0,
+            sortAscending: true,
+            columns: [
+              DataColumn(
+                label: Text(
+                  'Name',
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ),
+              DataColumn(
+                numeric: true,
+                label: Text(
+                  'Phone',
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  'Type',
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ),
+            ],
+            rows: snapshot.data!.docs.map((DocumentSnapshot document) {
+              return DataRow(onSelectChanged: (b) {}, cells: [
+                DataCell(Text(document.data()['name'].toString())),
+                DataCell(Text(document.data()['phone'].toString())),
+                /*TextButton(onPressed: (){
+                      Navigator.of(context).pushNamed('reset');
+                    }, child: Text('Forgot password?'))*/
+                DataCell(document.data()['type'] != 'supervisor'
+                    ? Text(document.data()['type'])
+                    : TextButton(
+                  child: Text(
+                    document.data()['type'],
+                    style: TextStyle(color: Colors.green),
+                  ),
+                  onPressed: () {
+                    if (document.data()['type'] == 'supervisor') {
+                      showDialog(
+                          context: context,
+                          builder: (context) => StreamBuilder<
+                              DocumentSnapshot>(
+                              stream: companies
+                                  .doc(
+                                  document.data()['company_id'])
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                return AlertDialog(
+                                  content: snapshot.hasData
+                                      ? Text('Company: ' +
+                                      snapshot.data!['name'])
+                                      : Loading(),
+                                  actions: [
+                                    FlatButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text("OK"))
+                                  ],
+                                );
+                              }));
+                    }
+                  },
+                )),
+              ]);
+            }).toList(),
+          ),
+        )
+            : Container(
+          child: Text('No Supervisors found'),
+        );
+
+
+        ListView(
           children: snapshot.data!.docs.map((DocumentSnapshot document) {
             return new ListTile(
               title: new Text('Name: ' + document.data()['name'].toString()),
@@ -566,7 +649,8 @@ Future addSupervisor(String companyid, String name, String email, String pass,
       .catchError((error) => print("Failed to add supervisor: $error"));
 }
 
-Future addPosition(id, name) {
+Future addPosition(id, name) async {
+
   return positions
       .doc(id)
       .collection('poses')
@@ -600,17 +684,18 @@ Future UserAdd1(String companyid, String supervisorid, String name,
         'type': position,
         'company_id': companyid,
         'supervisor_id': supervisorid,
-        'role': user,
+        'role': 'user',
         'vac': vac
       })
       .then((value) => print("User Added"))
-      .catchError((error) => print("Failed to add user: $error"));
+      .catchError((error) => print("Failed to add user1: $error"));
 
   CollectionReference rec = companies
       .doc(companyid)
       .collection('supervisors')
       .doc(supervisorid)
       .collection(position);
+
   CollectionReference rec1 = positions
       .doc(supervisorid)
       .collection('poses')
@@ -632,11 +717,23 @@ Future UserAdd1(String companyid, String supervisorid, String name,
       .catchError((error) => print("Failed to add user to position: $error"));
 }
 
-Future<void> addCovidRecord(id, date, cough, headache, fever, infected) {
+Future<void> addCovidRecord(id, date, cough, headache, fever, infected) async {
   CollectionReference rec = users.doc(id).collection("covidrecord");
-  return rec
+  CollectionReference rec2 = FirebaseFirestore.instance.collection('records');
+  await rec
       .doc(date.toString())
       .set({
+        'cough': cough,
+        'headache': headache,
+        'fever': fever,
+        'infected': infected
+      })
+      .then((value) => print("Record Added"))
+      .catchError((error) => print("Failed to add record: $error"));
+  return rec2
+      .doc(date.toString())
+      .set({
+        'id': id,
         'cough': cough,
         'headache': headache,
         'fever': fever,
@@ -924,4 +1021,31 @@ Future getCovidForS(sid) async {
       ;
 
   return cid;
+}
+
+getC() async {
+  var arr=[];
+  //Companies
+  QuerySnapshot querySnapshot = await companies.get();
+  var list = querySnapshot.docs;
+  var list1,list2,list3;
+  for(int i=0;i<list.length;i++){
+    //Supervisors of each company
+    QuerySnapshot querySnapshot1 = await companies.doc(list[i].id).collection('supervisors').get();
+    list1 = querySnapshot1.docs;
+    // arr.add(list1);
+    for(int j=0;j<list1.length;j++){
+      //get positions
+      QuerySnapshot querySnapshot2 = await positions.doc(list1[j].id).collection('poses').get();
+      list2 = querySnapshot2.docs;
+      for(int k=0;k<list2.length;k++){
+        QuerySnapshot querySnapshot3 = await companies.doc(list[i].id).collection('supervisors').doc(list1[j].id).collection(list2[k].id).get();
+        list3 = querySnapshot3.docs;
+        arr.add(list3);
+      }
+
+    }
+  }
+
+  return arr;
 }
