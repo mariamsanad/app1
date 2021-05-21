@@ -21,30 +21,6 @@ class _RecordCovidState extends State<RecordCovid> {
   var userid = FirebaseAuth.instance.currentUser.uid;
   var covid = false;
 
-  /*initPref() async {
-    prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _events = Map<DateTime, List<dynamic>>.from(
-          decodeMap(json.decode(prefs.getString("events") ?? "{}")));
-    });
-  }
-
-
-  Map<DateTime, dynamic> decodeMap(Map<String, dynamic> map) {
-    Map<DateTime, dynamic> newMap = {};
-    map.forEach((key, value) {
-      newMap[DateTime.parse(key)] = map[key];
-    });
-    return newMap;
-  }
-
-  Map<String, dynamic> encodeMap(Map<DateTime, dynamic> map) {
-    Map<String, dynamic> newMap = {};
-    map.forEach((key, value) {
-      newMap[key.toString()] = map[key];
-    });
-    return newMap;
-  }*/
 
   void initState() {
     super.initState();
@@ -154,7 +130,7 @@ class _RecordCovidState extends State<RecordCovid> {
                                     if(!snapshot.hasData){
                                       return Text('snapshot has no data');
                                     }
-                                    if(snapshot.data!.data()==null||snapshot.data!.data()==null||snapshot.data!.data()==null){
+                                    if(snapshot.data!.data()==null||snapshot.data!.data()==null){
                                       _C = false;
                                       _H = false;
                                       _F = false;
