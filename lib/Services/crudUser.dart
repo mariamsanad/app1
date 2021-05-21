@@ -44,6 +44,8 @@ CollectionReference companies =
     FirebaseFirestore.instance.collection('companies');
 CollectionReference records =
     FirebaseFirestore.instance.collection('covidrecords');
+CollectionReference records2 =
+FirebaseFirestore.instance.collection('records');
 
 FirebaseApp secondaryApp = Firebase.app('SecondaryApp');
 FirebaseAuth _auth2 = FirebaseAuth.instanceFor(app: secondaryApp);
@@ -719,7 +721,8 @@ Future UserAdd1(String companyid, String supervisorid, String name,
 
 Future<void> addCovidRecord(id, date, cough, headache, fever, infected) async {
   CollectionReference rec = users.doc(id).collection("covidrecord");
-  CollectionReference rec2 = FirebaseFirestore.instance.collection('records');
+  //CollectionReference rec2 = FirebaseFirestore.instance.collection('records');
+  // CollectionReference rec3 = users.doc(id).collection('covidrecords');
   await rec
       .doc(date.toString())
       .set({
@@ -730,8 +733,29 @@ Future<void> addCovidRecord(id, date, cough, headache, fever, infected) async {
       })
       .then((value) => print("Record Added"))
       .catchError((error) => print("Failed to add record: $error"));
-  return rec2
+ /* await rec3
       .doc(date.toString())
+      .set({
+    'id':id,
+    'cough': cough,
+    'headache': headache,
+    'fever': fever,
+    'infected': infected
+  })
+      .then((value) => print("Record Added"))
+      .catchError((error) => print("Failed to add record: $error"));
+
+ */
+ await records2.doc(date.toString()).set({
+   'date':date.toString()
+ });
+  await records2.doc(date.toString()).collection('recs').doc(id).set({
+    'id':id
+  });
+ return records2
+      .doc(date.toString())
+      .collection('recs')
+      .doc(id)
       .set({
         'id': id,
         'cough': cough,
@@ -1005,7 +1029,8 @@ class _RecordForUserState extends State<RecordForUser> {
   }
 }
 
-Future deleteRecord(uid, id) {
+Future deleteRecord(uid, id) async {
+  await  records2.doc(id).collection('recs').doc(uid).delete();
   return users.doc(uid).collection('covidrecord').doc(id).delete();
 }
 
@@ -1028,7 +1053,7 @@ getC() async {
   //Companies
   QuerySnapshot querySnapshot = await companies.get();
   var list = querySnapshot.docs;
-  var list1,list2,list3;
+  var list1,list2,list3,list4,list5,list6;
   for(int i=0;i<list.length;i++){
     //Supervisors of each company
     QuerySnapshot querySnapshot1 = await companies.doc(list[i].id).collection('supervisors').get();
@@ -1042,11 +1067,20 @@ getC() async {
         //get all users
         QuerySnapshot querySnapshot3 = await companies.doc(list[i].id).collection('supervisors').doc(list1[j].id).collection(list2[k].id).get();
         list3 = querySnapshot3.docs;
-        arr.add(list3);
-        for(int m=0;m<list3.length;m++) {
-          //get all covid records
-          QuerySnapshot querySnapshot3 = await companies.doc(list[i].id).collection('supervisors').doc(list1[j].id).collection(list2[k].id).get();
-          list3 = querySnapshot3.docs;
+
+        //all covid records(by date)
+        // QuerySnapshot querySnapshot4 = await companies.doc(list[i].id).collection('records').get();
+        // list4 = querySnapshot4.docs;
+        // arr.add(list3);
+        for(int m=0;m<list4.length;m++) {
+          // QuerySnapshot querySnapshot5 = await companies.doc(list[i].id).collection('records').doc(list4[m].id).collection('recs').get();
+          // list5 = querySnapshot5.docs;
+          for(int n=0;n<list5.length;n++) {
+            // QuerySnapshot querySnapshot6 = await companies.doc(list[i].id).collection('records').doc(list4[m].id).collection('recs').doc().get();
+            // list6 = querySnapshot6.docs;
+
+
+          }
 
         }
       }
@@ -1056,3 +1090,39 @@ getC() async {
 
   return arr;
 }
+
+getCEachDate() async {
+  var arr=[];
+  //get dates
+  QuerySnapshot querySnapshot = await records2.get();
+  var list = querySnapshot.docs;
+  var list1,list2;
+
+  for(int i=0;i<list.length;i++){
+    //Records of each date
+    // print(list[i].id);
+    QuerySnapshot querySnapshot1 = await records2.doc(list[i].id).collection('recs').get();
+    list1 = querySnapshot1.docs;
+    // arr.add(list1);
+    var r = new covrec(date:list[i].id , rec:[]);
+    for(int j=0;j<list1.length;j++){
+      DocumentSnapshot querySnapshot2 = await records2.doc(list[i].id).collection('recs').doc(list1[j].id).get();
+      list2 = querySnapshot2.data();
+      // print(list2);
+      if(list2['infected']==true)
+        r.rec.add(list2);
+    }
+      arr.add(covrec(date:list[i].id , rec:r));
+  }
+
+  return arr;
+}
+
+class covrec{
+ final date,rec;
+
+ covrec({this.date, this.rec});
+
+  // covrec.name(this.date, this.rec);
+}
+
