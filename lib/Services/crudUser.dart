@@ -114,14 +114,14 @@ class Auth {
     return user1 != null ? user(user1.uid, user1.email) : null;
   }
 
-  Future register(String email, String pass, String type) async {
+  Future register(String email, String pass, String type,String uname) async {
     final User user = (await _auth.createUserWithEmailAndPassword(
       email: email,
       password: pass,
     ))
         .user;
 
-    addUser(user.uid, user.displayName, email, type, '', false, 'home');
+    addUser(user.uid, uname, email, type, '', false, 'home');
 
     return _userfromfb(user);
   }
@@ -721,11 +721,14 @@ Future UserAdd1(String companyid, String supervisorid, String name,
 
 Future<void> addCovidRecord(id, date, cough, headache, fever, infected) async {
   CollectionReference rec = users.doc(id).collection("covidrecord");
-  //CollectionReference rec2 = FirebaseFirestore.instance.collection('records');
-  // CollectionReference rec3 = users.doc(id).collection('covidrecords');
+  var i = await getUserName(id).then((v){
+    return v;
+  });
+
   await rec
       .doc(date.toString())
       .set({
+        'name':i,
         'cough': cough,
         'headache': headache,
         'fever': fever,
@@ -757,6 +760,7 @@ Future<void> addCovidRecord(id, date, cough, headache, fever, infected) async {
       .collection('recs')
       .doc(id)
       .set({
+        'name':i,
         'id': id,
         'cough': cough,
         'headache': headache,
@@ -785,6 +789,16 @@ getCovidRecord(id) {
       arr.add({element.id, element.data()});
     });
     return snapshot;
+  });
+  return val;
+}
+
+getUserName(id) async{
+  var val = await users
+      .doc(id)
+      .get()
+      .then((DocumentSnapshot snapshot) {
+    return snapshot.data()['user_name'];
   });
   return val;
 }
@@ -1112,9 +1126,9 @@ getCEachDate() async {
       if(list2['infected']==true)
         r.rec.add(list2);
     }
-      arr.add(covrec(date:list[i].id , rec:r));
+      arr.add(r);
   }
-
+// print(arr);
   return arr;
 }
 
