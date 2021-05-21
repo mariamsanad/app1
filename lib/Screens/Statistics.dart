@@ -278,8 +278,8 @@ class _StatisticsState extends State<Statistics> {
                                   zoomMode: ZoomMode.x,
                                   enablePanning: true,
                                 ),
-                              backgroundColor: Colors.white
-                                ,
+                              // backgroundColor: Colors.white,
+
                                 primaryXAxis: CategoryAxis(),
                                 title: ChartTitle(text: 'Chart'), //Chart title.
                                 legend: Legend(isVisible: true), // Enables the legend.
