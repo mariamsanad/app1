@@ -102,7 +102,7 @@ class _CovidReportUserState extends State<CovidReportUser> {
                else
                for(int i=0;i<snapshot.data.length;i++){
                  a.add(snapshot.data[i]);
-                 print(snapshot.data[i].toString());
+                 // print(snapshot.data[i].toString());
                }
 
                return SizedBox(
@@ -118,13 +118,13 @@ class _CovidReportUserState extends State<CovidReportUser> {
                          style: TextStyle(fontStyle: FontStyle.italic),
                        ),
                      ),
-                     DataColumn(
+                     /*DataColumn(
                        numeric: true,
                        label: Text(
                          'See List',
                          style: TextStyle(fontStyle: FontStyle.italic),
                        ),
-                     ),
+                     ),*/
                      /*DataColumn(
                        label: Text(
                          'Delete',
@@ -138,27 +138,35 @@ class _CovidReportUserState extends State<CovidReportUser> {
                          showModalBottomSheet(
                              context: context,
                              builder: (context) {
-                               return DataTable(columns: [DataColumn(
-                                 numeric: true,
-                                 label: Text(
-                                   'User name',
-                                   style: TextStyle(fontStyle: FontStyle.italic),
-                                 ),
-                               ),DataColumn(
-                                 numeric: true,
-                                 label: Text(
-                                   'infected',
-                                   style: TextStyle(fontStyle: FontStyle.italic),
-                                 ),
-                               ),], rows: [
-                                 DataRow(cells: cells)
-                               ]);
+                               return StreamBuilder<Object>(
+                                 stream: null,
+                                 builder: (context, snapshot) {
+                                   return DataTable(
+                                     columns: [DataColumn(
+                                     // numeric: true,
+                                     label: Text(
+                                       'User name \t infections: '+document.rec.length.toString(),
+                                       style: TextStyle(fontStyle: FontStyle.italic,fontWeight: FontWeight.bold),
+                                     ),
+                                   ),/*DataColumn(
+                                     numeric: true,
+                                     label: Text(
+                                       'infected',
+                                       style: TextStyle(fontStyle: FontStyle.italic),
+                                     ),
+                                   ),*/], rows:document.rec.map<DataRow>((ex) {
+                                     return DataRow(cells: [
+                                       DataCell(Text(ex['name'],style: TextStyle(fontWeight: FontWeight.bold),),)
+                                     ]);
+                                   }).toList(),);
+                                 }
+                               );
                              });
                        },
                          cells: [
                            DataCell(Text(DateFormat('d-MMM-yy')
-                               .format(DateTime.parse(document.date)))),
-                           DataCell(Text(/*document.rec.*/'jdc')),
+                               .format(DateTime.parse(document.date)),style: TextStyle(fontWeight: FontWeight.bold),)),
+                           // DataCell(Text(/*document.rec.*/'jdc')),
                            // DataCell(),
                          ]);
                    }).toList(),
