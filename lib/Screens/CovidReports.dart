@@ -92,34 +92,81 @@ class _CovidReportUserState extends State<CovidReportUser> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-             /* StreamBuilder<QuerySnapshot>(
-                  stream: positions
-                      .doc(this.widget.sid)
-                      .collection('poses')
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData){
-
-                          return Text('The data is ' + snapshot.data!.toString());
-
-                    }
-
-                    else
-                      return Text('No data');
-                  }),*/
-             FutureBuilder(future: getC(),builder: (BuildContext context, AsyncSnapshot snapshot){
+             FutureBuilder(future: getCEachDate(),builder: (BuildContext context, AsyncSnapshot snapshot){
                var a =[];
-               if (!snapshot.hasData || snapshot.data.isEmpty)
-                 return Loading();  //CIRCULAR INDICATOR
+               if (!snapshot.hasData || snapshot.data.isEmpty){
+                 //print(snapshot.data);
+                 return Loading();
+               }
+               //CIRCULAR INDIC\ATOR
                else
                for(int i=0;i<snapshot.data.length;i++){
-                 for(int j=0;j<snapshot.data[i].length;j++){
-                   a.add(snapshot.data[i][j].data());
-                 }
+                 a.add(snapshot.data[i]);
+                 print(snapshot.data[i].toString());
                }
 
+               return SizedBox(
+                 width: double.infinity,
+                 child: DataTable(
+                   showCheckboxColumn: false,
+                   sortColumnIndex: 0,
+                   sortAscending: true,
+                   columns: [
+                     DataColumn(
+                       label: Text(
+                         'Date',
+                         style: TextStyle(fontStyle: FontStyle.italic),
+                       ),
+                     ),
+                     DataColumn(
+                       numeric: true,
+                       label: Text(
+                         'See List',
+                         style: TextStyle(fontStyle: FontStyle.italic),
+                       ),
+                     ),
+                     /*DataColumn(
+                       label: Text(
+                         'Delete',
+                         style: TextStyle(fontStyle: FontStyle.italic),
+                       ),
+                     ),*/
+                   ],
+                   rows: a.map((document) {
+                     return DataRow(
+                       onSelectChanged: (b){
+                         showModalBottomSheet(
+                             context: context,
+                             builder: (context) {
+                               return DataTable(columns: [DataColumn(
+                                 numeric: true,
+                                 label: Text(
+                                   'User name',
+                                   style: TextStyle(fontStyle: FontStyle.italic),
+                                 ),
+                               ),DataColumn(
+                                 numeric: true,
+                                 label: Text(
+                                   'infected',
+                                   style: TextStyle(fontStyle: FontStyle.italic),
+                                 ),
+                               ),], rows: [
+                                 DataRow(cells: cells)
+                               ]);
+                             });
+                       },
+                         cells: [
+                           DataCell(Text(DateFormat('d-MMM-yy')
+                               .format(DateTime.parse(document.date)))),
+                           DataCell(Text(/*document.rec.*/'jdc')),
+                           // DataCell(),
+                         ]);
+                   }).toList(),
+                 ),
+               );
+
                return Text(a.toString());
-               return Loading();
+               // return Loading();
              }),
               RecordForUser(FirebaseAuth.instance.currentUser.uid)
             ],
