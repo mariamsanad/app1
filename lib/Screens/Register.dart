@@ -18,6 +18,7 @@ class _RegisterState extends State<Register> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _username = TextEditingController();
 
   bool isLoading = false;
 
@@ -35,6 +36,23 @@ class _RegisterState extends State<Register> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: TextFormField(
+                      controller: _username,
+                      decoration: const InputDecoration(labelText: 'Username',border: OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(
+                          const Radius.circular(25.0),
+                        ),
+                      ),),
+                      validator: (String? value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your username';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: TextFormField(
@@ -95,7 +113,7 @@ class _RegisterState extends State<Register> {
                             isLoading = true;
                           });
                           try{
-                            await methods.register(_emailController.text,_passwordController.text,'normal').then((value){
+                            await methods.register(_emailController.text,_passwordController.text,'normal',_username.text).then((value){
                               setState(() {
                                 isLoading = false;
                               });
