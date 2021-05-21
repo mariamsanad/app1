@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'User.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -29,14 +30,6 @@ checkRole() async {
 
   return v;
 }
-/*
-getCompanyName(cid) async {
-  var v = await companies.doc(cid).get().then((value) {
-    return value.data()['name'];
-  }).onError((error, stackTrace){return error;});
-  return v;
-}*/
-
 CollectionReference users = FirebaseFirestore.instance.collection('users');
 CollectionReference positions =
     FirebaseFirestore.instance.collection('positions');
@@ -320,11 +313,7 @@ class _UsersForSState extends State<UsersForS> {
 
   @override
   Widget build(BuildContext context) {
-    return /*isLoading?SpinKitSquareCircle(
-      color: Colors.blue.withOpacity(0.6),
-      size: 50.0,
-    ):*/
-        StreamBuilder<QuerySnapshot>(
+    return StreamBuilder<QuerySnapshot>(
       stream: companies
           .doc(this.widget.cid)
           .collection('supervisors')
@@ -417,22 +406,7 @@ class _UsersForSState extends State<UsersForS> {
             : Container(
           child: Text('No Supervisors found'),
         );
-
-
-        ListView(
-          children: snapshot.data!.docs.map((DocumentSnapshot document) {
-            return new ListTile(
-              title: new Text('Name: ' + document.data()['name'].toString()),
-              subtitle: new Text('Email: ' +
-                  document.data()['email'].toString() +
-                  '\nphone: ' +
-                  document.data()['phone'].toString() +
-                  '\ntype: ' +
-                  document.data()['type']),
-              trailing: new Text(document.id.toString()),
-            );
-          }).toList(),
-        );
+        
       },
     );
   }
@@ -736,20 +710,8 @@ Future<void> addCovidRecord(id, date, cough, headache, fever, infected) async {
       })
       .then((value) => print("Record Added"))
       .catchError((error) => print("Failed to add record: $error"));
- /* await rec3
-      .doc(date.toString())
-      .set({
-    'id':id,
-    'cough': cough,
-    'headache': headache,
-    'fever': fever,
-    'infected': infected
-  })
-      .then((value) => print("Record Added"))
-      .catchError((error) => print("Failed to add record: $error"));
-
- */
- await records2.doc(date.toString()).set({
+ 
+  await records2.doc(date.toString()).set({
    'date':date.toString()
  });
   await records2.doc(date.toString()).collection('recs').doc(id).set({
@@ -771,11 +733,6 @@ Future<void> addCovidRecord(id, date, cough, headache, fever, infected) async {
       .catchError((error) => print("Failed to add record: $error"));
 }
 
-class DeathRec {
-  final deaths;
-  final date;
-  DeathRec(this.date, this.deaths);
-}
 
 getCovidRecord(id) {
   var arr = [];
@@ -801,21 +758,6 @@ getUserName(id) async{
     return snapshot.data()['user_name'];
   });
   return val;
-}
-
-getDate(d) {
-  var m = users
-      .doc(FirebaseAuth.instance.currentUser.uid)
-      .collection('covidrecord')
-      .doc(d.toString())
-      .get()
-      .then((value) {
-    if (value.exists)
-      return value;
-    else
-      return false;
-  });
-  return m;
 }
 
 class RecordForUser extends StatefulWidget {
@@ -1134,9 +1076,145 @@ getCEachDate() async {
 
 class covrec{
  final date,rec;
-
  covrec({this.date, this.rec});
+}
+class DateRec{
+  final cases;
+  final date;
+  DateRec(this.cases, this.date);
+}
 
-  // covrec.name(this.date, this.rec);
+class DateCovGraph extends StatefulWidget {
+  @override
+  _DateCovGraphState createState() => _DateCovGraphState();
+}
+
+class _DateCovGraphState extends State<DateCovGraph> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: getCEachDate(),
+      builder: (BuildContext context, AsyncSnapshot snapshot){
+
+        final List <DateRec> dateRec = [];
+        final List <DateRec> headRec = [];
+        final List <DateRec> feverRec = [];
+
+
+        if (snapshot.hasData){
+          if(snapshot.data.length>0){
+
+            for(int i=0;i<snapshot.data.length;i++){
+              var count = snapshot.data[i].rec.where((c)=>c['headache']==true).toList().length;
+              headRec.add(new DateRec(count, 'Headache'));
+              var count1 = snapshot.data[i].rec.where((c)=>c['fever']==true).toList().length;
+              feverRec.add(new DateRec(count, DateFormat('d-MMM-yy').format(DateTime.parse(snapshot.data[i].date))));
+              dateRec.add(new DateRec(snapshot.data[i].rec.length-(count1+count), DateFormat('d-MMM-yy').format(DateTime.parse(snapshot.data[i].date))));
+
+            }
+
+            return SfCircularChart(
+                series: <CircularSeries>[
+                  // Renders radial bar chart
+                  RadialBarSeries<DateRec, String>(
+                      dataSource: headRec,
+                      xValueMapper: (DateRec data, _) => data.date,
+                      yValueMapper: (DateRec data, _) => data.cases,
+                  )
+                ]
+            );
+
+
+              SfCartesianChart(
+        primaryXAxis: CategoryAxis(),
+        series: <ChartSeries>[
+        StackedBar100Series<DateRec, String>(
+        dataSource: dateRec,
+        xValueMapper: (DateRec sales, _) => sales.date,
+        yValueMapper: (DateRec sales, _) => sales.cases
+        ),
+        StackedBar100Series<DateRec, String>(
+        dataSource: headRec,
+        xValueMapper: (DateRec sales, _) => sales.date,
+        yValueMapper: (DateRec sales, _) => sales.cases
+        ),
+          StackedBar100Series<DateRec, String>(
+              dataSource: feverRec,
+              xValueMapper: (DateRec sales, _) => sales.date,
+              yValueMapper: (DateRec sales, _) => sales.cases
+          ),
+
+        ]
+        );
+
+              SfCartesianChart(
+                trackballBehavior: TrackballBehavior(
+                    markerSettings: TrackballMarkerSettings(
+                        markerVisibility: TrackballVisibilityMode.visible),
+                    enable: true,
+                    tooltipSettings: InteractiveTooltip(
+                      enable: true,
+                      color: Colors.red,
+                      format: 'point.x : point.y',
+                    )
+                ),
+                zoomPanBehavior:  ZoomPanBehavior(
+                  enablePinching: true,
+                  zoomMode: ZoomMode.x,
+                  enablePanning: true,
+                ),
+                // backgroundColor: Colors.white,
+
+                primaryXAxis: CategoryAxis(),
+                title: ChartTitle(text: 'Chart'), //Chart title.
+                legend: Legend(isVisible: true), // Enables the legend.
+                tooltipBehavior: TooltipBehavior(enable: true), // Enables the tooltip.
+                series: <AreaSeries<DateRec, String>>[
+                  AreaSeries<DateRec, String>(
+                    name: 'Cases',
+                    dataSource: dateRec,
+                    xValueMapper: (DateRec sales, _) => sales.date,
+                    yValueMapper: (DateRec sales, _) => sales.cases,
+                    //dataLabelSettings: DataLabelSettings(isVisible: true) // Enables the data label.
+                  ),
+                  AreaSeries<DateRec, String>(
+                    name: 'Headache',
+                    dataSource: headRec,
+                    xValueMapper: (DateRec sales, _) => sales.date,
+                    yValueMapper: (DateRec sales, _) => sales.cases,
+                      // gradient: gradientColors
+                    //dataLabelSettings: DataLabelSettings(isVisible: true) // Enables the data label.
+                  ),
+                  /*AreaSeries<DateRec, String>(
+                    name: 'Active',
+                    dataSource: activeRec,
+                    xValueMapper: (DateRec sales, _) => sales.date,
+                    yValueMapper: (DateRec sales, _) => sales.cases,
+                    // dataLabelSettings: DataLabelSettings(isVisible: true) // Enables the data label.
+                  ),
+                  AreaSeries<DateRec, String>(
+                    name: 'Confirmed',
+                    dataSource: confirmedRec,
+                    xValueMapper: (DateRec sales, _) => sales.date,
+                    yValueMapper: (DateRec sales, _) => sales.cases,
+                    // dataLabelSettings: DataLabelSettings(isVisible: true) // Enables the data label.
+                  ),*/
+
+                ]
+            );
+
+
+          }else{
+            return Expanded(
+                child: Center(child: Text("There is no data for this country", style: TextStyle(fontSize: 20, color: Colors.red,fontWeight: FontWeight.bold),))
+            );
+          }
+
+        }
+        return Center(child: Loading());
+
+      },
+    );
+  }
 }
 
