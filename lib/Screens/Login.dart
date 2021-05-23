@@ -38,7 +38,7 @@ class _SignInState extends State<SignIn> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: isLoading?Loading():_EmailPasswordForm());
+      body: isLoading?Loading():SingleChildScrollView(child: _EmailPasswordForm()));
 
 
   }
