@@ -21,7 +21,7 @@ class _AdminCovidReportsState extends State<AdminCovidReports> {
               Tab(icon: Icon(Icons.directions_bike)),
             ],
           ),
-          title: Text('Tabs Demo'),
+          title: Text('Reports'),
         ),
         body: TabBarView(
           children: [
