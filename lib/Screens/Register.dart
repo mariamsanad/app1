@@ -84,7 +84,7 @@ class _RegisterState extends State<Register> {
                         validator: (String? value) {
                           return RegExp(r'^[0-9]{8}$').hasMatch(value!)?null:"enter a valid phone number";
                           },
-                        obscureText: true,
+                        // obscureText: true,
                       ),
                     ),
                     Padding(
