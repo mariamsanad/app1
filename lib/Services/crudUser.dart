@@ -18,8 +18,7 @@ checkRole() async {
   if (FirebaseAuth.instance.currentUser == null) return 'nouser';
   String userid = FirebaseAuth.instance.currentUser.uid;
 
-  var v = await FirebaseFirestore.instance
-      .collection('users')
+  var v = await users
       .doc(userid)
       .get()
       .then((value) {
@@ -424,12 +423,12 @@ class CompaniesList extends StatelessWidget {
           return Center(child: Loading());
         }
 
-        return SizedBox(
-          width: double.infinity,
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
           child: DataTable(
             showCheckboxColumn: false,
-            sortColumnIndex: 0,
-            sortAscending: true,
+            // sortColumnIndex: 0,
+            // sortAscending: true,
             columns: [
               DataColumn(
                 label: Text(
@@ -456,6 +455,12 @@ class CompaniesList extends StatelessWidget {
                   style: TextStyle(fontStyle: FontStyle.italic),
                 ),
               ),
+              DataColumn(
+                label: Text(
+                  'Delete',
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ),
             ],
             rows: snapshot.data!.docs.map((DocumentSnapshot document) {
               return DataRow(
@@ -479,7 +484,50 @@ class CompaniesList extends StatelessWidget {
                             builder: (context) => Supervisors(
                                 document.data()['company_id'].toString()),
                           )),
-                    )),
+                    ),
+
+                    ),
+                    DataCell(FlatButton(
+                      child: Icon(Icons.delete,color: Colors.red,),
+                      onPressed: () async {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                                contentPadding: EdgeInsets.only(top: 10.0),
+                                actions: [
+                                  ElevatedButton(
+                                    child: Text('Delete Company'),
+                                    onPressed: () async {
+                                      await deleteCompany(document.data()['company_id'].toString()).then((value){
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            duration: const Duration(seconds: 5),
+                                            content: Text('Company deleted successfully'),
+                                            backgroundColor: Colors.orangeAccent,
+                                            behavior: SnackBarBehavior.floating,
+                                            shape: StadiumBorder(),
+                                          ),
+                                        );
+                                        Navigator.of(context).pop();
+                                      }
+                                      );
+                                    },
+                                  ),
+                                ],
+                                content: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text('Are you sure you want to delete this company '+document.data()['name']),
+                                ) ,
+
+                              );
+                            });
+                      }
+                    ),
+
+                    ),
                   ]);
             }).toList(),
           ),
@@ -506,50 +554,97 @@ class SupervisorsList extends StatelessWidget {
         }
 
         return snapshot.hasData
-            ? SizedBox(
-                width: double.infinity,
-                child: DataTable(
-                  showCheckboxColumn: false,
-                  sortColumnIndex: 0,
-                  sortAscending: true,
-                  columns: [
-                    DataColumn(
-                      label: Text(
-                        'Name',
-                        style: TextStyle(fontStyle: FontStyle.italic),
+            ? SingleChildScrollView(
+              child: SizedBox(
+                  width: double.infinity,
+                  child: DataTable(
+                    showCheckboxColumn: false,
+                    sortColumnIndex: 0,
+                    sortAscending: true,
+                    columns: [
+                      DataColumn(
+                        label: Text(
+                          'Name',
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
                       ),
-                    ),
-                    DataColumn(
-                      numeric: true,
-                      label: Text(
-                        'Phone',
-                        style: TextStyle(fontStyle: FontStyle.italic),
+                      DataColumn(
+                        numeric: true,
+                        label: Text(
+                          'Phone',
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
                       ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Type',
-                        style: TextStyle(fontStyle: FontStyle.italic),
+                      DataColumn(
+                        label: Text(
+                          'Type',
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
                       ),
-                    ),
-                  ],
-                  rows: snapshot.data!.docs.map((DocumentSnapshot document) {
-                    return DataRow(
-                        onSelectChanged: (b) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      Positions(document.id.toString())));
-                        },
-                        cells: [
-                          DataCell(Text(document.data()['name'].toString())),
-                          DataCell(Text(document.data()['phone'].toString())),
-                          DataCell(Text(document.data()['position'])),
-                        ]);
-                  }).toList(),
+                      DataColumn(
+                        label: Text(
+                          'Delete',
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                      ),
+                    ],
+                    rows: snapshot.data!.docs.map((DocumentSnapshot document) {
+                      return DataRow(
+                          onSelectChanged: (b) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        Positions(document.id.toString())));
+                          },
+                          cells: [
+                            DataCell(Text(document.data()['name'].toString())),
+                            DataCell(Text(document.data()['phone'].toString())),
+                            DataCell(Text(document.data()['position'])),
+                            DataCell(FlatButton(
+                              child: Icon(Icons.delete,color:Colors.red),
+                                onPressed:(){
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                                          contentPadding: EdgeInsets.only(top: 10.0),
+                                          actions: [
+                                            ElevatedButton(
+                                              child: Text('Delete Supervisor'),
+                                              onPressed: () async {
+                                                await deleteSupervisor(cid,document.id.toString()).then((value){
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    SnackBar(
+                                                      duration: const Duration(seconds: 5),
+                                                      content: Text('Supervisor deleted successfully'),
+                                                      backgroundColor: Colors.orangeAccent,
+                                                      behavior: SnackBarBehavior.floating,
+                                                      shape: StadiumBorder(),
+                                                    ),
+                                                  );
+                                                  Navigator.of(context).pop();
+                                                }
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                          content: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Text('Are you sure you want to delete the supervisor '+document.data()['name']),
+                                          ) ,
+
+                                        );
+                                      });
+                                }
+                            )),
+                          ]);
+                    }).toList(),
+                  ),
                 ),
-              )
+            )
             : Container(
                 child: Text('No Supervisors found'),
               );
@@ -640,6 +735,23 @@ Future addPosition(id, name) async {
 
 Future deletePosition(uid, id) async {
   return positions.doc(uid).collection('poses').doc(id).delete();
+}
+Future deleteCompany(uid) async {
+  try{
+    await companies.doc(uid).delete();
+    return users.doc(uid).delete();
+  }on FirebaseFirestore catch(err){
+    return err;
+  }
+}
+Future deleteSupervisor(cid,uid) async {
+  try{
+    await companies.doc(cid).collection('supervisors').doc(uid).delete();
+    return users.doc(uid).delete();
+  }on FirebaseFirestore catch(err){
+    return err;
+  }
+
 }
 
 Future UserAdd1(String companyid, String supervisorid, String name,
