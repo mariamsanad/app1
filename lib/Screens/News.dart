@@ -31,7 +31,7 @@ class _NewsState extends State<News> {
           builder: (BuildContext context, AsyncSnapshot snapshot){
             if (snapshot.hasData){
               if(snapshot.data.length>0){
-                return Text(snapshot.data[0].toString());
+                return Text(snapshot.data[0]['title'].toString());
               }else{
                 return Text('There is no data');
               }
