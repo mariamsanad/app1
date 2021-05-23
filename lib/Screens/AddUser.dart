@@ -8,7 +8,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 class UserAdd extends StatefulWidget {
   final String pos,sid;
 
-  const UserAdd({Key? key, required this.pos,required this.sid}) : super(key: key);
+  const UserAdd({Key? key,required this.pos,required this.sid}) : super(key: key);
 
   @override
   _UserAddState createState() => _UserAddState();
