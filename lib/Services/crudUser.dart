@@ -67,6 +67,23 @@ updateCompanyProfile(cid, name, phone, type) async {
       .catchError((error) => print("Failed to update user: $error"));
 }
 
+
+
+updateSupervisorProfile(cid,uid, name, phone, type) async {
+  await companies
+      .doc(cid)
+      .collection('supervisors')
+      .doc(uid)
+      .update({'name': name, 'phone': phone, 'position': type})
+      .then((value) => print("Supervisor Updated"))
+      .catchError((error) => print("Failed to update supervisor: $error"));
+  return users
+      .doc(uid)
+      .update({'user_name': name, 'phone': phone})
+      .then((value) => print("User Updated"))
+      .catchError((error) => print("Failed to update user: $error"));
+}
+
 getUser(String userId) async =>
     users.doc(userId).get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
@@ -86,6 +103,7 @@ getCompanyid(String userId) async =>
       }
     });
 
+
 Future<String> getSuperid(userId) async =>
     users.doc(userId).get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
@@ -104,14 +122,14 @@ class Auth {
     return user1 != null ? user(user1.uid, user1.email) : null;
   }
 
-  Future register(String email, String pass, String type,String uname) async {
+  Future register(String email, String pass, String type,String uname,phone) async {
     final User user = (await _auth.createUserWithEmailAndPassword(
       email: email,
       password: pass,
     ))
         .user;
 
-    addUser(user.uid, uname, email, type, '', false, 'home');
+    addUser(user.uid, uname, email, type, phone, false, 'home');
 
     return _userfromfb(user);
   }
@@ -162,6 +180,7 @@ class Auth {
 
       return _userfromfb(user);
     } on FirebaseAuthException catch (e) {
+      return e;
       return e;
     }
   }
@@ -310,13 +329,13 @@ class _UsersForSState extends State<UsersForS> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
+    return isLoading?Loading():StreamBuilder<QuerySnapshot>(
       stream: companies
           .doc(this.widget.cid)
           .collection('supervisors')
           .doc(this.widget.sid)
           .collection(this.widget.pos)
-          .snapshots(),
+          .snapshots(includeMetadataChanges: true),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return Text('Something went wrong,you may be not authenticated');
@@ -355,8 +374,16 @@ class _UsersForSState extends State<UsersForS> {
               ),
             ],
             rows: snapshot.data!.docs.map((DocumentSnapshot document) {
-              return DataRow(onSelectChanged: (b) {}, cells: [
-                DataCell(Text(document.data()['name'].toString())),
+              return DataRow(onSelectChanged: (b) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          Profile(document.id),
+                    ));
+
+              }, cells: [
+                DataCell(Text(document.data()['name'].toString()),showEditIcon: true),
                 DataCell(Text(document.data()['phone'].toString())),
                 /*TextButton(onPressed: (){
                       Navigator.of(context).pushNamed('reset');
@@ -403,6 +430,8 @@ class _UsersForSState extends State<UsersForS> {
             : Container(
           child: Text('No Supervisors found'),
         );
+
+
         
       },
     );
@@ -431,6 +460,7 @@ class CompaniesList extends StatelessWidget {
             // sortAscending: true,
             columns: [
               DataColumn(
+                tooltip: 'The name of company',
                 label: Text(
                   'Name',
                   style: TextStyle(fontStyle: FontStyle.italic),
@@ -473,7 +503,7 @@ class CompaniesList extends StatelessWidget {
                         ));
                   },
                   cells: [
-                    DataCell(Text(document.data()['name'].toString())),
+                    DataCell(Text(document.data()['name'].toString()),showEditIcon:true),
                     /*DataCell(Text(document.data()['phone'].toString())),*/
                     DataCell(Text(document.data()['type'])),
                     DataCell(ElevatedButton(
@@ -554,9 +584,10 @@ class SupervisorsList extends StatelessWidget {
         }
 
         return snapshot.hasData
-            ? SingleChildScrollView(
-              child: SizedBox(
-                  width: double.infinity,
+            ? SizedBox(
+                width: double.infinity,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
                   child: DataTable(
                     showCheckboxColumn: false,
                     sortColumnIndex: 0,
@@ -587,6 +618,12 @@ class SupervisorsList extends StatelessWidget {
                           style: TextStyle(fontStyle: FontStyle.italic),
                         ),
                       ),
+                      DataColumn(
+                        label: Text(
+                          'Positions',
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                      ),
                     ],
                     rows: snapshot.data!.docs.map((DocumentSnapshot document) {
                       return DataRow(
@@ -594,13 +631,24 @@ class SupervisorsList extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        Positions(document.id.toString())));
+                                  builder: (context) =>
+                                      SupervisorProfile(document.id),
+                                ));
                           },
                           cells: [
-                            DataCell(Text(document.data()['name'].toString())),
+                            DataCell(Text(document.data()['name'].toString()),showEditIcon: true),
                             DataCell(Text(document.data()['phone'].toString())),
                             DataCell(Text(document.data()['position'])),
+                            DataCell(TextButton(
+                              child: Text('See Positions'),
+                              onPressed: (){
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            Positions(document.id.toString())));
+                              },
+                            )),
                             DataCell(FlatButton(
                               child: Icon(Icons.delete,color:Colors.red),
                                 onPressed:(){
@@ -644,7 +692,7 @@ class SupervisorsList extends StatelessWidget {
                     }).toList(),
                   ),
                 ),
-            )
+              )
             : Container(
                 child: Text('No Supervisors found'),
               );
