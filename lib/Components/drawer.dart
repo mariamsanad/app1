@@ -16,7 +16,7 @@ class MyDrawer extends StatelessWidget {
                     DrawerHeader(
                       child: (FirebaseAuth.instance.currentUser == null)
                           ? null
-                          :(FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser.photoURL != null)? Row(
+                          :/*(FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser.photoURL != null)? */Row(
                             children: [
                               ClipRRect(
                                   //borderRadius: BorderRadius.circular(30.0),
@@ -26,7 +26,7 @@ class MyDrawer extends StatelessWidget {
                                   ),
                                 ),
                             ],
-                          ):Text('Welcome '+getUserName(id)),
+                          )/*:Text('Welcome '+getUserName(id))*/,
                       decoration: BoxDecoration(
                         color:  Theme.of(context).primaryColor,
                       ),
