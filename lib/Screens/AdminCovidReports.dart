@@ -10,10 +10,28 @@ class AdminCovidReports extends StatefulWidget {
 class _AdminCovidReportsState extends State<AdminCovidReports> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Covid Reports For Admin:"),
-      ),body: AdminCovRec(),
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          bottom: TabBar(
+            tabs: [
+              Tab(text: 'Date',),
+              Tab(text: 'Companies',),
+              Tab(icon: Icon(Icons.directions_bike)),
+            ],
+          ),
+          title: Text('Tabs Demo'),
+        ),
+        body: TabBarView(
+          children: [
+            SingleChildScrollView(child: AdminCovRec()),
+            Icon(Icons.directions_transit),
+            Icon(Icons.directions_bike),
+          ],
+        ),
+      ),
+    // AdminCovRec(),
       //bottomNavigationBar: Text("Hello"),
     );
   }
