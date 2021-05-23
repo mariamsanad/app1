@@ -42,8 +42,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           // Define the default brightness and colors.
           // brightness: Brightness.dark,
-          primaryColor: Colors.orange[800],
-          accentColor: Colors.amber[600],
+          primaryColor: Color(0xffe45b5e),
+          accentColor: Color(0xfffeb493),
+            buttonColor:  Color(0xfffeb493),
 
           // Define the default font family.
           // fontFamily: 'Arial',
@@ -83,7 +84,7 @@ class MyApp extends StatelessWidget {
                   return CompanyAdd();
                 },
                 'profile': (context) {
-                  return Profile(FirebaseAuth.instance.currentUser.uid);
+                  return Profile(FirebaseAuth.instance.currentUser.uid,null,null,null);
                 },
                 'register': (context) {
                   return Register();
