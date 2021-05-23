@@ -84,6 +84,23 @@ updateSupervisorProfile(cid,uid, name, phone, type) async {
       .catchError((error) => print("Failed to update user: $error"));
 }
 
+updateUserProfile(userid, name, phone, vac, work,cid,sid,pos)  async {
+  await companies
+      .doc(cid)
+      .collection('supervisors')
+      .doc(sid)
+      .collection(pos)
+      .doc(userid)
+      .update({'name': name, 'phone': phone})
+      .then((value) => print("User Updated"))
+      .catchError((error) => print("Failed to update user: $error"));
+  return users
+      .doc(userid)
+      .update({'user_name': name, 'phone': phone})
+      .then((value) => print("User Updated"))
+      .catchError((error) => print("Failed to update user: $error"));
+}
+
 getUser(String userId) async =>
     users.doc(userId).get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
@@ -379,7 +396,7 @@ class _UsersForSState extends State<UsersForS> {
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          Profile(document.id),
+                          Profile(document.id,this.widget.cid,this.widget.sid,this.widget.pos),
                     ));
 
               }, cells: [
