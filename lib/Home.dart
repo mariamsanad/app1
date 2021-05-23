@@ -23,7 +23,7 @@ class Home extends StatelessWidget {
           //key: scaffoldKey,
             drawer: MyDrawer(),
             appBar: AppBar(
-              backgroundColor: Colors.cyan,
+             /* backgroundColor: Colors.cyan,*/
               title: Text("Covid-19"),
               actions: [
                 Container(
