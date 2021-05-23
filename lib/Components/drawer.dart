@@ -25,7 +25,7 @@ class MyDrawer extends StatelessWidget {
                               ),
                             ),
                       decoration: BoxDecoration(
-                        color: Colors.cyan,
+                        color:  Theme.of(context).primaryColor,
                       ),
                     ),
                     Container(
