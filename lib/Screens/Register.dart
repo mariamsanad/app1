@@ -19,6 +19,7 @@ class _RegisterState extends State<Register> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _username = TextEditingController();
+  final TextEditingController _phone = TextEditingController();
 
   bool isLoading = false;
 
@@ -73,6 +74,21 @@ class _RegisterState extends State<Register> {
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: TextFormField(
+                      controller: _phone,
+                      decoration: const InputDecoration(labelText: 'Phone',border: OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(
+                          const Radius.circular(25.0),
+                        ),
+                      ),),
+                      validator: (String? value) {
+                        return RegExp(r'^[0-9]{8}$').hasMatch(value!)?null:"enter a valid phone number";
+                        },
+                      obscureText: true,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: TextFormField(
                       controller: _passwordController,
                       decoration: const InputDecoration(labelText: 'Password',border: OutlineInputBorder(
                         borderRadius: const BorderRadius.all(
@@ -113,7 +129,7 @@ class _RegisterState extends State<Register> {
                             isLoading = true;
                           });
                           try{
-                            await methods.register(_emailController.text,_passwordController.text,'normal',_username.text).then((value){
+                            await methods.register(_emailController.text,_passwordController.text,'normal',_username.text,_phone.text).then((value){
                               setState(() {
                                 isLoading = false;
                               });
