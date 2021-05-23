@@ -35,8 +35,6 @@ CollectionReference positions =
     FirebaseFirestore.instance.collection('positions');
 CollectionReference companies =
     FirebaseFirestore.instance.collection('companies');
-CollectionReference records =
-    FirebaseFirestore.instance.collection('covidrecords');
 CollectionReference records2 =
 FirebaseFirestore.instance.collection('records');
 
@@ -626,7 +624,9 @@ Future addSupervisor(String companyid, String name, String email, String pass,
 }
 
 Future addPosition(id, name) async {
-
+  await positions.doc(id).set({
+    'id':id
+  });
   return positions
       .doc(id)
       .collection('poses')
@@ -638,7 +638,7 @@ Future addPosition(id, name) async {
       .catchError((error) => print("Failed to add position: $error"));
 }
 
-Future deletePosition(uid, id) {
+Future deletePosition(uid, id) async {
   return positions.doc(uid).collection('poses').doc(id).delete();
 }
 
@@ -1043,9 +1043,40 @@ getC() async {
 
     }
   }
+  return arr;
+}
+
+getCCompany(id) async {
+  var arr=[];
+  //Get Supervisors under company
+  QuerySnapshot querySnapshot = await companies.doc(id).collection('supervisors').get();
+  var list = querySnapshot.docs;
+  var list1,list2,list3;
+
+  for(int i=0;i<list.length;i++){
+    // DocumentSnapshot querySnapshot1 = await companies.doc(id).collection('supervisors').doc(list[i].id).get();
+    // QuerySnapshot querySnapshot2 = await companies.doc(id).collection('supervisors').doc(list[i].id).col;
+    // arr.add(list1);
+
+    QuerySnapshot querySnapshot1 = await positions.doc(list[i].id).collection('poses').get();
+    list1 = querySnapshot1.docs;
+    //date is the position
+    var r = new covrec(date:list[i].id , rec:[]);
+
+    for(int j=0;j<list1.length;j++){
+      //get positions
+      DocumentSnapshot querySnapshot2 = await positions.doc(list[i].id).collection('poses').doc(list1[j].id).get();
+      list2 = querySnapshot2.data();
+
+        if(list2['infected']==true)
+          r.rec.add(list2);
+    }
+    arr.add(r);
+  }
 
   return arr;
 }
+
 
 getCEachDate() async {
   var arr=[];
@@ -1078,6 +1109,7 @@ class covrec{
  final date,rec;
  covrec({this.date, this.rec});
 }
+
 class DateRec{
   final cases;
   final date;
@@ -1099,6 +1131,7 @@ class _DateCovGraphState extends State<DateCovGraph> {
         final List <DateRec> dateRec = [];
         final List <DateRec> headRec = [];
         final List <DateRec> feverRec = [];
+        final List <DateRec> caughRec = [];
 
 
         if (snapshot.hasData){
@@ -1106,14 +1139,17 @@ class _DateCovGraphState extends State<DateCovGraph> {
 
             for(int i=0;i<snapshot.data.length;i++){
               var count = snapshot.data[i].rec.where((c)=>c['headache']==true).toList().length;
-              headRec.add(new DateRec(count, 'Headache'));
+              // headRec.add(new DateRec(count, 'Headache'));
               var count1 = snapshot.data[i].rec.where((c)=>c['fever']==true).toList().length;
-              feverRec.add(new DateRec(count, DateFormat('d-MMM-yy').format(DateTime.parse(snapshot.data[i].date))));
-              dateRec.add(new DateRec(snapshot.data[i].rec.length-(count1+count), DateFormat('d-MMM-yy').format(DateTime.parse(snapshot.data[i].date))));
+              var count2 = snapshot.data[i].rec.where((c)=>c['cough']==true).toList().length;
+              headRec.add(new DateRec(count, DateFormat('d-MMM-yy').format(DateTime.parse(snapshot.data[i].date))));
+              feverRec.add(new DateRec(count1, DateFormat('d-MMM-yy').format(DateTime.parse(snapshot.data[i].date))));
+              caughRec.add(new DateRec(count2, DateFormat('d-MMM-yy').format(DateTime.parse(snapshot.data[i].date))));
+              dateRec.add(new DateRec(snapshot.data[i].rec.length/*-(count1+count+count2)*/, DateFormat('d-MMM-yy').format(DateTime.parse(snapshot.data[i].date))));
 
             }
 
-            return SfCircularChart(
+            return /*SfCircularChart(
                 series: <CircularSeries>[
                   // Renders radial bar chart
                   RadialBarSeries<DateRec, String>(
@@ -1122,10 +1158,10 @@ class _DateCovGraphState extends State<DateCovGraph> {
                       yValueMapper: (DateRec data, _) => data.cases,
                   )
                 ]
-            );
+            );*/
 
 
-              SfCartesianChart(
+            /*  SfCartesianChart(
         primaryXAxis: CategoryAxis(),
         series: <ChartSeries>[
         StackedBar100Series<DateRec, String>(
@@ -1145,7 +1181,7 @@ class _DateCovGraphState extends State<DateCovGraph> {
           ),
 
         ]
-        );
+        );*/
 
               SfCartesianChart(
                 trackballBehavior: TrackballBehavior(
@@ -1185,21 +1221,22 @@ class _DateCovGraphState extends State<DateCovGraph> {
                       // gradient: gradientColors
                     //dataLabelSettings: DataLabelSettings(isVisible: true) // Enables the data label.
                   ),
-                  /*AreaSeries<DateRec, String>(
-                    name: 'Active',
-                    dataSource: activeRec,
+                  AreaSeries<DateRec, String>(
+                    name: 'Fever',
+                    dataSource: feverRec,
                     xValueMapper: (DateRec sales, _) => sales.date,
                     yValueMapper: (DateRec sales, _) => sales.cases,
-                    // dataLabelSettings: DataLabelSettings(isVisible: true) // Enables the data label.
+                    // gradient: gradientColors
+                    //dataLabelSettings: DataLabelSettings(isVisible: true) // Enables the data label.
                   ),
                   AreaSeries<DateRec, String>(
-                    name: 'Confirmed',
-                    dataSource: confirmedRec,
+                    name: 'Cough',
+                    dataSource: caughRec,
                     xValueMapper: (DateRec sales, _) => sales.date,
                     yValueMapper: (DateRec sales, _) => sales.cases,
-                    // dataLabelSettings: DataLabelSettings(isVisible: true) // Enables the data label.
-                  ),*/
-
+                    // gradient: gradientColors
+                    //dataLabelSettings: DataLabelSettings(isVisible: true) // Enables the data label.
+                  ),
                 ]
             );
 
@@ -1214,6 +1251,128 @@ class _DateCovGraphState extends State<DateCovGraph> {
         return Center(child: Loading());
 
       },
+    );
+  }
+}
+
+class showDailyRadialGraph extends StatefulWidget {
+  final date;
+  @override
+  _showDailyRadialGraphState createState() => _showDailyRadialGraphState();
+
+  showDailyRadialGraph(this.date);
+}
+
+class mrec{
+  final int num;
+  final name;
+  final col;
+
+  mrec(this.num, this.name, this.col);
+}
+
+class _showDailyRadialGraphState extends State<showDailyRadialGraph> {
+  late TooltipBehavior _tooltipBehavior;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _tooltipBehavior = TooltipBehavior(
+        enable: true);
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Graph for '+this.widget.date.toString()),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: records2.doc(this.widget.date).collection('recs').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot snapshot){
+          print(this.widget.date);
+
+          // print(snapshot.data);
+
+          var dateRec=0;
+          var headRec=0;
+          var feverRec=0;
+          var caughRec=0;
+
+          if (!snapshot.hasData){
+            //print(snapshot.data);
+            return Loading();
+          }
+
+          if (snapshot.hasData){
+            snapshot.data.docs.forEach((v){
+              if(v.data()['fever'])
+                feverRec++;
+              if(v.data()['cough'])
+                caughRec++;
+              if(v.data()['headache'])
+                headRec++;
+              else
+                dateRec++;
+              print(v.data());
+            });
+            // print('c= '+caughRec.toString()+' f = '+feverRec.toString()+' h= '+headRec.toString()+' d = '+dateRec.toString());
+
+            final List<mrec> chartData = [
+              mrec(feverRec,'Fever',Color(0xffFCD570)),
+              mrec(caughRec,'Cough',Color(0xffFB88DB)),
+              mrec( headRec,'Headache',Color(0xff84DC77)),
+              mrec( dateRec,'None',Color(0xffA0C5FD))
+            ];
+
+            return SfCartesianChart(
+                tooltipBehavior: _tooltipBehavior,
+                primaryXAxis: CategoryAxis(),
+          series: <ChartSeries>[
+          // Renders column chart
+          ColumnSeries<mrec, String>(
+          dataSource: chartData,
+          xValueMapper: (mrec sales, _) => sales.name,
+          yValueMapper: (mrec sales, _) => sales.num,
+              pointColorMapper: (mrec data, _) => data.col
+          )
+          ]
+          );
+
+
+              SfCartesianChart(
+          series: <ChartSeries>[
+          // Renders bar chart
+          BarSeries<mrec, num>(
+          dataSource: chartData,
+          xValueMapper: (mrec sales, _) => sales.name ,
+          yValueMapper: (mrec sales, _) => sales.num
+          )
+          ]
+          );
+
+            /*  SfCircularChart(
+                tooltipBehavior: _tooltipBehavior,
+                legend: Legend(isVisible: true),
+                series: <CircularSeries>[
+                  // Renders radial bar chart
+                  RadialBarSeries<DateRec, String>(
+                    dataSource: chartData,
+                    xValueMapper: (DateRec data, _) => data.date,
+                    yValueMapper: (DateRec data, _) => data.cases,
+                cornerStyle: CornerStyle.bothCurve,
+                      dataLabelSettings: DataLabelSettings(
+                        // Renders the data label
+                          isVisible: true
+                      )
+                  )
+                ]
+            );*/
+          }
+          return Center(child: Loading());
+
+        },
+      ),
     );
   }
 }
