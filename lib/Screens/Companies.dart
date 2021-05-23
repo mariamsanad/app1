@@ -1,3 +1,4 @@
+import 'package:app1/Screens/AddCompany.dart';
 import 'package:app1/Screens/AddSupervisor.dart';
 import 'package:app1/Services/crudUser.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,14 @@ class Companies extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Companies List: "),
+        actions: [
+          FlatButton(onPressed: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>CompanyAdd()),
+            );
+          }, child: Icon(Icons.add))
+        ],
       ),body: CompaniesList(),
       //bottomNavigationBar: Text("Hello"),
     );
