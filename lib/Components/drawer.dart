@@ -68,6 +68,19 @@ class MyDrawer extends StatelessWidget {
                       ),
                     ),
                     Container(
+                      child: ListTile(
+                        title: Text("Admin Covid Records"),
+                        leading: Image.asset(
+                          "assets/images/fever.png",
+                          width: 40,
+                          height: 40,
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pushNamed("admincovedrec");
+                        },
+                      ),
+                    ),
+                    Container(
                       child: snapshot.data=='nouser'?null:ListTile(
                         title: Text("Profile"),
                         leading: Image.asset(
