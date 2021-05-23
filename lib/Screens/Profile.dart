@@ -7,12 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:group_radio_button/group_radio_button.dart';
 
 class Profile extends StatefulWidget {
-  final user_id;
+  final user_id,cid,sid,pos;
 
   @override
   _ProfileState createState() => _ProfileState();
 
-  Profile(this.user_id);
+  Profile(this.user_id, this.cid, this.sid, this.pos);
+
+// Profile(this.user_id);
 }
 
 class _ProfileState extends State<Profile> {
@@ -107,9 +109,8 @@ class _ProfileState extends State<Profile> {
                                   border: OutlineInputBorder(),
                                 ),
                                 validator: (String? value) {
-                                  if (value!.isEmpty)
-                                    return 'Please enter the phone number';
-                                  return null;
+                                  return RegExp(r'^[0-9]{8}$').hasMatch(value!)?null:"enter a valid phone number";
+
                                 },
                                 //obscureText: true,
                               ),
@@ -173,8 +174,9 @@ class _ProfileState extends State<Profile> {
                                     isLoading = false;
                                   });
 
-                                  updateProfile(this.widget.user_id, _name.text,
-                                      _phone.text, vac,_verticalGroupValue);
+                                  this.widget.cid==null?updateProfile(this.widget.user_id, _name.text,
+                                      _phone.text, vac,_verticalGroupValue):updateUserProfile(this.widget.user_id, _name.text,
+                                      _phone.text, vac,_verticalGroupValue,this.widget.cid,this.widget.sid,this.widget.pos);
 
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
