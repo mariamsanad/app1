@@ -54,9 +54,9 @@ getChartData() async {
 
 class CovidReportUser extends StatefulWidget {
   @override
-  var companyid, sid,position;
+  var companyid, sid, position;
 
-  CovidReportUser(this.sid,this.position);
+  CovidReportUser(this.sid, this.position);
 
   _CovidReportUserState createState() => _CovidReportUserState();
 }
@@ -91,10 +91,7 @@ class _CovidReportUserState extends State<CovidReportUser> {
       body: Container(
         child: SingleChildScrollView(
           child: Column(
-            children: [
-
-              RecordForUser(FirebaseAuth.instance.currentUser.uid)
-            ],
+            children: [RecordForUser(FirebaseAuth.instance.currentUser.uid)],
           ),
         ),
       ),
@@ -116,187 +113,216 @@ Future<String> checkConn() async {
 class AdminCovRec extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('All Statistics'),
-      ),
-      body: Column(
-        children: [
-          FutureBuilder(future: getCEachDate(),builder: (BuildContext context, AsyncSnapshot snapshot){
-      var a =[];
-      if (!snapshot.hasData || snapshot.data.isEmpty){
-        //print(snapshot.data);
-        return Loading();
-      }
-      //CIRCULAR INDIC\ATOR
-      else
-        for(int i=0;i<snapshot.data.length;i++){
-          a.add(snapshot.data[i]);
-          // print(snapshot.data[i].toString());
-        }
+    return Column(
+            children: [
+              FutureBuilder(
+                  future: getCEachDate(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    var a = [];
+                    if (!snapshot.hasData || snapshot.data.isEmpty) {
+                      //print(snapshot.data);
+                      return Loading();
+                    }
+                    //CIRCULAR INDIC\ATOR
+                    else
+                      for (int i = 0; i < snapshot.data.length; i++) {
+                        a.add(snapshot.data[i]);
+                        // print(snapshot.data[i].toString());
+                      }
 
-      return Column(
-        children: [
-          SizedBox(
-            width: double.infinity,
-            child: DataTable(
-              showCheckboxColumn: false,
-              sortColumnIndex: 0,
-              sortAscending: true,
-              columns: [
-                DataColumn(
-                  label: Text(
-                    'Date',
-                    style: TextStyle(fontStyle: FontStyle.italic),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Number of Cases',
-                    style: TextStyle(fontStyle: FontStyle.italic),
-                  ),
-                ),
-              ],
-              rows: a.map((document) {
-                return DataRow(
-                    onSelectChanged: (b){
-                      showModalBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            return Column(children: [
-                              TextButton(onPressed:(){
-
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            showDailyRadialGraph(document.date)
-                                    ));
-
-                              }, child: Text('See Graph')),
-                              DataTable(
-                                showCheckboxColumn: false,
-                                columns: [DataColumn(
-                                  // numeric: true,
-                                  label: Text(
-                                    'User name',
-                                    style: TextStyle(fontStyle: FontStyle.italic,fontWeight: FontWeight.bold),
-                                  ),
-                                ),], rows:document.rec.map<DataRow>((ex) {
-                                return DataRow(
-                                    onSelectChanged: (b) {
-                                      var c = true;
-                                      print('in '+ex['infected'].toString());
-                                      var infected = ex['infected'],
-                                          head = ex['headache'],
-                                          fever = ex['fever'],
-                                          cough = ex['cough'];
-                                      if (!cough && !head && !fever) c = false;
-                                      // if (ex['type'] == 'supervisor') {
-                                      !infected
-                                          ? null
-                                          : showDialog(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(32.0))),
-                                            content: /*ex.hasData
-                                                           ? */SingleChildScrollView(
-                                              child: Column(
-                                                mainAxisSize:
-                                                MainAxisSize.min,
-                                                children: [
-                                                  !c
-                                                      ? Text('No Symptoms')
-                                                      : Container(),
-                                                  head
-                                                      ? Tooltip(
-                                                    message: 'Headache',
-                                                    child: ListTile(
-                                                      title: InkWell(
-                                                        child:
-                                                        Image.asset(
-                                                          "assets/images/head.png",
-                                                          width: 100,
-                                                          height: 100,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                                      : Container(),
-                                                  fever
-                                                      ? Tooltip(
-                                                    message: 'Fever',
-                                                    child: ListTile(
-                                                      title: InkWell(
-                                                        child:
-                                                        Image.asset(
-                                                          "assets/images/fever.png",
-                                                          width: 100,
-                                                          height: 100,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                                      : Container(),
-                                                  cough
-                                                      ? Tooltip(
-                                                    message: 'Cough',
-                                                    child: ListTile(
-                                                      title: InkWell(
-                                                        child:
-                                                        Image.asset(
-                                                          "assets/images/caugh.png",
-                                                          width: 100,
-                                                          height: 100,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                                      : Container(),
-                                                ],
-                                              ),
-                                            )
-                                            /* : Loading(),*/,
-                                            actions: [
-                                              FlatButton(
+                    return Column(
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: DataTable(
+                            showCheckboxColumn: false,
+                            sortColumnIndex: 0,
+                            sortAscending: true,
+                            columns: [
+                              DataColumn(
+                                label: Text(
+                                  'Date',
+                                  style: TextStyle(fontStyle: FontStyle.italic),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Number of Cases',
+                                  style: TextStyle(fontStyle: FontStyle.italic),
+                                ),
+                              ),
+                            ],
+                            rows: a.map((document) {
+                              return DataRow(
+                                  onSelectChanged: (b) {
+                                    showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return Column(
+                                            children: [
+                                              TextButton(
                                                   onPressed: () {
-                                                    Navigator.pop(context);
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                showDailyRadialGraph(
+                                                                    document
+                                                                        .date)));
                                                   },
-                                                  child: Text("OK"))
+                                                  child: Text('See Graph')),
+                                              DataTable(
+                                                showCheckboxColumn: false,
+                                                columns: [
+                                                  DataColumn(
+                                                    // numeric: true,
+                                                    label: Text(
+                                                      'User name',
+                                                      style: TextStyle(
+                                                          fontStyle:
+                                                              FontStyle.italic,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ),
+                                                ],
+                                                rows: document.rec
+                                                    .map<DataRow>((ex) {
+                                                  return DataRow(
+                                                      onSelectChanged: (b) {
+                                                        var c = true;
+                                                        print('in ' +
+                                                            ex['infected']
+                                                                .toString());
+                                                        var infected =
+                                                                ex['infected'],
+                                                            head =
+                                                                ex['headache'],
+                                                            fever = ex['fever'],
+                                                            cough = ex['cough'];
+                                                        if (!cough &&
+                                                            !head &&
+                                                            !fever) c = false;
+                                                        // if (ex['type'] == 'supervisor') {
+                                                        !infected
+                                                            ? null
+                                                            : showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (context) =>
+                                                                        AlertDialog(
+                                                                          shape:
+                                                                              RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                                                                          content:
+                                                                              /*ex.hasData
+                                                             ? */
+                                                                              SingleChildScrollView(
+                                                                            child:
+                                                                                Column(
+                                                                              mainAxisSize: MainAxisSize.min,
+                                                                              children: [
+                                                                                !c ? Text('No Symptoms') : Container(),
+                                                                                head
+                                                                                    ? Tooltip(
+                                                                                        message: 'Headache',
+                                                                                        child: ListTile(
+                                                                                          title: InkWell(
+                                                                                            child: Image.asset(
+                                                                                              "assets/images/head.png",
+                                                                                              width: 100,
+                                                                                              height: 100,
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                      )
+                                                                                    : Container(),
+                                                                                fever
+                                                                                    ? Tooltip(
+                                                                                        message: 'Fever',
+                                                                                        child: ListTile(
+                                                                                          title: InkWell(
+                                                                                            child: Image.asset(
+                                                                                              "assets/images/fever.png",
+                                                                                              width: 100,
+                                                                                              height: 100,
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                      )
+                                                                                    : Container(),
+                                                                                cough
+                                                                                    ? Tooltip(
+                                                                                        message: 'Cough',
+                                                                                        child: ListTile(
+                                                                                          title: InkWell(
+                                                                                            child: Image.asset(
+                                                                                              "assets/images/caugh.png",
+                                                                                              width: 100,
+                                                                                              height: 100,
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                      )
+                                                                                    : Container(),
+                                                                              ],
+                                                                            ),
+                                                                          )
+                                                                          /* : Loading(),*/,
+                                                                          actions: [
+                                                                            FlatButton(
+                                                                                onPressed: () {
+                                                                                  Navigator.pop(context);
+                                                                                },
+                                                                                child: Text("OK"))
+                                                                          ],
+                                                                        ));
+                                                      },
+                                                      cells: [
+                                                        DataCell(
+                                                          Text(
+                                                            ex['name'],
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ),
+                                                      ]);
+                                                }).toList(),
+                                              ),
                                             ],
-                                          ));
-                                    },
-                                    cells: [
-                                      DataCell(Text(ex['name'],style: TextStyle(fontWeight: FontWeight.bold),),),
-                                    ]);
-                              }).toList(),),
-                            ],);
+                                          );
+                                        });
+                                  },
+                                  cells: [
+                                    DataCell(Text(
+                                      DateFormat('d-MMM-yy').format(
+                                          DateTime.parse(document.date)),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    )),
+                                    DataCell(
+                                      Text(
+                                        document.rec.length.toString(),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                    // DataCell(Text(/*document.*/'jdc')),
+                                    // DataCell(),
+                                  ]);
+                            }).toList(),
+                          ),
+                        ),
+                      ],
+                    );
 
-
-
-                          });
-                    },
-                    cells: [
-                      DataCell(Text(DateFormat('d-MMM-yy')
-                          .format(DateTime.parse(document.date)),style: TextStyle(fontWeight: FontWeight.bold),)),
-                      DataCell(Text(document.rec.length.toString() ,style: TextStyle(fontWeight: FontWeight.bold),),)
-                      // DataCell(Text(/*document.*/'jdc')),
-                      // DataCell(),
-                    ]);
-              }).toList(),
-            ),
-          ),
-        ],
-      );
-
-      return Text(a.toString());
-      // return Loading();
-    })
-        ],
-      )
-    );
+                    return Text(a.toString());
+                    // return Loading();
+                  })
+            ],
+          );
   }
 }
 
@@ -309,180 +335,213 @@ class CompanyCovRec extends StatelessWidget {
         ),
         body: Column(
           children: [
-            FutureBuilder(future: getCEachDate(),builder: (BuildContext context, AsyncSnapshot snapshot){
-              var a =[];
-              if (!snapshot.hasData || snapshot.data.isEmpty){
-                //print(snapshot.data);
-                return Loading();
-              }
-              //CIRCULAR INDIC\ATOR
-              else
-                for(int i=0;i<snapshot.data.length;i++){
-                  a.add(snapshot.data[i]);
-                  // print(snapshot.data[i].toString());
-                }
+            FutureBuilder(
+                future: getCEachDate(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  var a = [];
+                  if (!snapshot.hasData || snapshot.data.isEmpty) {
+                    //print(snapshot.data);
+                    return Loading();
+                  }
+                  //CIRCULAR INDIC\ATOR
+                  else
+                    for (int i = 0; i < snapshot.data.length; i++) {
+                      a.add(snapshot.data[i]);
+                      // print(snapshot.data[i].toString());
+                    }
 
-              return Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: DataTable(
-                      showCheckboxColumn: false,
-                      sortColumnIndex: 0,
-                      sortAscending: true,
-                      columns: [
-                        DataColumn(
-                          label: Text(
-                            'Date',
-                            style: TextStyle(fontStyle: FontStyle.italic),
-                          ),
-                        ),
-                        DataColumn(
-                          label: Text(
-                            'Number of Cases',
-                            style: TextStyle(fontStyle: FontStyle.italic),
-                          ),
-                        ),
-                      ],
-                      rows: a.map((document) {
-                        return DataRow(
-                            onSelectChanged: (b){
-                              showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) {
-                                    return Column(children: [
-                                      TextButton(onPressed:(){
-
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    showDailyRadialGraph(document.date)
-                                            ));
-
-                                      }, child: Text('See Graph')),
-                                      DataTable(
-                                        showCheckboxColumn: false,
-                                        columns: [DataColumn(
-                                          // numeric: true,
-                                          label: Text(
-                                            'User name',
-                                            style: TextStyle(fontStyle: FontStyle.italic,fontWeight: FontWeight.bold),
-                                          ),
-                                        ),], rows:document.rec.map<DataRow>((ex) {
-                                        return DataRow(
-                                            onSelectChanged: (b) {
-                                              var c = true;
-                                              print('in '+ex['infected'].toString());
-                                              var infected = ex['infected'],
-                                                  head = ex['headache'],
-                                                  fever = ex['fever'],
-                                                  cough = ex['cough'];
-                                              if (!cough && !head && !fever) c = false;
-                                              // if (ex['type'] == 'supervisor') {
-                                              !infected
-                                                  ? null
-                                                  : showDialog(
-                                                  context: context,
-                                                  builder: (context) => AlertDialog(
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.all(
-                                                            Radius.circular(32.0))),
-                                                    content: /*ex.hasData
-                                                           ? */SingleChildScrollView(
-                                                      child: Column(
-                                                        mainAxisSize:
-                                                        MainAxisSize.min,
-                                                        children: [
-                                                          !c
-                                                              ? Text('No Symptoms')
-                                                              : Container(),
-                                                          head
-                                                              ? Tooltip(
-                                                            message: 'Headache',
-                                                            child: ListTile(
-                                                              title: InkWell(
-                                                                child:
-                                                                Image.asset(
-                                                                  "assets/images/head.png",
-                                                                  width: 100,
-                                                                  height: 100,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          )
-                                                              : Container(),
-                                                          fever
-                                                              ? Tooltip(
-                                                            message: 'Fever',
-                                                            child: ListTile(
-                                                              title: InkWell(
-                                                                child:
-                                                                Image.asset(
-                                                                  "assets/images/fever.png",
-                                                                  width: 100,
-                                                                  height: 100,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          )
-                                                              : Container(),
-                                                          cough
-                                                              ? Tooltip(
-                                                            message: 'Cough',
-                                                            child: ListTile(
-                                                              title: InkWell(
-                                                                child:
-                                                                Image.asset(
-                                                                  "assets/images/caugh.png",
-                                                                  width: 100,
-                                                                  height: 100,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          )
-                                                              : Container(),
-                                                        ],
+                  return Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: DataTable(
+                          showCheckboxColumn: false,
+                          sortColumnIndex: 0,
+                          sortAscending: true,
+                          columns: [
+                            DataColumn(
+                              label: Text(
+                                'Date',
+                                style: TextStyle(fontStyle: FontStyle.italic),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Number of Cases',
+                                style: TextStyle(fontStyle: FontStyle.italic),
+                              ),
+                            ),
+                          ],
+                          rows: a.map((document) {
+                            return DataRow(
+                                onSelectChanged: (b) {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return Column(
+                                          children: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              showDailyRadialGraph(
+                                                                  document
+                                                                      .date)));
+                                                },
+                                                child: Text('See Graph')),
+                                            DataTable(
+                                              showCheckboxColumn: false,
+                                              columns: [
+                                                DataColumn(
+                                                  // numeric: true,
+                                                  label: Text(
+                                                    'User name',
+                                                    style: TextStyle(
+                                                        fontStyle:
+                                                            FontStyle.italic,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ),
+                                              ],
+                                              rows: document.rec
+                                                  .map<DataRow>((ex) {
+                                                return DataRow(
+                                                    onSelectChanged: (b) {
+                                                      var c = true;
+                                                      print('in ' +
+                                                          ex['infected']
+                                                              .toString());
+                                                      var infected =
+                                                              ex['infected'],
+                                                          head = ex['headache'],
+                                                          fever = ex['fever'],
+                                                          cough = ex['cough'];
+                                                      if (!cough &&
+                                                          !head &&
+                                                          !fever) c = false;
+                                                      // if (ex['type'] == 'supervisor') {
+                                                      !infected
+                                                          ? null
+                                                          : showDialog(
+                                                              context: context,
+                                                              builder:
+                                                                  (context) =>
+                                                                      AlertDialog(
+                                                                        shape: RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.all(Radius.circular(32.0))),
+                                                                        content:
+                                                                            /*ex.hasData
+                                                           ? */
+                                                                            SingleChildScrollView(
+                                                                          child:
+                                                                              Column(
+                                                                            mainAxisSize:
+                                                                                MainAxisSize.min,
+                                                                            children: [
+                                                                              !c ? Text('No Symptoms') : Container(),
+                                                                              head
+                                                                                  ? Tooltip(
+                                                                                      message: 'Headache',
+                                                                                      child: ListTile(
+                                                                                        title: InkWell(
+                                                                                          child: Image.asset(
+                                                                                            "assets/images/head.png",
+                                                                                            width: 100,
+                                                                                            height: 100,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    )
+                                                                                  : Container(),
+                                                                              fever
+                                                                                  ? Tooltip(
+                                                                                      message: 'Fever',
+                                                                                      child: ListTile(
+                                                                                        title: InkWell(
+                                                                                          child: Image.asset(
+                                                                                            "assets/images/fever.png",
+                                                                                            width: 100,
+                                                                                            height: 100,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    )
+                                                                                  : Container(),
+                                                                              cough
+                                                                                  ? Tooltip(
+                                                                                      message: 'Cough',
+                                                                                      child: ListTile(
+                                                                                        title: InkWell(
+                                                                                          child: Image.asset(
+                                                                                            "assets/images/caugh.png",
+                                                                                            width: 100,
+                                                                                            height: 100,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    )
+                                                                                  : Container(),
+                                                                            ],
+                                                                          ),
+                                                                        )
+                                                                        /* : Loading(),*/,
+                                                                        actions: [
+                                                                          FlatButton(
+                                                                              onPressed: () {
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              child: Text("OK"))
+                                                                        ],
+                                                                      ));
+                                                    },
+                                                    cells: [
+                                                      DataCell(
+                                                        Text(
+                                                          ex['name'],
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
                                                       ),
-                                                    )
-                                                    /* : Loading(),*/,
-                                                    actions: [
-                                                      FlatButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(context);
-                                                          },
-                                                          child: Text("OK"))
-                                                    ],
-                                                  ));
-                                            },
-                                            cells: [
-                                              DataCell(Text(ex['name'],style: TextStyle(fontWeight: FontWeight.bold),),),
-                                            ]);
-                                      }).toList(),),
-                                    ],);
+                                                    ]);
+                                              }).toList(),
+                                            ),
+                                          ],
+                                        );
+                                      });
+                                },
+                                cells: [
+                                  DataCell(Text(
+                                    DateFormat('d-MMM-yy')
+                                        .format(DateTime.parse(document.date)),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  )),
+                                  DataCell(
+                                    Text(
+                                      document.rec.length.toString(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  )
+                                  // DataCell(Text(/*document.*/'jdc')),
+                                  // DataCell(),
+                                ]);
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  );
 
-
-
-                                  });
-                            },
-                            cells: [
-                              DataCell(Text(DateFormat('d-MMM-yy')
-                                  .format(DateTime.parse(document.date)),style: TextStyle(fontWeight: FontWeight.bold),)),
-                              DataCell(Text(document.rec.length.toString() ,style: TextStyle(fontWeight: FontWeight.bold),),)
-                              // DataCell(Text(/*document.*/'jdc')),
-                              // DataCell(),
-                            ]);
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              );
-
-              return Text(a.toString());
-              // return Loading();
-            })
+                  return Text(a.toString());
+                  // return Loading();
+                })
           ],
-        )
-    );
+        ));
   }
 }
