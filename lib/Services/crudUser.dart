@@ -1223,27 +1223,31 @@ getC() async {
   return arr;
 }
 
-getCCompany(id) async {
+getCCompany() async {
   var arr=[];
   //Get Supervisors under company
-  QuerySnapshot querySnapshot = await companies.doc(id).collection('supervisors').get();
+  QuerySnapshot querySnapshot = await companies.get();
   var list = querySnapshot.docs;
   var list1,list2,list3;
 
   for(int i=0;i<list.length;i++){
-    // DocumentSnapshot querySnapshot1 = await companies.doc(id).collection('supervisors').doc(list[i].id).get();
-    // QuerySnapshot querySnapshot2 = await companies.doc(id).collection('supervisors').doc(list[i].id).col;
-    // arr.add(list1);
-
-    QuerySnapshot querySnapshot1 = await positions.doc(list[i].id).collection('poses').get();
+    QuerySnapshot querySnapshot1 = await companies.doc(list[i].id).collection('supervisors').get();
     list1 = querySnapshot1.docs;
-    //date is the position
+    
     var r = new covrec(date:list[i].id , rec:[]);
-
+    
     for(int j=0;j<list1.length;j++){
       //get positions
       DocumentSnapshot querySnapshot2 = await positions.doc(list[i].id).collection('poses').doc(list1[j].id).get();
       list2 = querySnapshot2.data();
+      
+      for(int m=0;m<list2.length;m++){
+        
+        QuerySnapshot querySnapshot3 = await companies.doc(list[i].id).collection('supervisors').doc(list1[j].id).collection(list2[m].id).get();
+        list3 = querySnapshot3.docs;
+        
+        
+      }
 
         if(list2['infected']==true)
           r.rec.add(list2);
@@ -1585,3 +1589,25 @@ class _showDailyRadialGraphState extends State<showDailyRadialGraph> {
   }
 }
 
+class RecsEachCompany extends StatefulWidget {
+  @override
+  _RecsEachCompanyState createState() => _RecsEachCompanyState();
+}
+
+class _RecsEachCompanyState extends State<RecsEachCompany> {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: companies.snapshots(),
+      builder: (context, snapshot) {
+        return DataTable(columns: [
+          DataColumn(label:Text('Name'))
+        ], rows: [
+          DataRow(cells: [
+            DataCell(Text('Mariam'))
+          ])
+        ]);
+      }
+    );
+  }
+}
