@@ -63,6 +63,9 @@ class MyApp extends StatelessWidget {
                 'news': (context) {
                   return News();
                 },
+                'admincovedrec': (context) {
+                  return AdminCovRec();
+                },
                 'situation': (context) {
                   return RecordCovid();
                 },
