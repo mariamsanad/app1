@@ -14,16 +14,19 @@ class MyDrawer extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   children: [
                     DrawerHeader(
-                      child: (FirebaseAuth.instance.currentUser == null ||
-                              FirebaseAuth.instance.currentUser.photoURL == null)
+                      child: (FirebaseAuth.instance.currentUser == null)
                           ? null
-                          : ClipRRect(
-                              //borderRadius: BorderRadius.circular(30.0),
-                              child: Image.network(
-                                FirebaseAuth.instance.currentUser.photoURL,
-                                alignment: AlignmentDirectional.bottomStart,
-                              ),
-                            ),
+                          :(FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser.photoURL != null)? Row(
+                            children: [
+                              ClipRRect(
+                                  //borderRadius: BorderRadius.circular(30.0),
+                                  child: Image.network(
+                                    FirebaseAuth.instance.currentUser.photoURL,
+                                    alignment: AlignmentDirectional.bottomStart,
+                                  ),
+                                ),
+                            ],
+                          ):Text('Welcome '+getUserName(id)),
                       decoration: BoxDecoration(
                         color:  Theme.of(context).primaryColor,
                       ),
