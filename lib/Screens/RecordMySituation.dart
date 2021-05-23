@@ -29,6 +29,8 @@ class _RecordCovidState extends State<RecordCovid> {
     _events = {};
   }
 
+  bool canselect = true;
+
   bool _C = false;
   var _cimage = 'caugh-bw.png';
   bool _H = false;
@@ -111,7 +113,12 @@ class _RecordCovidState extends State<RecordCovid> {
                           initialSelectedDay: DateTime.now(),
                           onDaySelected: (DateTime date, List<dynamic> events,
                               List<dynamic> evev) {
+
                             setState(() {
+                              if(DateTime.now().isBefore(date))
+                                canselect=false;
+                              else
+                                canselect = true;
                               _selectedDate = date;
                               _selectedEvents = events;
                             });
@@ -152,7 +159,7 @@ class _RecordCovidState extends State<RecordCovid> {
 
                                     print(_C);
 
-                                    return Column(
+                                    return canselect?Column(
                                       children: [
                                         Container(
                                             child: ElevatedButton(
@@ -315,7 +322,7 @@ class _RecordCovidState extends State<RecordCovid> {
                                                 ),
                                               ),
                                       ],
-                                    );
+                                    ):Container();
                                   }),
                             ),
                           ],
