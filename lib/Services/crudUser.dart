@@ -924,6 +924,8 @@ Future<void> addCovidRecord(id, date, cough, headache, fever, infected) async {
 
   });
 
+
+
   await rec
       .doc(date.toString())
       .set({
@@ -1417,6 +1419,42 @@ getCCom() async {
     return arr;
   });
 return n;
+  // return arr;
+}
+
+
+getCPos(superid) async {
+  var arr = [];
+  int c=0;
+  //dates
+  var n = await pos.get().then((querySnapshot){
+    for(var position in querySnapshot.docs){
+      pos.doc(pos.id).collection('users').get().then((value){
+        for(var user in value.docs){
+          users.doc(user.id).collection('covidrecord').get().the
+          print(user.data());
+          if(user.data()['infected'])
+        }
+      });
+    }
+  });
+
+   await companiescov.get().then((querySnapshot) async{
+    print('Hello');
+
+    for(var company in querySnapshot.docs){
+      print(company.id);
+      await companiescov.doc(company.id).collection("recs").get().then((querySnapshot1) async {
+        //await getUserName(company.id).then((com){
+        arr.add( new covrec(date:company.id , rec:querySnapshot1.docs.length));
+        // });
+      });
+    }
+    print('end');
+    print('date is '+ arr[0].date.toString());
+    return arr;
+  });
+  return n;
   // return arr;
 }
 
