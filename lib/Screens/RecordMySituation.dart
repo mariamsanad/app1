@@ -207,6 +207,15 @@ class _RecordCovidState extends State<RecordCovid> {
                                                             ),
                                                             onTap: () {
                                                               _C = !_C;
+                                                              setState(() {
+                                                                if (_C)
+                                                                  _cimage =
+                                                                  'caugh.png';
+                                                                else
+                                                                  _cimage =
+                                                                  'caugh-bw.png';
+                                                              });
+
                                                               addCovidRecord(
                                                                   userid,
                                                                   _selectedDate,
@@ -214,14 +223,7 @@ class _RecordCovidState extends State<RecordCovid> {
                                                                   _H,
                                                                   _F,
                                                                   true);
-                                                              setState(() {
-                                                                if (_C)
-                                                                  _cimage =
-                                                                      'caugh.png';
-                                                                else
-                                                                  _cimage =
-                                                                      'caugh-bw.png';
-                                                              });
+
                                                             },
                                                           ),
                                                           subtitle: Text(
@@ -248,6 +250,16 @@ class _RecordCovidState extends State<RecordCovid> {
                                                             ),
                                                             onTap: () {
                                                               _H = !_H;
+
+                                                              setState(() {
+                                                                if (_H)
+                                                                  _himage =
+                                                                  'head.png';
+                                                                else
+                                                                  _himage =
+                                                                  'head-bw.png';
+                                                              });
+
                                                               addCovidRecord(
                                                                   userid,
                                                                   _selectedDate,
@@ -255,14 +267,7 @@ class _RecordCovidState extends State<RecordCovid> {
                                                                   _H,
                                                                   _F,
                                                                   true);
-                                                              setState(() {
-                                                                if (_H)
-                                                                  _himage =
-                                                                      'head.png';
-                                                                else
-                                                                  _himage =
-                                                                      'head-bw.png';
-                                                              });
+
                                                             },
                                                           ),
                                                           subtitle: Text(
@@ -289,6 +294,14 @@ class _RecordCovidState extends State<RecordCovid> {
                                                             ),
                                                             onTap: () {
                                                               _F = !_F;
+                                                              setState(() {
+                                                                if (_F)
+                                                                  _himage =
+                                                                  'fever.png';
+                                                                else
+                                                                  _himage =
+                                                                  'fever-bw.png';
+                                                              });
                                                               addCovidRecord(
                                                                   userid,
                                                                   _selectedDate,
@@ -296,14 +309,7 @@ class _RecordCovidState extends State<RecordCovid> {
                                                                   _H,
                                                                   _F,
                                                                   true);
-                                                              setState(() {
-                                                                if (_F)
-                                                                  _himage =
-                                                                      'fever.png';
-                                                                else
-                                                                  _himage =
-                                                                      'fever-bw.png';
-                                                              });
+
                                                             },
                                                           ),
                                                           subtitle: Text(
