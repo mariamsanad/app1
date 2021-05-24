@@ -1367,8 +1367,6 @@ getEachCom(id) async {
 getCPos(){
   records2.get().then((querySnapshot) {
     querySnapshot.docs.forEach((result) {
-      var list = querySnapshot.docs;
-      var list1,list2;
 
       records2.doc(result.id)
           .collection("recs")
@@ -1376,7 +1374,9 @@ getCPos(){
           .then((querySnapshot) {
 
         querySnapshot.docs.forEach((result) {
+
           print(result.data());
+
         });
         
       });
