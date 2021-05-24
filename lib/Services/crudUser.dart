@@ -32,6 +32,9 @@ checkRole() async {
 CollectionReference users = FirebaseFirestore.instance.collection('users');
 CollectionReference positions =
     FirebaseFirestore.instance.collection('positions');
+CollectionReference pos =
+FirebaseFirestore.instance.collection('pos');
+
 CollectionReference companies =
     FirebaseFirestore.instance.collection('companies');
 CollectionReference records2 =
@@ -784,6 +787,15 @@ Future addSupervisor(String companyid, String name, String email, String pass,
 }
 
 Future addPosition(id, name) async {
+
+  await pos
+      .doc(name)
+      .set({
+    'position': name,
+  })
+      .then((value) => print("Position Added"))
+      .catchError((error) => print("Failed to add position: $error"));
+
   await positions.doc(id).set({
     'id':id
   });
@@ -854,13 +866,25 @@ Future UserAdd1(String companyid, String supervisorid, String name,
       .collection('poses')
       .doc(position)
       .collection('users');
-
+  
+  CollectionReference rec2 = pos
+      .doc(position)
+      .collection('users');
+  
   rec
       .doc(userCredential.user.uid)
       .set({'name': name, 'email': email, 'type': position, 'phone': phone})
       .then((value) => print("User Added Succesfully"))
       .catchError((error) => print("Failed to add user: $error"));
 
+  await rec2
+      .doc(userCredential.user.uid)
+      .set({
+    'id': userCredential.user.uid,
+  })
+      .then((value) => print("User Added to position Succesfully"))
+      .catchError((error) => print("Failed to add user to position: $error"));
+  
   return rec1
       .doc(userCredential.user.uid)
       .set({
@@ -1242,19 +1266,43 @@ getCCompany() async {
       list2 = querySnapshot2.data();
       
       for(int m=0;m<list2.length;m++){
-        
         QuerySnapshot querySnapshot3 = await companies.doc(list[i].id).collection('supervisors').doc(list1[j].id).collection(list2[m].id).get();
         list3 = querySnapshot3.docs;
-        
-        
-      }
-
         if(list2['infected']==true)
           r.rec.add(list2);
+        
+      }
     }
     arr.add(r);
   }
 
+  return arr;
+}
+
+getCEachPos(superid) async {
+  var arr=[];
+  //get dates
+  QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('/positions/${superid}/poses').get();
+  var list = querySnapshot.docs;
+  var list1,list2;
+
+  for(int i=0;i<list.length;i++){
+    //Records of each date
+    // print(list[i].id);
+    QuerySnapshot querySnapshot1 = await records2.doc(list[i].id).collection('recs').get();
+    list1 = querySnapshot1.docs;
+    // arr.add(list1);
+    var r = new covrec(date:list[i].id , rec:[]);
+    for(int j=0;j<list1.length;j++){
+      DocumentSnapshot querySnapshot2 = await records2.doc(list[i].id).collection('recs').doc(list1[j].id).get();
+      list2 = querySnapshot2.data();
+      // print(list2);
+      if(list2['infected']==true)
+        r.rec.add(list2);
+    }
+    arr.add(r);
+  }
+// print(arr);
   return arr;
 }
 
@@ -1279,6 +1327,8 @@ getEachCom(id) async {
       //get positions
       DocumentSnapshot querySnapshot2 = await positions.doc(list[i].id).collection('poses').doc(list1[j].id).get();
       list2 = querySnapshot2.data();
+      DocumentSnapshot querySnapshot3 = await users.doc(list1[j].id).get();
+      list3 = querySnapshot3.data();
 
       if(list2['infected']==true)
         r.rec.add(list2);
@@ -1305,7 +1355,7 @@ getCEachDate() async {
     // arr.add(list1);
     var r = new covrec(date:list[i].id , rec:[]);
     for(int j=0;j<list1.length;j++){
-      DocumentSnapshot querySnapshot2 = await records2.doc(list[i].id).collection('recs').doc(list1[j].id).get();
+      DocumentSnapshot querySnapshot2 = await records2.doc('${list[i].id}/recs/${list1[j].id}').get();
       list2 = querySnapshot2.data();
       // print(list2);
       if(list2['infected']==true)
@@ -1588,6 +1638,7 @@ class _showDailyRadialGraphState extends State<showDailyRadialGraph> {
     );
   }
 }
+/*
 
 class RecsEachCompany extends StatefulWidget {
   @override
@@ -1597,17 +1648,33 @@ class RecsEachCompany extends StatefulWidget {
 class _RecsEachCompanyState extends State<RecsEachCompany> {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: companies.snapshots(),
-      builder: (context, snapshot) {
-        return DataTable(columns: [
-          DataColumn(label:Text('Name'))
-        ], rows: [
-          DataRow(cells: [
-            DataCell(Text('Mariam'))
-          ])
-        ]);
-      }
+    return Scaffold(
+      appBar: AppBar(title: Text('Companies Cov'),
+      ),
+      body:  FutureBuilder(
+          future: getEachCom(id),
+          builder: (context, snapshot) {
+            return DataTable(
+              showCheckboxColumn: false,
+              columns: [
+              DataColumn(label:Text('Name'))
+            ], rows: snapshot.data!.docs.map((DocumentSnapshot document) {
+              return DataRow(onSelectChanged: (b) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          RecsEachCompany(),
+                    ));
+              }, cells: [
+                DataCell(Text(document.data()['name'].toString())),
+              ]);
+            }).toList(),);
+          }
+      ),
     );
   }
 }
+
+
+*/
