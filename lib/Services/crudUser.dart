@@ -40,6 +40,8 @@ FirebaseFirestore.instance.collection('pos');
 
 CollectionReference companies =
     FirebaseFirestore.instance.collection('companies');
+CollectionReference doctors =
+FirebaseFirestore.instance.collection('doctors');
 CollectionReference companiescov =
 FirebaseFirestore.instance.collection('companycovid');
 CollectionReference records2 =
@@ -75,6 +77,19 @@ updateCompanyProfile(cid, name, phone, type) async {
       .then((value) => print("User Updated"))
       .catchError((error) => print("Failed to update user: $error"));
 }
+updateDoctorProfile(cid, name, phone) async {
+  await doctors
+      .doc(cid)
+      .update({'name': name, 'phone': phone})
+      .then((value) => print("Doctor Updated"))
+      .catchError((error) => print("Failed to update doctor: $error"));
+  return users
+      .doc(cid)
+      .update({'user_name': name, 'phone': phone})
+      .then((value) => print("User Updated"))
+      .catchError((error) => print("Failed to update user: $error"));
+}
+
 
 
 
@@ -607,6 +622,114 @@ class CompaniesList extends StatelessWidget {
     );
   }
 }
+class DoctorsList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: doctors.snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text('Something went wrong, you may be not authenticated');
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: Loading());
+        }
+
+        return SizedBox(
+          width: double.infinity,
+          child: SingleChildScrollView(
+            child: DataTable(
+              showCheckboxColumn: false,
+              // sortColumnIndex: 0,
+              // sortAscending: true,
+              columns: [
+                DataColumn(
+                  tooltip: 'The name of doctor',
+                  label: Text(
+                    'Name',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+                /* DataColumn(
+                  numeric: true,
+                  label: Text(
+                    'Phone',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),*/
+
+                DataColumn(
+                  label: Text(
+                    'Delete',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+              ],
+              rows: snapshot.data!.docs.map((DocumentSnapshot document) {
+                return DataRow(
+                    onSelectChanged: (b) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                DoctorProfile(document.id),
+                          ));
+                    },
+                    cells: [
+                      DataCell(Text(document.data()['name'].toString()),showEditIcon:true),
+                      /*DataCell(Text(document.data()['phone'].toString())),*/
+                      DataCell(FlatButton(
+                          child: Icon(Icons.delete,color: Colors.red,),
+                          onPressed: () async {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                                    contentPadding: EdgeInsets.only(top: 10.0),
+                                    actions: [
+                                      ElevatedButton(
+                                        child: Text('Delete Doctor'),
+                                        onPressed: () async {
+                                          await deleteDoctor(document.id.toString()).then((value){
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                duration: const Duration(seconds: 5),
+                                                content: Text('Doctor deleted successfully'),
+                                                backgroundColor: Colors.orangeAccent,
+                                                behavior: SnackBarBehavior.floating,
+                                                shape: StadiumBorder(),
+                                              ),
+                                            );
+                                            Navigator.of(context).pop();
+                                          }
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                    content: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Text('Are you sure you want to delete this doctor '+document.data()['name']),
+                                    ) ,
+
+                                  );
+                                });
+                          }
+                      ),
+
+                      ),
+                    ]);
+              }).toList(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
 class CompaniesListForCov extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -990,7 +1113,7 @@ class SupervisorsListForCov extends StatelessWidget {
   }
 }
 
-Future<void> addCompany(name, type, address, cpr, email, phone) async {
+  Future<void> addCompany(name, type, address, cpr, email, phone) async {
   final UserCredential userCredential =
       await _auth2.createUserWithEmailAndPassword(email: email, password: cpr);
   users
@@ -1018,6 +1141,36 @@ Future<void> addCompany(name, type, address, cpr, email, phone) async {
       .then((value) => print("Company Added Succesfully"))
       .catchError((error) => print("Failed to add company: $error"));
 }
+
+Future<void> addDoctor(name, type, address, cpr, email, phone) async {
+  final UserCredential userCredential =
+  await _auth2.createUserWithEmailAndPassword(email: email, password: cpr);
+  users
+      .doc(userCredential.user.uid)
+      .set({
+    // 'company_id': userCredential.user.uid,
+    'email': email,
+    'user_name': name,
+    'phone': phone,
+    'type': 'doctor',
+    'role': 'doctor',
+  })
+      .then((value) => print("User Added"))
+      .catchError((error) => print("Failed to add user: $error"));
+
+  return doctors
+      .doc(userCredential.user.uid)
+      .set({
+    'name': name,
+    // 'company_id': userCredential.user.uid,
+    'email': email,
+    'type': type,
+    'phone': phone
+  })
+      .then((value) => print("Doctor Added Succesfully"))
+      .catchError((error) => print("Failed to add Doctor: $error"));
+}
+
 
 Future addSupervisor(String companyid, String name, String email, String pass,
     String phone, String position, vac, workfrom) async {
@@ -1092,6 +1245,16 @@ Future deleteCompany(uid) async {
     return err;
   }
 }
+
+Future deleteDoctor(uid) async {
+  try{
+    await doctors.doc(uid).delete();
+    return users.doc(uid).delete();
+  }on FirebaseFirestore catch(err){
+    return err;
+  }
+}
+
 Future deleteSupervisor(cid,uid) async {
   try{
     await companies.doc(cid).collection('supervisors').doc(uid).delete();
