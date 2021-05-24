@@ -1431,9 +1431,8 @@ getCPos(superid) async {
     for(var position in querySnapshot.docs){
       pos.doc(pos.id).collection('users').get().then((value){
         for(var user in value.docs){
-          users.doc(user.id).collection('covidrecord').get().the
+          users.doc(user.id).collection('covidrecord').get();
           print(user.data());
-          if(user.data()['infected'])
         }
       });
     }
