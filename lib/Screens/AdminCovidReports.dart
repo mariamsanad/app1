@@ -18,7 +18,7 @@ class _AdminCovidReportsState extends State<AdminCovidReports> {
             tabs: [
               Tab(text: 'Date',),
               Tab(text: 'Companies',),
-              Tab(icon: Icon(Icons.directions_bike)),
+              Tab(text: 'Positions'),
             ],
           ),
           title: Text('Reports'),
@@ -27,7 +27,7 @@ class _AdminCovidReportsState extends State<AdminCovidReports> {
           children: [
             SingleChildScrollView(child: AdminCovRec()),
             SingleChildScrollView(child: CompanyCovRec()),
-            Icon(Icons.directions_bike),
+            SingleChildScrollView(child: CompanyCovRec()),
           ],
         ),
       ),
