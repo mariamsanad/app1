@@ -14,7 +14,7 @@ class MyDrawer extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   children: [
                     DrawerHeader(
-                      child: (FirebaseAuth.instance.currentUser == null)
+                      child: (FirebaseAuth.instance.currentUser == null||FirebaseAuth.instance.currentUser.photoURL == null)
                           ? null
                           :/*(FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser.photoURL != null)? */Row(
                             children: [
