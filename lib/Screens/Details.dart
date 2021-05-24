@@ -83,7 +83,7 @@ class _UsersDetailsState extends State<UsersDetails> {
                   )
                 ),
                 Container(
-                  width: MediaQuery.of(context).size.width,
+                  // width: MediaQuery.of(context).size.width,
                   padding: EdgeInsets.all(10),
                   color: Colors.blue,
                   child: RichText(
