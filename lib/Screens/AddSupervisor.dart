@@ -159,7 +159,7 @@ class _SupervisorAddState extends State<SupervisorAdd> {
                                     shape: StadiumBorder(),
                                   ),
                                 );
-                               // Navigator.of(context).pop();
+                               Navigator.of(context).pop();
                               });
 
 
