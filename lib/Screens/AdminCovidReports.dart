@@ -1,3 +1,4 @@
+import 'package:app1/Services/crudUser.dart';
 import 'package:flutter/material.dart';
 
 import 'CovidReports.dart';
@@ -18,7 +19,7 @@ class _AdminCovidReportsState extends State<AdminCovidReports> {
             tabs: [
               Tab(text: 'Date',),
               Tab(text: 'Companies',),
-              Tab(text: 'Positions'),
+              Tab(text: 'All'),
             ],
           ),
           title: Text('Reports'),
@@ -27,7 +28,7 @@ class _AdminCovidReportsState extends State<AdminCovidReports> {
           children: [
             SingleChildScrollView(child: AdminCovRec()),
             SingleChildScrollView(child: CompanyCovRec()),
-            SingleChildScrollView(child: SuperCovRec('TLSIrG5uNEeQhfctzXYvIY5oyMv2')),
+            SingleChildScrollView(child: CompaniesListForCov()),
           ],
         ),
       ),
