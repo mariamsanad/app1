@@ -1,5 +1,6 @@
 import 'package:app1/Screens/AddCompany.dart';
 import 'package:app1/Screens/AddSupervisor.dart';
+import 'package:app1/Screens/AddDoctor.dart';
 import 'package:app1/Services/crudUser.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +22,26 @@ class Companies extends StatelessWidget {
           }, child: Icon(Icons.add))
         ],
       ),body: CompaniesList(),
+      //bottomNavigationBar: Text("Hello"),
+    );
+  }
+}
+
+class Doctors extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Doctors List: "),
+        actions: [
+          FlatButton(onPressed: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>DoctorAdd()),
+            );
+          }, child: Icon(Icons.add))
+        ],
+      ),body: DoctorsList(),
       //bottomNavigationBar: Text("Hello"),
     );
   }
