@@ -44,16 +44,17 @@ class Home extends StatelessWidget {
                   /*Center(
                     child: Image.asset('assets/images/download.jpg'),
                   ),*/
-                  Container(
+                  /*Container(
                     padding: EdgeInsets.all(10),
                     child: Text("Services: ", style: TextStyle(fontSize:30 , color: Colors.cyan),),
-                  ),
+                  ),*/
                   Container(
-                    height: 100,
+                    padding: EdgeInsets.only(top: 30),
+                    height: 150,
                     child: ListView(
                       scrollDirection: Axis.horizontal ,
                       children: [
-                        InkWell(
+                       /* InkWell(
                           child:Container(
                             height: 150,
                             width: 150,
@@ -64,7 +65,7 @@ class Home extends StatelessWidget {
                           onTap: (){
                             Navigator.of(context).pushNamed("users");
                           },
-                        ),InkWell(
+                        ),*/InkWell(
                           child:  Container(
                             height: 150,
                             width: 150,
