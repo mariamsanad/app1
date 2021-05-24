@@ -136,7 +136,7 @@ class MyDrawer extends StatelessWidget {
                       },
                     ),
                   ),
-                  Container(
+                  /*Container(
                     child: snapshot.data!='admin'?null:ListTile(
                       title: Text("Add a Company"),
                       leading: Image.asset(
@@ -148,7 +148,7 @@ class MyDrawer extends StatelessWidget {
                         Navigator.of(context).pushNamed("companyadd");
                       },
                     ),
-                  ),
+                  ),*/
                   Container(
                     child: (/*snapshot.data!='admin' && */snapshot.data!='company')?null:ListTile(
                       title: Text("Add a Supervisor"),
