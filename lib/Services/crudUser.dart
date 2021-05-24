@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app1/Components/loading.dart';
 import 'package:app1/Screens/Companies.dart';
 import 'package:app1/Screens/Position.dart';
@@ -1364,24 +1366,53 @@ getEachCom(id) async {
 
   return arr;
 }
-getCPos(){
-  records2.get().then((querySnapshot) {
-    querySnapshot.docs.forEach((result) {
+getCDate() async {
+  var arr = [];
+  //dates
+  await records2.get().then((querySnapshot) async{
+    print('start');
 
-      records2.doc(result.id)
-          .collection("recs")
-          .get()
-          .then((querySnapshot) {
-
-        querySnapshot.docs.forEach((result) {
-
-          print(result.data());
-
-        });
-        
+    for(var recs in querySnapshot.docs){
+      var r = new covrec(date:recs.id , rec:[]);
+      await records2.doc(recs.id).collection("recs").get().then((querySnapshot1) {
+        for(var date in querySnapshot1.docs){
+          if(date.data()['infected']==true){
+            print(date.data());
+            r.rec.add(date.data());
+          }
+        }
+        arr.add(r);
       });
-    });
+    }
+
   });
+
+  return arr;
+}
+
+
+getCCom() async {
+  var arr = [];
+  //dates
+  await records2.get().then((querySnapshot) async{
+    print('start');
+
+    for(var recs in querySnapshot.docs){
+      var r = new covrec(date:recs.id , rec:[]);
+      await records2.doc(recs.id).collection("recs").get().then((querySnapshot1) {
+        for(var date in querySnapshot1.docs){
+          if(date.data()['infected']==true){
+            print(date.data());
+            r.rec.add(date.data());
+          }
+        }
+        arr.add(r);
+      });
+    }
+
+  });
+
+  return arr;
 }
 
 getCEachDate() async {
