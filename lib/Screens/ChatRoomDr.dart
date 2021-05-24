@@ -4,41 +4,37 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'Messages.dart';
-
-class ChatRoom extends StatefulWidget {
+class ChatRoomDr extends StatefulWidget {
   final userid;
 
-  ChatRoom(this.userid);
+  ChatRoomDr(this.userid);
 
   @override
-  _ChatRoomState createState() => _ChatRoomState();
+  _ChatRoomDrState createState() => _ChatRoomDrState();
 }
 
-class _ChatRoomState extends State<ChatRoom> {
+class _ChatRoomDrState extends State<ChatRoomDr> {
   final TextEditingController _message = TextEditingController();
   ScrollController scrollController = ScrollController();
 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ask a Doctor'),
-      ),
-      body: Column(
+        title: Text('Answer questions'),),
+      body:   Column(
         children: <Widget>[
           Expanded(
             //messages container
             flex: 70,
-            child: Messages(widget.userid),
-          ),
+            child: Messages(widget.userid),),
+
           Align(
             alignment: Alignment.bottomLeft,
             child: Container(
-              padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
+              padding: EdgeInsets.only(left: 10,bottom: 10,top: 10),
               child: Row(
                 children: <Widget>[
-                  SizedBox(
-                    width: 15,
-                  ),
+                  SizedBox(width: 15,),
                   Expanded(
                     flex: 30,
                     child: TextFormField(
@@ -51,25 +47,18 @@ class _ChatRoomState extends State<ChatRoom> {
                         fillColor: Color(0xFF111111),
                         border: OutlineInputBorder(),
                       ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 15,
-                  ),
+                    ),),
+                  SizedBox(width: 15,),
                   FloatingActionButton(
-                    onPressed: () async {
+                    onPressed: ()async {
                       if (_message.text != "") {
-                        try {
-                          final _date = new DateTime.now();
-                          await addMessage(_message.text, _date.toString())
-                              .then((value) {
+                        try{
+                          final  _date = new DateTime.now();
+                          await addReply(this.widget.userid,_message.text, _date.toString()).then((value){
                             _message.clear();
-                            scrollController.animateTo(
-                                scrollController.position.maxScrollExtent,
-                                curve: Curves.easeOut,
-                                duration: Duration(milliseconds: 300));
+                            scrollController.animateTo(scrollController.position.maxScrollExtent, curve:Curves.easeOut ,duration: Duration(milliseconds: 300));
                           });
-                        } on FirebaseAuthException catch (e) {
+                        }on FirebaseAuthException catch(e){
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               duration: const Duration(seconds: 3),
@@ -77,25 +66,10 @@ class _ChatRoomState extends State<ChatRoom> {
                               backgroundColor: Colors.red,
                               behavior: SnackBarBehavior.floating,
                               shape: StadiumBorder(),
-                            ),
-                          );
-                        }
-                      }
-                    },
-                    child: Icon(
-                      Icons.send,
-                      color: Color(0xFF111111),
-                      size: 18,
-                    ),
+                            ),);}}},
+                    child: Icon(Icons.send,color: Color(0xFF111111),size: 18,),
                     backgroundColor: Colors.white,
                     elevation: 0,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+                  ),],),),),],),);
   }
 }

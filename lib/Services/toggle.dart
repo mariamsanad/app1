@@ -24,6 +24,6 @@ class _ToggleState extends State<Toggle> {
       return SignIn(togg);
     }else{
       return Register();
-    };
+    }
   }
 }

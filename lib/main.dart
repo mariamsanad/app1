@@ -1,4 +1,6 @@
 import 'Screens/AdminCovidReports.dart';
+import 'package:app1/Screens/viewQuestions.dart';
+
 import 'Screens/Companies.dart';
 import 'Screens/Position.dart';
 import 'Screens/Profile.dart';
@@ -12,6 +14,8 @@ import 'Screens/Statistics.dart';
 import 'Screens/AddSupervisor.dart';
 import 'package:flutter/material.dart';
 import 'Home.dart';
+import 'Screens/ChatRoom.dart';
+import 'Screens/viewQuestions.dart';
 import 'Screens/Register.dart';
 import 'Screens/users.dart';
 import 'Screens/Details.dart';
@@ -45,7 +49,7 @@ class MyApp extends StatelessWidget {
           // brightness: Brightness.dark,
           primaryColor: Color(0xffe45b5e),
           accentColor: Color(0xfffeb493),
-            buttonColor:  Color(0xfffeb493),
+          buttonColor:  Color(0xfffeb493),
 
           // Define the default font family.
           // fontFamily: 'Arial',
@@ -110,7 +114,13 @@ class MyApp extends StatelessWidget {
                 },
                 "supervisoradd": (context) {
                   return SupervisorAdd(FirebaseAuth.instance.currentUser.uid);
-                }
+                },
+                "chatroom": (context) {
+                  return ChatRoom(FirebaseAuth.instance.currentUser.uid);
+                },
+                "viewquestions": (context) {
+                  return ViewQuestions(FirebaseAuth.instance.currentUser.uid);
+                },
              },
             ));
   }

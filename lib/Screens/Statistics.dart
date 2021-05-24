@@ -70,7 +70,7 @@ class _StatisticsState extends State<Statistics> {
     return Scaffold(
 
       appBar: AppBar(
-        title: Text("explore"),
+        title: Text("Covid-19 Cases Statistics"),
       ),
       body: Column(
                 children: [
@@ -83,7 +83,7 @@ class _StatisticsState extends State<Statistics> {
                         }
                         return Text(snapshot.data);
                       }else{
-                        return Text("An error ocured");
+                        return Text("An error occurred");
                       }
         }
                   ),
@@ -93,7 +93,7 @@ class _StatisticsState extends State<Statistics> {
                       alignment: Alignment.center,
                       child: Card(
                           elevation: 5,
-                          color: Colors.orangeAccent,
+                          color: Color(0xFFFFFFFF),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50),
                           ),
@@ -128,27 +128,27 @@ class _StatisticsState extends State<Statistics> {
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child:Padding(
-                        padding: EdgeInsets.only(top: 5,left: 15,right: 5,bottom: 5),
+                        padding: EdgeInsets.all(5),
                         child:SizedBox(
                           width:300,
                           child:DropdownButton(
-                            dropdownColor: Colors.amberAccent.withOpacity(0.5),
+                            dropdownColor: Colors.white,
                               value: _showing,
                               items: [
                                 DropdownMenuItem(
-                                  child: Text("Last Year",style: TextStyle(fontWeight: FontWeight.w900),),
+                                  child: Text("Last Year", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.w900, ),),
                                   value: 'year',
                                 ),
                                 DropdownMenuItem(
-                                  child: Text("Last Month",style: TextStyle(fontWeight: FontWeight.w900),),
+                                  child: Text("Last Month", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.w900),),
                                   value: 'month',
                                 ),
                                 DropdownMenuItem(
-                                    child: Text("Last Week",style: TextStyle(fontWeight: FontWeight.w900),),
+                                    child: Text("Last Week", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.w900),),
                                     value: 'week'
                                 ),
                                 DropdownMenuItem(
-                                    child: Text('All Data',style: TextStyle(fontWeight: FontWeight.w900),),
+                                    child: Text('All', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.w900),),
                                     value: 'all'
                                 )
                               ],
