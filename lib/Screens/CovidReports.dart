@@ -116,19 +116,14 @@ class AdminCovRec extends StatelessWidget {
     return Column(
       children: [
         FutureBuilder(
-            future: getCEachDate(),
+            future: getCDate(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               var a = [];
               if (!snapshot.hasData || snapshot.data.isEmpty) {
-                //print(snapshot.data);
+                print('the data is '+snapshot.data.toString());
                 return Loading();
               }
-              //CIRCULAR INDIC\ATOR
-              else
-                for (int i = 0; i < snapshot.data.length; i++) {
-                  a.add(snapshot.data[i]);
-                  // print(snapshot.data[i].toString());
-                }
+                a = snapshot.data;
 
               return Column(
                 children: [
