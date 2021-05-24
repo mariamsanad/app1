@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app1/Components/loading.dart';
 import 'package:app1/Screens/Companies.dart';
+import 'package:app1/Screens/CovidReports.dart';
 import 'package:app1/Screens/Position.dart';
 import 'package:app1/Screens/Profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -606,10 +607,270 @@ class CompaniesList extends StatelessWidget {
     );
   }
 }
+class CompaniesListForCov extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: companies.snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text('Something went wrong, you may be not authenticated');
+        }
 
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: Loading());
+        }
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: DataTable(
+            showCheckboxColumn: false,
+            // sortColumnIndex: 0,
+            // sortAscending: true,
+            columns: [
+              DataColumn(
+                tooltip: 'The name of company',
+                label: Text(
+                  'Name',
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ),
+              /* DataColumn(
+                numeric: true,
+                label: Text(
+                  'Phone',
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ),*/
+              DataColumn(
+                label: Text(
+                  'Type',
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  'Supervisors',
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  'Delete',
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ),
+            ],
+            rows: snapshot.data!.docs.map((DocumentSnapshot document) {
+              return DataRow(
+                 /* onSelectChanged: (b) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              CompanyProfile(document.data()['company_id']),
+                        ));
+                  },*/
+                  cells: [
+                    DataCell(Text(document.data()['name'].toString()),/*showEditIcon:true*/),
+                    /*DataCell(Text(document.data()['phone'].toString())),*/
+                    DataCell(Text(document.data()['type'])),
+                    DataCell(ElevatedButton(
+                      child: Text('Show List'),
+                      onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Supervisors(
+                                document.data()['company_id'].toString()),
+                          )),
+                    ),
+
+                    ),
+                    DataCell(FlatButton(
+                        child: Icon(Icons.delete,color: Colors.red,),
+                        onPressed: () async {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                                  contentPadding: EdgeInsets.only(top: 10.0),
+                                  actions: [
+                                    ElevatedButton(
+                                      child: Text('Delete Company'),
+                                      onPressed: () async {
+                                        await deleteCompany(document.data()['company_id'].toString()).then((value){
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              duration: const Duration(seconds: 5),
+                                              content: Text('Company deleted successfully'),
+                                              backgroundColor: Colors.orangeAccent,
+                                              behavior: SnackBarBehavior.floating,
+                                              shape: StadiumBorder(),
+                                            ),
+                                          );
+                                          Navigator.of(context).pop();
+                                        }
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                  content: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Text('Are you sure you want to delete this company '+document.data()['name']),
+                                  ) ,
+
+                                );
+                              });
+                        }
+                    ),
+
+                    ),
+                  ]);
+            }).toList(),
+          ),
+        );
+      },
+    );
+  }
+}
 class SupervisorsList extends StatelessWidget {
   final cid;
   SupervisorsList(this.cid);
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: companies.doc(cid).collection('supervisors').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text('Something went wrong,you may be not authenticated');
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: Loading());
+        }
+
+        return snapshot.hasData
+            ? SizedBox(
+          width: double.infinity,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              showCheckboxColumn: false,
+              sortColumnIndex: 0,
+              sortAscending: true,
+              columns: [
+                DataColumn(
+                  label: Text(
+                    'Name',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+                DataColumn(
+                  numeric: true,
+                  label: Text(
+                    'Phone',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Type',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Delete',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Positions',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+              ],
+              rows: snapshot.data!.docs.map((DocumentSnapshot document) {
+                return DataRow(
+                    onSelectChanged: (b) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                SupervisorProfile(document.id),
+                          ));
+                    },
+                    cells: [
+                      DataCell(Text(document.data()['name'].toString()),showEditIcon: true),
+                      DataCell(Text(document.data()['phone'].toString())),
+                      DataCell(Text(document.data()['position'])),
+                      DataCell(TextButton(
+                        child: Text('See Positions'),
+                        onPressed: (){
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      Positions(document.id.toString())));
+                        },
+                      )),
+                      DataCell(FlatButton(
+                          child: Icon(Icons.delete,color:Colors.red),
+                          onPressed:(){
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                                    contentPadding: EdgeInsets.only(top: 10.0),
+                                    actions: [
+                                      ElevatedButton(
+                                        child: Text('Delete Supervisor'),
+                                        onPressed: () async {
+                                          await deleteSupervisor(cid,document.id.toString()).then((value){
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                duration: const Duration(seconds: 5),
+                                                content: Text('Supervisor deleted successfully'),
+                                                backgroundColor: Colors.orangeAccent,
+                                                behavior: SnackBarBehavior.floating,
+                                                shape: StadiumBorder(),
+                                              ),
+                                            );
+                                            Navigator.of(context).pop();
+                                          }
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                    content: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Text('Are you sure you want to delete the supervisor '+document.data()['name']),
+                                    ) ,
+
+                                  );
+                                });
+                          }
+                      )),
+                    ]);
+              }).toList(),
+            ),
+          ),
+        )
+            : Container(
+          child: Text('No Supervisors found'),
+        );
+      },
+    );
+  }
+}
+class SupervisorsListForCov extends StatelessWidget {
+  final cid;
+  SupervisorsListForCov(this.cid);
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -639,25 +900,14 @@ class SupervisorsList extends StatelessWidget {
                           style: TextStyle(fontStyle: FontStyle.italic),
                         ),
                       ),
-                      DataColumn(
-                        numeric: true,
-                        label: Text(
-                          'Phone',
-                          style: TextStyle(fontStyle: FontStyle.italic),
-                        ),
-                      ),
+
                       DataColumn(
                         label: Text(
                           'Type',
                           style: TextStyle(fontStyle: FontStyle.italic),
                         ),
                       ),
-                      DataColumn(
-                        label: Text(
-                          'Delete',
-                          style: TextStyle(fontStyle: FontStyle.italic),
-                        ),
-                      ),
+
                       DataColumn(
                         label: Text(
                           'Positions',
@@ -667,17 +917,16 @@ class SupervisorsList extends StatelessWidget {
                     ],
                     rows: snapshot.data!.docs.map((DocumentSnapshot document) {
                       return DataRow(
-                          onSelectChanged: (b) {
+                         /* onSelectChanged: (b) {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
                                       SupervisorProfile(document.id),
                                 ));
-                          },
+                          },*/
                           cells: [
                             DataCell(Text(document.data()['name'].toString()),showEditIcon: true),
-                            DataCell(Text(document.data()['phone'].toString())),
                             DataCell(Text(document.data()['position'])),
                             DataCell(TextButton(
                               child: Text('See Positions'),
@@ -686,7 +935,7 @@ class SupervisorsList extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            Positions(document.id.toString())));
+                                            SuperCovRec(document.id.toString())));
                               },
                             )),
                             DataCell(FlatButton(
