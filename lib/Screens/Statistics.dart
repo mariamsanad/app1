@@ -28,7 +28,6 @@ class _StatisticsState extends State<Statistics> {
   final _formKey = GlobalKey<FormState>();
   final ScrollController _scrollController = ScrollController();
   FocusNode? myFocusNode;
-  List _cities = ["bahrain", "oman"];
   String _currentCity = "bahrain";
 
 
