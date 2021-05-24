@@ -1286,6 +1286,7 @@ getCEachPos(superid) async {
   QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('/positions/${superid}/poses').get();
   var list = querySnapshot.docs;
   var list1,list2,list3;
+  print('start');
 
   for(int i=0;i<list.length;i++){
     // date : position
@@ -1294,12 +1295,12 @@ getCEachPos(superid) async {
     QuerySnapshot querySnapshot1 = await FirebaseFirestore.instance.collection('/positions/${superid}/poses/${list[i].id}/users').get();
     list1 = querySnapshot1.docs;
     for(int j=0;j<list1.length;j++){
-      QuerySnapshot querySnapshot2 = await users.doc(list1[j].id).collection('/users/${list1[j].id}/covidrecord/').get();
+      QuerySnapshot querySnapshot2 = await users.doc(list1[j].id).collection('covidrecord').get();
       list2 = querySnapshot2.docs;
       for(int k=0;k<list2.length;k++){
         DocumentSnapshot querySnapshot3 = await users.doc('${list1[j].id}/users/${list1[j].id}/covidrecord/${list2[k].id}').get();
         list3 = querySnapshot3.data();
-        // print(list2);
+        print(list2);
         if(list3['infected']==true)
           r.rec.add(list3);
 
@@ -1308,6 +1309,8 @@ getCEachPos(superid) async {
     }
     arr.add(r);
   }
+  print('end');
+
 // print(arr);
   return arr;
 }
