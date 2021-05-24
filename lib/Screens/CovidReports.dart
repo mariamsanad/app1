@@ -527,6 +527,10 @@ class CompanyCovRec extends StatelessWidget {
   }
 }
 class SuperCovRec extends StatelessWidget {
+  final sid;
+
+  SuperCovRec(this.sid);
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
