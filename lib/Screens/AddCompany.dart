@@ -142,7 +142,7 @@ class _CompanyAddState extends State<CompanyAdd> {
                                   ),
                                 );
 
-                                // Navigator.of(context).pop();
+                                Navigator.of(context).pop();
                               });
 
                             }on FirebaseAuthException catch(e){
