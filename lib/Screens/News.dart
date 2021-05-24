@@ -23,7 +23,7 @@ class _NewsState extends State<News> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('News'),
+        title: Text('Latest Covid-19 News'),
       ),
       body: SingleChildScrollView(
         child: FutureBuilder(
@@ -31,7 +31,14 @@ class _NewsState extends State<News> {
           builder: (BuildContext context, AsyncSnapshot snapshot){
             if (snapshot.hasData){
               if(snapshot.data.length>0){
-                return Text(snapshot.data[0]['title'].toString());
+                return Card(child:
+                Padding(
+
+                padding: EdgeInsets. all(16.0),
+                    child:
+                Align(alignment: Alignment.centerRight,
+                child:
+                Text(snapshot.data[0]['title'].toString()))));
               }else{
                 return Text('There is no data');
               }

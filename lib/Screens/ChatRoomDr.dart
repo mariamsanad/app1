@@ -4,23 +4,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'Messages.dart';
-class ChatRoom extends StatefulWidget {
+class ChatRoomDr extends StatefulWidget {
   final userid;
 
-  ChatRoom(this.userid);
+  ChatRoomDr(this.userid);
 
   @override
-  _ChatRoomState createState() => _ChatRoomState();
+  _ChatRoomDrState createState() => _ChatRoomDrState();
 }
 
-class _ChatRoomState extends State<ChatRoom> {
+class _ChatRoomDrState extends State<ChatRoomDr> {
   final TextEditingController _message = TextEditingController();
   ScrollController scrollController = ScrollController();
 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ask a Doctor'),),
+        title: Text('Answer questions'),),
       body:   Column(
         children: <Widget>[
           Expanded(
@@ -54,7 +54,7 @@ class _ChatRoomState extends State<ChatRoom> {
                       if (_message.text != "") {
                         try{
                           final  _date = new DateTime.now();
-                          await addMessage(_message.text, _date.toString()).then((value){
+                          await addReply(this.widget.userid,_message.text, _date.toString()).then((value){
                             _message.clear();
                             scrollController.animateTo(scrollController.position.maxScrollExtent, curve:Curves.easeOut ,duration: Duration(milliseconds: 300));
                           });

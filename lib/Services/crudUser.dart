@@ -39,7 +39,8 @@ CollectionReference companies =
     FirebaseFirestore.instance.collection('companies');
 CollectionReference records2 =
 FirebaseFirestore.instance.collection('records');
-
+CollectionReference messages = FirebaseFirestore.instance.collection('messages');
+CollectionReference chats =FirebaseFirestore.instance.collection('chats');
 FirebaseApp secondaryApp = Firebase.app('SecondaryApp');
 FirebaseAuth _auth2 = FirebaseAuth.instanceFor(app: secondaryApp);
 
@@ -200,7 +201,6 @@ class Auth {
 
       return _userfromfb(user);
     } on FirebaseAuthException catch (e) {
-      return e;
       return e;
     }
   }
@@ -1377,6 +1377,36 @@ getCEachDate() async {
 
 // print(arr);
   return arr;
+}
+Future addMessage(message,date) async {
+  CollectionReference messages =chats.doc(FirebaseAuth.instance.currentUser.uid).collection("messages");
+  return messages.doc().set({
+    'userid': FirebaseAuth.instance.currentUser.uid,
+    'date': date,
+    'message': message,
+
+  })
+      .then((value) => print("Message sent"))
+      .catchError((error) => print("Failed to send message: $error"));
+}
+Future addReply(userid,message,date) async {
+  CollectionReference messages =chats.doc(userid).collection("messages");
+  return messages.doc().set({
+    'userid': FirebaseAuth.instance.currentUser.uid,
+    'date': date,
+    'message': message,
+  })
+      .then((value) => print("Message sent"))
+      .catchError((error) => print("Failed to send message: $error"));
+}
+Future createChat(username) async {
+  return chats.doc(FirebaseAuth.instance.currentUser.uid).set({
+    'userid': FirebaseAuth.instance.currentUser.uid,
+    'isRead': 'false',
+    'drid': 'tHhZ73APULbOaF43qTx8IpVqDCi2',
+  })
+      .then((value) => print("Message sent"))
+      .catchError((error) => print("Failed to send message: $error"));
 }
 
 class covrec{
