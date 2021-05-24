@@ -27,7 +27,7 @@ class _AdminCovidReportsState extends State<AdminCovidReports> {
           children: [
             SingleChildScrollView(child: AdminCovRec()),
             SingleChildScrollView(child: CompanyCovRec()),
-            SingleChildScrollView(child: CompanyCovRec()),
+            SingleChildScrollView(child: SuperCovRec('TLSIrG5uNEeQhfctzXYvIY5oyMv2')),
           ],
         ),
       ),
