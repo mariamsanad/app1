@@ -11,7 +11,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'User.dart';
 
@@ -349,7 +348,7 @@ class UsersList extends StatelessWidget {
                                                       snapshot.data!['name'])
                                                   : Loading(),
                                               actions: [
-                                                FlatButton(
+                                                TextButton(
                                                     onPressed: () {
                                                       Navigator.pop(context);
                                                     },
@@ -468,7 +467,7 @@ class _UsersForSState extends State<UsersForS> {
                                       snapshot.data!['name'])
                                       : Loading(),
                                   actions: [
-                                    FlatButton(
+                                    TextButton(
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
@@ -563,6 +562,7 @@ class CompaniesList extends StatelessWidget {
                     /*DataCell(Text(document.data()['phone'].toString())),*/
                     DataCell(Text(document.data()['type'])),
                     DataCell(ElevatedButton(
+                      style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                       child: Text('Show List'),
                       onPressed: () => Navigator.push(
                           context,
@@ -573,7 +573,7 @@ class CompaniesList extends StatelessWidget {
                     ),
 
                     ),
-                    DataCell(FlatButton(
+                    DataCell(TextButton(
                       child: Icon(Icons.delete,color: Colors.red,),
                       onPressed: () async {
                         showDialog(
@@ -585,6 +585,7 @@ class CompaniesList extends StatelessWidget {
                                 contentPadding: EdgeInsets.only(top: 10.0),
                                 actions: [
                                   ElevatedButton(
+                                    style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                                     child: Text('Delete Company'),
                                     onPressed: () async {
                                       await deleteCompany(document.data()['company_id'].toString()).then((value){
@@ -679,7 +680,7 @@ class DoctorsList extends StatelessWidget {
                     cells: [
                       DataCell(Text(document.data()['name'].toString()),showEditIcon:true),
                       /*DataCell(Text(document.data()['phone'].toString())),*/
-                      DataCell(FlatButton(
+                      DataCell(TextButton(
                           child: Icon(Icons.delete,color: Colors.red,),
                           onPressed: () async {
                             showDialog(
@@ -691,6 +692,7 @@ class DoctorsList extends StatelessWidget {
                                     contentPadding: EdgeInsets.only(top: 10.0),
                                     actions: [
                                       ElevatedButton(
+                                        style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                                         child: Text('Delete Doctor'),
                                         onPressed: () async {
                                           await deleteDoctor(document.id.toString()).then((value){
@@ -799,6 +801,7 @@ class CompaniesListForCov extends StatelessWidget {
                     /*DataCell(Text(document.data()['phone'].toString())),*/
                     DataCell(Text(document.data()['type'])),
                     DataCell(ElevatedButton(
+                      style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                       child: Text('Show List'),
                       onPressed: () => Navigator.push(
                           context,
@@ -809,7 +812,7 @@ class CompaniesListForCov extends StatelessWidget {
                     ),
 
                     ),
-                    DataCell(FlatButton(
+                    DataCell(TextButton(
                         child: Icon(Icons.delete,color: Colors.red,),
                         onPressed: () async {
                           showDialog(
@@ -821,6 +824,7 @@ class CompaniesListForCov extends StatelessWidget {
                                   contentPadding: EdgeInsets.only(top: 10.0),
                                   actions: [
                                     ElevatedButton(
+                                      style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                                       child: Text('Delete Company'),
                                       onPressed: () async {
                                         await deleteCompany(document.data()['company_id'].toString()).then((value){
@@ -940,7 +944,7 @@ class SupervisorsList extends StatelessWidget {
                                       Positions(document.id.toString())));
                         },
                       )),
-                      DataCell(FlatButton(
+                      DataCell(TextButton(
                           child: Icon(Icons.delete,color:Colors.red),
                           onPressed:(){
                             showDialog(
@@ -952,6 +956,7 @@ class SupervisorsList extends StatelessWidget {
                                     contentPadding: EdgeInsets.only(top: 10.0),
                                     actions: [
                                       ElevatedButton(
+                                        style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                                         child: Text('Delete Supervisor'),
                                         onPressed: () async {
                                           await deleteSupervisor(cid,document.id.toString()).then((value){
@@ -1061,7 +1066,7 @@ class SupervisorsListForCov extends StatelessWidget {
                                             SuperCovRec(document.id.toString())));
                               },
                             )),
-                            DataCell(FlatButton(
+                            DataCell(TextButton(
                               child: Icon(Icons.delete,color:Colors.red),
                                 onPressed:(){
                                   showDialog(
@@ -1073,6 +1078,7 @@ class SupervisorsListForCov extends StatelessWidget {
                                           contentPadding: EdgeInsets.only(top: 10.0),
                                           actions: [
                                             ElevatedButton(
+                                              style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                                               child: Text('Delete Supervisor'),
                                               onPressed: () async {
                                                 await deleteSupervisor(cid,document.id.toString()).then((value){
@@ -1545,7 +1551,7 @@ class _RecordForUserState extends State<RecordForUser> {
                                               )
                                             : Loading(),
                                         actions: [
-                                          FlatButton(
+                                          TextButton(
                                               onPressed: () {
                                                 Navigator.pop(context);
                                               },
@@ -1570,7 +1576,7 @@ class _RecordForUserState extends State<RecordForUser> {
                                       color: Colors.green,
                                       fontWeight: FontWeight.bold),
                                 ))),
-                          DataCell(FlatButton(
+                          DataCell(TextButton(
                             child: Icon(
                               Icons.delete,
                               color: Colors.red,
@@ -1587,6 +1593,7 @@ class _RecordForUserState extends State<RecordForUser> {
                                             EdgeInsets.only(top: 10.0),
                                         actions: [
                                           ElevatedButton(
+                                            style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                                             child: Text('Delete Covid Record'),
                                             onPressed: () async {
                                               await deleteRecord(
@@ -1656,79 +1663,6 @@ Future getCovidForS(sid) async {
   return cid;
 }
 
-getC() async {
-  var arr=[];
-  //Companies
-  QuerySnapshot querySnapshot = await companies.get();
-  var list = querySnapshot.docs;
-  var list1,list2,list3,list4,list5,list6;
-  for(int i=0;i<list.length;i++){
-    //Supervisors of each company
-    QuerySnapshot querySnapshot1 = await companies.doc(list[i].id).collection('supervisors').get();
-    list1 = querySnapshot1.docs;
-    // arr.add(list1);
-    for(int j=0;j<list1.length;j++){
-      //get positions
-      QuerySnapshot querySnapshot2 = await positions.doc(list1[j].id).collection('poses').get();
-      list2 = querySnapshot2.docs;
-      for(int k=0;k<list2.length;k++){
-        //get all users
-        QuerySnapshot querySnapshot3 = await companies.doc(list[i].id).collection('supervisors').doc(list1[j].id).collection(list2[k].id).get();
-        list3 = querySnapshot3.docs;
-
-        //all covid records(by date)
-        // QuerySnapshot querySnapshot4 = await companies.doc(list[i].id).collection('records').get();
-        // list4 = querySnapshot4.docs;
-        // arr.add(list3);
-        for(int m=0;m<list4.length;m++) {
-          // QuerySnapshot querySnapshot5 = await companies.doc(list[i].id).collection('records').doc(list4[m].id).collection('recs').get();
-          // list5 = querySnapshot5.docs;
-          for(int n=0;n<list5.length;n++) {
-            // QuerySnapshot querySnapshot6 = await companies.doc(list[i].id).collection('records').doc(list4[m].id).collection('recs').doc().get();
-            // list6 = querySnapshot6.docs;
-
-
-          }
-
-        }
-      }
-
-    }
-  }
-  return arr;
-}
-
-getCCompany() async {
-  var arr=[];
-  //Get Supervisors under company
-  QuerySnapshot querySnapshot = await companies.get();
-  var list = querySnapshot.docs;
-  var list1,list2,list3;
-
-  for(int i=0;i<list.length;i++){
-    QuerySnapshot querySnapshot1 = await companies.doc(list[i].id).collection('supervisors').get();
-    list1 = querySnapshot1.docs;
-    
-    var r = new covrec(date:list[i].id , rec:[]);
-    
-    for(int j=0;j<list1.length;j++){
-      //get positions
-      DocumentSnapshot querySnapshot2 = await positions.doc(list[i].id).collection('poses').doc(list1[j].id).get();
-      list2 = querySnapshot2.data();
-      
-      for(int m=0;m<list2.length;m++){
-        QuerySnapshot querySnapshot3 = await companies.doc(list[i].id).collection('supervisors').doc(list1[j].id).collection(list2[m].id).get();
-        list3 = querySnapshot3.docs;
-        if(list2['infected']==true)
-          r.rec.add(list2);
-        
-      }
-    }
-    arr.add(r);
-  }
-
-  return arr;
-}
 
 
 
@@ -1768,38 +1702,6 @@ getCEachPos(superid) async {
   return arr;
 }
 
-getEachCom(id) async {
-  var arr=[];
-  //Get Supervisors under company
-  QuerySnapshot querySnapshot = await companies.doc(id).collection('supervisors').get();
-  var list = querySnapshot.docs;
-  var list1,list2,list3;
-
-  for(int i=0;i<list.length;i++){
-    // DocumentSnapshot querySnapshot1 = await companies.doc(id).collection('supervisors').doc(list[i].id).get();
-    // QuerySnapshot querySnapshot2 = await companies.doc(id).collection('supervisors').doc(list[i].id).col;
-    // arr.add(list1);
-
-    QuerySnapshot querySnapshot1 = await positions.doc(list[i].id).collection('poses').get();
-    list1 = querySnapshot1.docs;
-    //date is the position
-    var r = new covrec(date:list[i].id , rec:[]);
-
-    for(int j=0;j<list1.length;j++){
-      //get positions
-      DocumentSnapshot querySnapshot2 = await positions.doc(list[i].id).collection('poses').doc(list1[j].id).get();
-      list2 = querySnapshot2.data();
-      DocumentSnapshot querySnapshot3 = await users.doc(list1[j].id).get();
-      list3 = querySnapshot3.data();
-
-      if(list2['infected']==true)
-        r.rec.add(list2);
-    }
-    arr.add(r);
-  }
-
-  return arr;
-}
 getCDate() async {
   var arr = [];
   //dates

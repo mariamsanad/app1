@@ -1,8 +1,5 @@
-import 'package:app1/Screens/AddDoctor.dart';
-
 import 'Screens/AdminCovidReports.dart';
 import 'package:app1/Screens/viewQuestions.dart';
-
 import 'Screens/Companies.dart';
 import 'Screens/Position.dart';
 import 'Screens/Profile.dart';
@@ -50,12 +47,12 @@ class MyApp extends StatelessWidget {
           // Define the default brightness and colors.
           // brightness: Brightness.dark,
           primaryColor: Color(0xffe45b5e),
-          accentColor: Color(0xfffeb493),
-          buttonColor:  Color(0xfffeb493),
+          accentColor: Color(0xffa45c6c),
+          buttonColor:  Color(0xffa45c6c),
 
             buttonTheme: ButtonThemeData(
-              buttonColor: Color(0xfffeb493),     //  <-- dark color
-              textTheme: ButtonTextTheme.primary, //  <-- this auto selects the right color
+              buttonColor: Color(0xffa45c6c),     //  <-- dark color
+             // textTheme: ButtonTextTheme.primary, //  <-- this auto selects the right color
             )
           // buttonColor: Colors.deepPurple,     //  <-- dark color
 

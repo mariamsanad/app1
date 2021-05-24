@@ -1,9 +1,7 @@
 import 'package:app1/Screens/Companies.dart';
 import 'package:app1/Services/crudUser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'AddUser.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Positions extends StatefulWidget {
@@ -39,6 +37,7 @@ class _PositionsState extends State<Positions> {
             contentPadding: EdgeInsets.only(top: 10.0),
             actions: [
               ElevatedButton(
+                style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                 child: Text('Add Position'),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
@@ -141,7 +140,7 @@ class _PositionsState extends State<Positions> {
         appBar: AppBar(
           title: Text('Positions'),
           actions: [
-            FlatButton(
+            TextButton(
                 onPressed: () {
                   _showmodal();
                 },
@@ -173,7 +172,7 @@ class _PositionsState extends State<Positions> {
                 children: snapshot.data!.docs.map((DocumentSnapshot document) {
                   return InkWell(
                     child: new ListTile(
-                      trailing: FlatButton(
+                      trailing: TextButton(
                         onPressed:() async {
                           showDialog(
                               context: context,
@@ -184,6 +183,7 @@ class _PositionsState extends State<Positions> {
                                   contentPadding: EdgeInsets.only(top: 10.0),
                                   actions: [
                                     ElevatedButton(
+                                      style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                                       child: Text('Delete Position'),
                                       onPressed: () async {
                                         await deletePosition(this.widget.sid,document.id).then((value){

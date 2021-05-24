@@ -120,6 +120,7 @@ class _DoctorAddState extends State<DoctorAdd> {
                       padding: const EdgeInsets.only(top: 16),
                       alignment: Alignment.center,
                       child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                         child: Text('Add'),
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {

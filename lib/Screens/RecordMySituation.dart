@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -163,6 +162,7 @@ class _RecordCovidState extends State<RecordCovid> {
                                       children: [
                                         Container(
                                             child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                                           child: !covid
                                               ? Text('not infected')
                                               : Text('infected'),

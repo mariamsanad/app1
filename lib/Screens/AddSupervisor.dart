@@ -138,6 +138,7 @@ class _SupervisorAddState extends State<SupervisorAdd> {
                       padding: const EdgeInsets.only(top: 16),
                       alignment: Alignment.center,
                       child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                         child: Text('Add Superviser'),
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {

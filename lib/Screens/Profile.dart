@@ -4,7 +4,6 @@ import 'package:app1/Services/crudUser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:group_radio_button/group_radio_button.dart';
 
 class Profile extends StatefulWidget {
   final user_id,cid,sid,pos;
@@ -149,6 +148,7 @@ class _ProfileState extends State<Profile> {
                             child: !edit
                                 ? null
                                 : ElevatedButton(
+                              style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                                     child: Text('Reset Password'),
                                     onPressed: () {
                                       Navigator.push(
@@ -164,6 +164,7 @@ class _ProfileState extends State<Profile> {
                         padding: const EdgeInsets.only(top: 16),
                         alignment: Alignment.center,
                         child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                           child: Text('Update Profile'),
                           onPressed: () async {
                             if (edit) {
@@ -347,6 +348,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
                             child: !edit
                                 ? null
                                 : ElevatedButton(
+                              style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                                     child: Text('Reset Password'),
                                     onPressed: () {
                                       Navigator.push(
@@ -361,6 +363,7 @@ class _CompanyProfileState extends State<CompanyProfile> {
                         padding: const EdgeInsets.only(top: 16),
                         alignment: Alignment.center,
                         child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                           child: Text('Update Company information'),
                           onPressed: () async {
                             if (edit) {
@@ -543,6 +546,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                             child: !edit
                                 ? null
                                 : ElevatedButton(
+                              style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                               child: Text('Reset Password'),
                               onPressed: () {
                                 Navigator.push(
@@ -557,6 +561,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                         padding: const EdgeInsets.only(top: 16),
                         alignment: Alignment.center,
                         child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                           child: Text('Update Doctor information'),
                           onPressed: () async {
                             if (edit) {
@@ -755,6 +760,7 @@ class _SupervisorProfileState extends State<SupervisorProfile> {
                             child: !edit
                                 ? null
                                 : ElevatedButton(
+                              style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                               child: Text('Reset Password'),
                               onPressed: () {
                                 Navigator.push(
@@ -769,6 +775,7 @@ class _SupervisorProfileState extends State<SupervisorProfile> {
                         padding: const EdgeInsets.only(top: 16),
                         alignment: Alignment.center,
                         child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
                           child: Text('Update Supervisor information'),
                           onPressed: () async {
                             if (edit) {

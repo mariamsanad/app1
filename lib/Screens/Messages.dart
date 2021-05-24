@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:app1/Services/crudUser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Messages extends StatefulWidget {
   final userid;
@@ -44,7 +43,7 @@ class _MessagesState extends State<Messages> {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50),
-                            color: (FirebaseAuth.instance.currentUser.uid == document.data()['userid']?Color(0xfffeb493):Colors.grey.shade200),
+                            color: (FirebaseAuth.instance.currentUser.uid == document.data()['userid']?Color(0xffa45c6c):Colors.grey.shade200),
                           ),
                           padding: EdgeInsets.all(16),
                           child: new Text(
