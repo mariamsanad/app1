@@ -1,3 +1,4 @@
+import 'package:app1/Components/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:app1/Services/crudUser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,6 +24,15 @@ class _MessagesState extends State<Messages> {
               'date', descending: false).snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+
+                if (snapshot.hasError) {
+                  return Text('Something went wrong,you may be not authenticated');
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Loading();
+                }
+
             return new ListView(
               physics: BouncingScrollPhysics(),
               padding: EdgeInsets.only(top: 10,bottom: 10),
