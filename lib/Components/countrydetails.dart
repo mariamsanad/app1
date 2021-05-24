@@ -28,7 +28,7 @@ class Cdetails extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          margin: EdgeInsets.only(top:10, bottom:10),
+                          // margin: EdgeInsets.only(top:10, bottom:10),
                           child: Center(
                             child: Text(country.toString(),
                               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800,color: Colors.red), textAlign: TextAlign.center),
