@@ -26,7 +26,7 @@ class _AdminCovidReportsState extends State<AdminCovidReports> {
         body: TabBarView(
           children: [
             SingleChildScrollView(child: AdminCovRec()),
-            SingleChildScrollView(child: CompanyCovRec()),
+            SingleChildScrollView(child: SupervisorCovRec()),
             Icon(Icons.directions_bike),
           ],
         ),
