@@ -1295,9 +1295,10 @@ getCCompany() async {
 }
 
 
+
 getCEachPos(superid) async {
   superid='BDnEzlvN8ye4LK5r5kcSNCFJrj02';
-  // var arr=[];
+  var arr=[];
   //get positions for the sid
   QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('/positions/${superid}/poses').get();
   var list = querySnapshot.docs;
@@ -1363,7 +1364,25 @@ getEachCom(id) async {
 
   return arr;
 }
+getCPos(){
+  records2.get().then((querySnapshot) {
+    querySnapshot.docs.forEach((result) {
+      var list = querySnapshot.docs;
+      var list1,list2;
 
+      records2.doc(result.id)
+          .collection("recs")
+          .get()
+          .then((querySnapshot) {
+
+        querySnapshot.docs.forEach((result) {
+          print(result.data());
+        });
+        
+      });
+    });
+  });
+}
 
 getCEachDate() async {
   var arr=[];
