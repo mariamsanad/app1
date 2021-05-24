@@ -727,7 +727,7 @@ class SupervisorCovRec extends StatelessWidget {
                               )),
                               DataCell(
                                 Text(
-                                  document.rec.length.toString(),
+                                  document.rec.length.toString('jn'),
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               )
