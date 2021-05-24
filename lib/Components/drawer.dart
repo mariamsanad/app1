@@ -71,6 +71,19 @@ class MyDrawer extends StatelessWidget {
                     ),
                   ),
                   Container(
+                    child: snapshot.data!='admin'?null:ListTile(
+                      title: Text("Doctors"),
+                      leading: Image.asset(
+                        "assets/images/doctor.png",
+                        width: 40,
+                        height: 40,
+                      ),
+                      onTap: () {
+                        Navigator.of(context).pushNamed("doctoradd");
+                      },
+                    ),
+                  ),
+                  Container(
                     child: ListTile(
                       title: Text("My Covid Records"),
                       leading: Image.asset(
