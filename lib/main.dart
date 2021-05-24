@@ -25,12 +25,12 @@ import 'package:firebase_core/firebase_core.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
- await Firebase.initializeApp(name: "SecondaryApp",options: const FirebaseOptions(
+ /*await Firebase.initializeApp(name: "SecondaryApp",options: const FirebaseOptions(
       appId: '1:138993678832:android:dac004f23f9fc1b63e0535',
       apiKey: 'AIzaSyCHgubmnroKE7goN9-TTnavGtvn2xyXh2M',
       messagingSenderId: '138993678832',
       projectId: 'covid-19senior'
-  ) );
+  ) );*/
   return runApp(MyApp());
 }
 
