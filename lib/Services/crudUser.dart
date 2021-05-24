@@ -37,6 +37,8 @@ FirebaseFirestore.instance.collection('pos');
 
 CollectionReference companies =
     FirebaseFirestore.instance.collection('companies');
+CollectionReference companiescov =
+FirebaseFirestore.instance.collection('companycovid');
 CollectionReference records2 =
 FirebaseFirestore.instance.collection('records');
 
@@ -900,6 +902,19 @@ Future<void> addCovidRecord(id, date, cough, headache, fever, infected) async {
     return v;
   });
 
+/*  var n = await getCompanyid(id).then((v){
+    companiescov.doc(v).collection('recs').doc(id).set({
+      'name':i,
+      'cough': cough,
+      'headache': headache,
+      'fever': fever,
+      'infected': infected
+    })
+        .then((value) => print("Record Added"))
+        .catchError((error) => print("Failed to add record: $error"));
+    return v;
+  });*/
+
   await rec
       .doc(date.toString())
       .set({
@@ -915,9 +930,9 @@ Future<void> addCovidRecord(id, date, cough, headache, fever, infected) async {
   await records2.doc(date.toString()).set({
    'date':date.toString()
  });
-  await records2.doc(date.toString()).collection('recs').doc(id).set({
+  /*await records2.doc(date.toString()).collection('recs').doc(id).set({
     'id':id
-  });
+  });*/
  return records2
       .doc(date.toString())
       .collection('recs')
@@ -1303,7 +1318,6 @@ getCEachPos(superid) async {
         print(list2);
         if(list3['infected']==true)
           r.rec.add(list3);
-
       }
 
     }
