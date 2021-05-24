@@ -1,3 +1,5 @@
+import 'package:app1/Screens/AddDoctor.dart';
+
 import 'Screens/AdminCovidReports.dart';
 import 'package:app1/Screens/viewQuestions.dart';
 
@@ -25,7 +27,7 @@ import 'package:firebase_core/firebase_core.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
- /*await Firebase.initializeApp(name: "SecondaryApp",options: const FirebaseOptions(
+/* await Firebase.initializeApp(name: "SecondaryApp",options: const FirebaseOptions(
       appId: '1:138993678832:android:dac004f23f9fc1b63e0535',
       apiKey: 'AIzaSyCHgubmnroKE7goN9-TTnavGtvn2xyXh2M',
       messagingSenderId: '138993678832',
@@ -51,12 +53,18 @@ class MyApp extends StatelessWidget {
           accentColor: Color(0xfffeb493),
           buttonColor:  Color(0xfffeb493),
 
+            buttonTheme: ButtonThemeData(
+              buttonColor: Color(0xfffeb493),     //  <-- dark color
+              textTheme: ButtonTextTheme.primary, //  <-- this auto selects the right color
+            )
+          // buttonColor: Colors.deepPurple,     //  <-- dark color
+
           // Define the default font family.
           // fontFamily: 'Arial',
 
           // Define the default TextTheme. Use this to specify the default
           // text styling for headlines, titles, bodies of text, and more.
-          textTheme: TextTheme(
+          ,textTheme: TextTheme(
             headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
             headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
             bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
@@ -90,6 +98,9 @@ class MyApp extends StatelessWidget {
                 },
                 'profile': (context) {
                   return Profile(FirebaseAuth.instance.currentUser.uid,null,null,null);
+                },
+                'doctoradd': (context) {
+                  return Doctors();
                 },
                 'register': (context) {
                   return Register();
