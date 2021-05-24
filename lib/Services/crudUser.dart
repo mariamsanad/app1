@@ -680,7 +680,7 @@ class CompaniesListForCov extends StatelessWidget {
                       onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Supervisors(
+                            builder: (context) => SupervisorsListForCov(
                                 document.data()['company_id'].toString()),
                           )),
                     ),
