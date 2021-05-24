@@ -58,10 +58,23 @@ class MyDrawer extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    child: ListTile(
-                      title: Text("My Graph"),
+                    child: snapshot.data!='admin'?null:ListTile(
+                      title: Text("View All Users"),
                       leading: Image.asset(
-                        "assets/images/company.png",
+                        "assets/images/teamwork.png",
+                        width: 40,
+                        height: 40,
+                      ),
+                      onTap: () {
+                        Navigator.of(context).pushNamed("users");
+                      },
+                    ),
+                  ),
+                  Container(
+                    child: ListTile(
+                      title: Text("My Covid Records"),
+                      leading: Image.asset(
+                        "assets/images/covid-test.png",
                         width: 40,
                         height: 40,
                       ),
@@ -74,7 +87,7 @@ class MyDrawer extends StatelessWidget {
                     child: ListTile(
                       title: Text("Admin Covid Records"),
                       leading: Image.asset(
-                        "assets/images/fever.png",
+                        "assets/images/chart.png",
                         width: 40,
                         height: 40,
                       ),
