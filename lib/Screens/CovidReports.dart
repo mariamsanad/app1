@@ -544,7 +544,7 @@ class SupervisorCovRec extends StatelessWidget {
     return Column(
       children: [
         FutureBuilder(
-            future: getCEachDate(),
+            future: getCEachPos('bj'),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               var a = [];
               if (!snapshot.hasData || snapshot.data.isEmpty) {
@@ -722,9 +722,7 @@ class SupervisorCovRec extends StatelessWidget {
                                   });
                             },
                             cells: [
-                              DataCell(Text(
-                                DateFormat('d-MMM-yy')
-                                    .format(DateTime.parse(document.date)),
+                              DataCell(Text(document.date,
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               )),
                               DataCell(
