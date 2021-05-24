@@ -1435,35 +1435,16 @@ return n;
   // return arr;
 }
 
-
-getCPos(superid) async {
+getCPos(cid,superid) async {
   var arr = [];
-  int c=0;
   //dates
-  var n = await pos.get().then((querySnapshot){
-    for(var position in querySnapshot.docs){
-      pos.doc(position.id).collection('users').get().then((value){
-        for(var user in value.docs){
-          users.doc(user.id).collection('covidrecord').get();
-          print(user.data());
-        }
-      });
-    }
-  });
+  var n = await positions.doc(superid).collection('poses').get().then((querySnapshot) async{
+    for(var posi in querySnapshot.docs){
 
-   await companiescov.get().then((querySnapshot) async{
-    print('Hello');
-
-    for(var company in querySnapshot.docs){
-      print(company.id);
-      await companiescov.doc(company.id).collection("recs").get().then((querySnapshot1) async {
-        //await getUserName(company.id).then((com){
-        arr.add( new covrec(date:company.id , rec:querySnapshot1.docs.length));
-        // });
+      await pos.doc(posi.id).get().then((value){
+        arr.add( new covrec(date:posi.id , rec:value.data()['count']));
       });
-    }
-    print('end');
-    print('date is '+ arr[0].date.toString());
+  }
     return arr;
   });
   return n;
