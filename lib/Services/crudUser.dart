@@ -131,6 +131,19 @@ getCompanyid(String userId) async =>
       }
     });
 
+getPosition(String userId) async =>
+    users.doc(userId).get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists&&documentSnapshot.data()['type']!=null) {
+        print('type is '+documentSnapshot.data()['type'].toString());
+        return documentSnapshot.data()['type'];
+      } else if(documentSnapshot.data()['company_id']==null) {
+        return false;
+      }else
+      {
+        return false;
+      }
+    });
+
 
 Future<String> getSuperid(userId) async =>
     users.doc(userId).get().then((DocumentSnapshot documentSnapshot) {
@@ -799,12 +812,14 @@ Future addPosition(id, name) async {
       .doc(name)
       .set({
     'position': name,
+    'count':0
   })
       .then((value) => print("Position Added"))
       .catchError((error) => print("Failed to add position: $error"));
 
   await positions.doc(id).set({
-    'id':id
+    'id':id,
+    'count':0
   });
   return positions
       .doc(id)
@@ -873,25 +888,13 @@ Future UserAdd1(String companyid, String supervisorid, String name,
       .collection('poses')
       .doc(position)
       .collection('users');
-  
-  CollectionReference rec2 = pos
-      .doc(position)
-      .collection('users');
-  
+
   rec
       .doc(userCredential.user.uid)
       .set({'name': name, 'email': email, 'type': position, 'phone': phone})
       .then((value) => print("User Added Succesfully"))
       .catchError((error) => print("Failed to add user: $error"));
 
-  await rec2
-      .doc(userCredential.user.uid)
-      .set({
-    'id': userCredential.user.uid,
-  })
-      .then((value) => print("User Added to position Succesfully"))
-      .catchError((error) => print("Failed to add user to position: $error"));
-  
   return rec1
       .doc(userCredential.user.uid)
       .set({
@@ -919,6 +922,16 @@ Future<void> addCovidRecord(id, date, cough, headache, fever, infected) async {
       })
           .then((value) => print("Record Added"))
           .catchError((error) => print("Failed to add record: $error"));
+      if(infected){
+        await getPosition(id).then((v)async{
+          await pos.doc(v).update({'count':FieldValue.increment(1)});
+        });
+      }else{
+        await getPosition(id).then((v)async{
+          await pos.doc(v).update({'count':FieldValue.increment(-1)});
+        });
+      }
+
       return v;
     }
 
@@ -1429,7 +1442,7 @@ getCPos(superid) async {
   //dates
   var n = await pos.get().then((querySnapshot){
     for(var position in querySnapshot.docs){
-      pos.doc(pos.id).collection('users').get().then((value){
+      pos.doc(position.id).collection('users').get().then((value){
         for(var user in value.docs){
           users.doc(user.id).collection('covidrecord').get();
           print(user.data());
