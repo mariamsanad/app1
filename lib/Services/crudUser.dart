@@ -120,11 +120,14 @@ getUser(String userId) async =>
 
 getCompanyid(String userId) async =>
     users.doc(userId).get().then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
+      if (documentSnapshot.exists&&documentSnapshot.data()['company_id']!=null) {
         print('cid is '+documentSnapshot.data()['company_id'].toString());
         return documentSnapshot.data()['company_id'];
-      } else {
-        return 'there is no user with this id!';
+      } else if(documentSnapshot.data()['company_id']==null) {
+        return false;
+      }else
+      {
+        return false;
       }
     });
 
@@ -904,18 +907,22 @@ Future<void> addCovidRecord(id, date, cough, headache, fever, infected) async {
     return v;
   });
 
-/*  var n = await getCompanyid(id).then((v){
-    companiescov.doc(v).collection('recs').doc(id).set({
-      'name':i,
-      'cough': cough,
-      'headache': headache,
-      'fever': fever,
-      'infected': infected
-    })
-        .then((value) => print("Record Added"))
-        .catchError((error) => print("Failed to add record: $error"));
-    return v;
-  });*/
+  var n = getCompanyid(id).then((v)async{
+    if (v!=false){
+      await companiescov.doc(v).set({id:v});
+      await companiescov.doc(v).collection('recs').doc(id).set({
+        'name':i,
+        'cough': cough,
+        'headache': headache,
+        'fever': fever,
+        'infected': infected
+      })
+          .then((value) => print("Record Added"))
+          .catchError((error) => print("Failed to add record: $error"));
+      return v;
+    }
+
+  });
 
   await rec
       .doc(date.toString())
@@ -1394,25 +1401,23 @@ getCDate() async {
 getCCom() async {
   var arr = [];
   //dates
-  await records2.get().then((querySnapshot) async{
-    print('start');
+  var n = await companiescov.get().then((querySnapshot) async{
+    print('Hello');
 
-    for(var recs in querySnapshot.docs){
-      var r = new covrec(date:recs.id , rec:[]);
-      await records2.doc(recs.id).collection("recs").get().then((querySnapshot1) {
-        for(var date in querySnapshot1.docs){
-          if(date.data()['infected']==true){
-            print(date.data());
-            r.rec.add(date.data());
-          }
-        }
-        arr.add(r);
+    for(var company in querySnapshot.docs){
+      print(company.id);
+      await companiescov.doc(company.id).collection("recs").get().then((querySnapshot1) async {
+        //await getUserName(company.id).then((com){
+          arr.add( new covrec(date:company.id , rec:querySnapshot1.docs.length));
+        // });
       });
     }
-
+    print('end');
+    print('date is '+ arr[0].date.toString());
+    return arr;
   });
-
-  return arr;
+return n;
+  // return arr;
 }
 
 getCEachDate() async {
