@@ -25,8 +25,6 @@ class _StatisticsState extends State<Statistics> {
 
   bool con = false;
 
-  final _formKey = GlobalKey<FormState>();
-  final ScrollController _scrollController = ScrollController();
   FocusNode? myFocusNode;
   String _currentCity = "bahrain";
 
@@ -45,12 +43,7 @@ class _StatisticsState extends State<Statistics> {
 
 
   }
-  Future getForC(String c) async {
-    var url = "https://api.covid19api.com/country/"+c;
-    var response = await http.get(url);
-    var responsebody = jsonDecode(response.body);
-    return responsebody;
-  }
+
 
   void changedDropDownItem(String selectedCity){
 
@@ -62,7 +55,6 @@ class _StatisticsState extends State<Statistics> {
 
 
   var _showing = 'all';
-  late ZoomPanBehavior _zoomPanBehavior;
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +111,7 @@ class _StatisticsState extends State<Statistics> {
                           )
                       )
                   ),
-                  dosom(),
+                  dosom(_currentCity),
                   Card(
                       //elevation: 5,
                       color: Colors.white,
@@ -280,7 +272,7 @@ class _StatisticsState extends State<Statistics> {
                               // backgroundColor: Colors.white,
 
                                 primaryXAxis: CategoryAxis(),
-                                title: ChartTitle(text: 'Chart'), //Chart title.
+                                title: ChartTitle(text:'${_currentCity} chart'), //Chart title.
                                 legend: Legend(isVisible: true), // Enables the legend.
                                 tooltipBehavior: TooltipBehavior(enable: true), // Enables the tooltip.
                                 series: <LineSeries<DeathRec, String>>[
@@ -328,30 +320,7 @@ class _StatisticsState extends State<Statistics> {
     );
   }
 
-  FutureBuilder dosom(){
-  return FutureBuilder(
-  future: getForC(_currentCity),
-  builder: (BuildContext context, AsyncSnapshot snapshot){
 
-  if (snapshot.hasData){
-    if(snapshot.data.length>0){
-
-      return Cdetails(date: snapshot.data[snapshot.data.length-1]['Date'],code: snapshot.data[snapshot.data.length-1]['CountryCode'], confirmed :(snapshot.data[snapshot.data.length-1]['Confirmed']-snapshot.data[snapshot.data.length-3]['Confirmed']), deaths: (snapshot.data[snapshot.data.length-1]['Deaths']-snapshot.data[snapshot.data.length-3]['Deaths']),recoverd:(snapshot.data[snapshot.data.length-1]['Recovered']-snapshot.data[snapshot.data.length-3]['Recovered']), active:snapshot.data[snapshot.data.length-1]['Active'],country:snapshot.data[snapshot.data.length-1]['Country'] ,);
-
-
-
-    }else{
-      return Expanded(
-          child: Center(child: Text("There is no data for this country", style: TextStyle(fontSize: 20, color: Colors.red,fontWeight: FontWeight.bold),))
-      );
-    }
-
-  }
-   return Center(child: Loading());
-
-  },
-  );
-}
 
 
 Future<String> checkConn() async{
@@ -368,5 +337,34 @@ Future<String> checkConn() async{
 }
 
 }
+FutureBuilder dosom(c){
+  return FutureBuilder(
+    future: getForC(c),
+    builder: (BuildContext context, AsyncSnapshot snapshot){
+
+      if (snapshot.hasData){
+        if(snapshot.data.length>0){
+
+          return Cdetails(date: snapshot.data[snapshot.data.length-1]['Date'],code: snapshot.data[snapshot.data.length-1]['CountryCode'], confirmed :(snapshot.data[snapshot.data.length-1]['Confirmed']-snapshot.data[snapshot.data.length-3]['Confirmed']), deaths: (snapshot.data[snapshot.data.length-1]['Deaths']-snapshot.data[snapshot.data.length-3]['Deaths']),recoverd:(snapshot.data[snapshot.data.length-1]['Recovered']-snapshot.data[snapshot.data.length-3]['Recovered']), active:snapshot.data[snapshot.data.length-1]['Active'],country:snapshot.data[snapshot.data.length-1]['Country'] ,);
 
 
+
+        }else{
+          return Expanded(
+              child: Center(child: Text("There is no data for this country", style: TextStyle(fontSize: 20, color: Colors.red,fontWeight: FontWeight.bold),))
+          );
+        }
+
+      }
+      return Center(child: Loading());
+
+    },
+  );
+}
+
+Future getForC(String c) async {
+  var url = "https://api.covid19api.com/country/"+c;
+  var response = await http.get(url);
+  var responsebody = jsonDecode(response.body);
+  return responsebody;
+}

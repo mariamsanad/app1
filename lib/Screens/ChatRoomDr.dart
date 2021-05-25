@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app1/Services/crudUser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'Messages.dart';
 class ChatRoomDr extends StatefulWidget {
   final userid;

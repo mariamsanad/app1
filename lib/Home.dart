@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import './Components/drawer.dart';
 import 'Services/crudUser.dart';
+import 'Screens/Statistics.dart';
 
 
 //final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -48,13 +49,13 @@ class Home extends StatelessWidget {
                     padding: EdgeInsets.all(10),
                     child: Text("Services: ", style: TextStyle(fontSize:30 , color: Colors.cyan),),
                   ),*/
-                    Container(
+                   /* Container(
                       padding: EdgeInsets.only(top: 30),
                       height: 150,
                       child: ListView(
                         scrollDirection: Axis.horizontal ,
                         children: [
-                          /* InkWell(
+                          *//* InkWell(
                           child:Container(
                             height: 150,
                             width: 150,
@@ -65,7 +66,7 @@ class Home extends StatelessWidget {
                           onTap: (){
                             Navigator.of(context).pushNamed("users");
                           },
-                        ),*/InkWell(
+                        ),*//*InkWell(
                             child:  Container(
                               height: 150,
                               width: 150,
@@ -96,7 +97,7 @@ class Home extends StatelessWidget {
                           ),
                         ] ,
                       ),
-                    ),
+                    ),*/
                     Container(
                       margin: const EdgeInsets.all(15.0),
                       // padding: EdgeInsets.all(15),
@@ -104,56 +105,124 @@ class Home extends StatelessWidget {
                       decoration: BoxDecoration(
                         // border: Border.all(),
                         borderRadius: BorderRadius.all(Radius.circular(20)),
-                        /*color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: Offset(0, 3), // changes position of shadow
-                        ),
-                      ],*/
                       ),
-                      /* decoration: BoxDecoration(
-                        // border: Border.all(),
-                        borderRadius: BorderRadius.all(Radius.circular(20))
-                    ),*/
                       // width: 150,
                       child: PageView(
                         children: <Widget>[
-                          Container(
-                            margin: const EdgeInsets.only(top: 15,right: 8,left: 8,bottom: 18),
-                            decoration: BoxDecoration(
-                              // border: Border.all(),
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset: Offset(0, 3), // changes position of shadow
-                                ),
-                              ],
-                            ),
+                          InkWell(
+                            onTap: (){
+                              Navigator.of(context).pushNamed('recordsit');
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 15,right: 8,left: 8,bottom: 18),
+                              decoration: BoxDecoration(
+                                // border: Border.all(),
+                                borderRadius: BorderRadius.all(Radius.circular(20)),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 5,
+                                    blurRadius: 7,
+                                    offset: Offset(0, 3), // changes position of shadow
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(40.0),
+                                    child: Text('Record My Situation',textScaleFactor:1.8,textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Mariam',fontWeight: FontWeight.bold),),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 0),
+                                    child: Image.asset(
+                                      "assets/images/Picture1.png",
+                                      width: 200,
+                                      height: 200,
+                                    ),
+                                  ),
+                                ],
+                              ),
 
+                            ),
                           ),
-                          Container(
-                            margin: const EdgeInsets.only(top: 15,right: 8,left: 8,bottom: 18),
-                            decoration: BoxDecoration(
-                              // border: Border.all(),
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset: Offset(0, 3), // changes position of shadow
-                                ),
-                              ],
-                            ),
+                          InkWell(
+                            onTap: (){
+                              Navigator.of(context).pushNamed("chatroom");
+                              createChat(FirebaseAuth.instance.currentUser.uid);
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 15,right: 8,left: 8,bottom: 18),
+                              decoration: BoxDecoration(
+                                // border: Border.all(),
+                                borderRadius: BorderRadius.all(Radius.circular(20)),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 5,
+                                    blurRadius: 7,
+                                    offset: Offset(0, 3), // changes position of shadow
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(40.0),
+                                    child: Text('Ask a Doctor',textScaleFactor:1.8,textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Mariam',fontWeight: FontWeight.bold),),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 0),
+                                    child: Image.asset(
+                                      "assets/images/Picture2.png",
+                                      width: 200,
+                                      height: 200,
+                                    ),
+                                  ),
+                                ],
+                              ),
 
+                            ),
+                          ),
+                          InkWell(
+                            onTap: (){
+                              Navigator.of(context).pushNamed("statistics");
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 15,right: 8,left: 8,bottom: 18),
+                              decoration: BoxDecoration(
+                                // border: Border.all(),
+                                borderRadius: BorderRadius.all(Radius.circular(20)),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 5,
+                                    blurRadius: 7,
+                                    offset: Offset(0, 3), // changes position of shadow
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(40.0),
+                                    child: Text('See Global Statistics',textScaleFactor:1.8,textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Mariam',fontWeight: FontWeight.bold),),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 0),
+                                    child: Image.asset(
+                                      "assets/images/Picture4.png",
+                                      width: 200,
+                                      height: 200,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                            ),
                           ),
                           Container(
                             margin: const EdgeInsets.only(top: 15,right: 8,left: 8,bottom: 18),
@@ -176,7 +245,8 @@ class Home extends StatelessWidget {
                           ),
                         ],
                       ),
-                    )
+                    ),
+                    dosom('bahrain'),
                   ],
                 ),
               )

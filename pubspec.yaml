@@ -111,6 +111,14 @@ flutter:
 #        - asset: fonts/TrajanPro_Bold.ttf
 #          weight: 700
 #=======
+  fonts:
+    - family: Mariam
+      fonts:
+        - asset:  assets/fonts/al-qalam-kolkatta-quranic-font.ttf
+#        - asset: fonts/Raleway-Italic.ttf
+          style: italic
+
+
   # fonts:
   #   - family: Schyler
   #     fonts:

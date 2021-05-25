@@ -7,7 +7,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:app1/Components/loading.dart';
-import 'package:app1/Home.dart';
+
 import 'package:app1/Services/crudUser.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +19,7 @@ bool isLoading = false;
 class SignIn extends StatefulWidget {
   final Function togg;
 
-  final String title = 'Sign In & Out';
+  final String title = 'Sign In';
 
   @override
   State<StatefulWidget> createState() => _SignInState();

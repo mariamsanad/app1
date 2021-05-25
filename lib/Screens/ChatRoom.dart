@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app1/Services/crudUser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'Messages.dart';
 
 class ChatRoom extends StatefulWidget {
@@ -41,15 +39,18 @@ class _ChatRoomState extends State<ChatRoom> {
                   ),
                   Expanded(
                     flex: 30,
-                    child: TextFormField(
-                      textCapitalization: TextCapitalization.sentences,
-                      autocorrect: true,
-                      enableSuggestions: true,
-                      controller: _message,
-                      decoration: const InputDecoration(
-                        labelText: 'type a message',
-                        fillColor: Color(0xFF111111),
-                        border: OutlineInputBorder(),
+                    child: Container(
+                      margin: EdgeInsets.all(10),
+                      child: TextFormField(
+                        textCapitalization: TextCapitalization.sentences,
+                        autocorrect: true,
+                        enableSuggestions: true,
+                        controller: _message,
+                        decoration: const InputDecoration(
+                          labelText: 'type a message',
+                          fillColor: Color(0xFF111111),
+                          border: OutlineInputBorder(),
+                        ),
                       ),
                     ),
                   ),

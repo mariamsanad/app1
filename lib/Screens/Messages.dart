@@ -24,13 +24,13 @@ class _MessagesState extends State<Messages> {
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
 
-                if (snapshot.hasError) {
-                  return Text('Something went wrong,you may be not authenticated');
-                }
+            if (snapshot.hasError) {
+              return Text('Something went wrong,you may be not authenticated');
+            }
 
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Loading();
-                }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Loading();
+            }
 
             return new ListView(
               physics: BouncingScrollPhysics(),

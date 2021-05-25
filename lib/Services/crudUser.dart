@@ -34,8 +34,10 @@ checkRole() async {
 CollectionReference users = FirebaseFirestore.instance.collection('users');
 CollectionReference positions =
     FirebaseFirestore.instance.collection('positions');
+/*
 CollectionReference pos =
 FirebaseFirestore.instance.collection('pos');
+*/
 
 CollectionReference companies =
     FirebaseFirestore.instance.collection('companies');
@@ -43,6 +45,8 @@ CollectionReference doctors =
 FirebaseFirestore.instance.collection('doctors');
 CollectionReference companiescov =
 FirebaseFirestore.instance.collection('companycovid');
+CollectionReference poscov =
+FirebaseFirestore.instance.collection('positioncovid');
 CollectionReference records2 =
 FirebaseFirestore.instance.collection('records');
 CollectionReference messages = FirebaseFirestore.instance.collection('messages');
@@ -777,12 +781,7 @@ class CompaniesListForCov extends StatelessWidget {
                   style: TextStyle(fontStyle: FontStyle.italic),
                 ),
               ),
-              DataColumn(
-                label: Text(
-                  'Delete',
-                  style: TextStyle(fontStyle: FontStyle.italic),
-                ),
-              ),
+
             ],
             rows: snapshot.data!.docs.map((DocumentSnapshot document) {
               return DataRow(
@@ -807,48 +806,6 @@ class CompaniesListForCov extends StatelessWidget {
                             builder: (context) => SupervisorsListForCov(
                                 document.data()['company_id'].toString()),
                           )),
-                    ),
-
-                    ),
-                    DataCell(TextButton(
-                        child: Icon(Icons.delete,color: Colors.red,),
-                        onPressed: () async {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(32.0))),
-                                  contentPadding: EdgeInsets.only(top: 10.0),
-                                  actions: [
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
-                                      child: Text('Delete Company'),
-                                      onPressed: () async {
-                                        await deleteCompany(document.data()['company_id'].toString()).then((value){
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                              duration: const Duration(seconds: 5),
-                                              content: Text('Company deleted successfully'),
-                                              backgroundColor: Colors.orangeAccent,
-                                              behavior: SnackBarBehavior.floating,
-                                              shape: StadiumBorder(),
-                                            ),
-                                          );
-                                          Navigator.of(context).pop();
-                                        }
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                  content: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Text('Are you sure you want to delete this company '+document.data()['name']),
-                                  ) ,
-
-                                );
-                              });
-                        }
                     ),
 
                     ),
@@ -999,120 +956,83 @@ class SupervisorsListForCov extends StatelessWidget {
   SupervisorsListForCov(this.cid);
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: companies.doc(cid).collection('supervisors').snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasError) {
-          return Text('Something went wrong,you may be not authenticated');
-        }
+    return Scaffold(
+      appBar: AppBar(title: Text('Supervisors'),),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: companies.doc(cid).collection('supervisors').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text('Something went wrong,you may be not authenticated');
+          }
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: Loading());
-        }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: Loading());
+          }
 
-        return snapshot.hasData
-            ? SizedBox(
-                width: double.infinity,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    showCheckboxColumn: false,
-                    sortColumnIndex: 0,
-                    sortAscending: true,
-                    columns: [
-                      DataColumn(
-                        label: Text(
-                          'Name',
-                          style: TextStyle(fontStyle: FontStyle.italic),
+          return snapshot.hasData
+              ? SizedBox(
+                  width: double.infinity,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                      showCheckboxColumn: false,
+                      sortColumnIndex: 0,
+                      sortAscending: true,
+                      columns: [
+                        DataColumn(
+                          label: Text(
+                            'Name',
+                            style: TextStyle(fontStyle: FontStyle.italic),
+                          ),
                         ),
-                      ),
 
-                      DataColumn(
-                        label: Text(
-                          'Type',
-                          style: TextStyle(fontStyle: FontStyle.italic),
+                        DataColumn(
+                          label: Text(
+                            'Type',
+                            style: TextStyle(fontStyle: FontStyle.italic),
+                          ),
                         ),
-                      ),
 
-                      DataColumn(
-                        label: Text(
-                          'Positions',
-                          style: TextStyle(fontStyle: FontStyle.italic),
+                        DataColumn(
+                          label: Text(
+                            'Positions',
+                            style: TextStyle(fontStyle: FontStyle.italic),
+                          ),
                         ),
-                      ),
-                    ],
-                    rows: snapshot.data!.docs.map((DocumentSnapshot document) {
-                      return DataRow(
-                         /* onSelectChanged: (b) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      SupervisorProfile(document.id),
-                                ));
-                          },*/
-                          cells: [
-                            DataCell(Text(document.data()['name'].toString()),showEditIcon: true),
-                            DataCell(Text(document.data()['position'])),
-                            DataCell(TextButton(
-                              child: Text('See Positions'),
-                              onPressed: (){
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            SuperCovRec(document.id.toString())));
-                              },
-                            )),
-                            DataCell(TextButton(
-                              child: Icon(Icons.delete,color:Colors.red),
-                                onPressed:(){
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(Radius.circular(32.0))),
-                                          contentPadding: EdgeInsets.only(top: 10.0),
-                                          actions: [
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
-                                              child: Text('Delete Supervisor'),
-                                              onPressed: () async {
-                                                await deleteSupervisor(cid,document.id.toString()).then((value){
-                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                    SnackBar(
-                                                      duration: const Duration(seconds: 5),
-                                                      content: Text('Supervisor deleted successfully'),
-                                                      backgroundColor: Colors.orangeAccent,
-                                                      behavior: SnackBarBehavior.floating,
-                                                      shape: StadiumBorder(),
-                                                    ),
-                                                  );
-                                                  Navigator.of(context).pop();
-                                                }
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                          content: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: Text('Are you sure you want to delete the supervisor '+document.data()['name']),
-                                          ) ,
-
-                                        );
-                                      });
-                                }
-                            )),
-                          ]);
-                    }).toList(),
+                      ],
+                      rows: snapshot.data!.docs.map((DocumentSnapshot document) {
+                        return DataRow(
+                           /* onSelectChanged: (b) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        SupervisorProfile(document.id),
+                                  ));
+                            },*/
+                            cells: [
+                              DataCell(Text(document.data()['name'].toString()),showEditIcon: true),
+                              DataCell(Text(document.data()['position'])),
+                              DataCell(TextButton(
+                                child: Text('See Positions'),
+                                onPressed: (){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              SuperCovRec(this.cid,document.id.toString())));
+                                },
+                              )),
+                            ]);
+                      }).toList(),
+                    ),
                   ),
-                ),
-              )
-            : Container(
-                child: Text('No Supervisors found'),
-              );
-      },
+                )
+              : Container(
+                  child: Text('No Supervisors found'),
+                );
+        },
+      ),
     );
   }
 }
@@ -1214,7 +1134,7 @@ Future addSupervisor(String companyid, String name, String email, String pass,
 
 Future addPosition(id, name) async {
 
-  await pos
+  await poscov
       .doc(name)
       .set({
     'position': name,
@@ -1328,6 +1248,32 @@ Future<void> addCovidRecord(id, date, cough, headache, fever, infected) async {
 
   var n = getCompanyid(id).then((v)async{
     if (v!=false){
+      if(infected){
+        companiescov.doc(v).collection('recs').doc(id).get().then((b) async {
+          if(b.exists){
+            await getPosition(id).then((v)async{
+
+              await poscov.doc(v).collection('infected').doc(id).set({'id':id});
+              // await pos.doc(v).update({'count':FieldValue.increment(1)});
+            });
+          }else{
+            await poscov.doc(v).update({'count':FieldValue.increment(1)});
+          }
+        });
+      }else{
+        companiescov.doc(v).collection('recs').doc(id).get().then((b) async {
+          if(b.exists){
+            await getPosition(id).then((v)async{
+              await poscov.doc(v).update({'count':FieldValue.increment(-1)});
+              await poscov.doc(v).collection('infected').doc(id).delete();
+              // await pos.doc(v).update({'count':FieldValue.increment(-1)});
+              await companiescov.doc(v).collection('recs').doc(id).delete();
+            });
+
+          }
+        });
+      }
+
       await companiescov.doc(v).set({id:v});
       await companiescov.doc(v).collection('recs').doc(id).set({
         'name':i,
@@ -1338,15 +1284,7 @@ Future<void> addCovidRecord(id, date, cough, headache, fever, infected) async {
       })
           .then((value) => print("Record Added"))
           .catchError((error) => print("Failed to add record: $error"));
-      if(infected){
-        await getPosition(id).then((v)async{
-          await pos.doc(v).update({'count':FieldValue.increment(1)});
-        });
-      }else{
-        await getPosition(id).then((v)async{
-          await pos.doc(v).update({'count':FieldValue.increment(-1)});
-        });
-      }
+
 
       return v;
     }
@@ -1411,10 +1349,32 @@ getUserName(id) async{
       .doc(id)
       .get()
       .then((DocumentSnapshot snapshot) {
-    return snapshot.data()['user_name'];
+        if(snapshot.exists){
+          return snapshot.data()['user_name'];
+        }
+        return false;
   });
   return val;
 }
+
+getUserNameA() async{
+  var u = FirebaseAuth.instance.currentUser;
+  if(u!=null){
+    var val = await users
+        .doc(u.uid)
+        .get()
+        .then((DocumentSnapshot snapshot) {
+      if(snapshot.exists){
+        return snapshot.data()['user_name'];
+      }
+    });
+    return val;
+  }else{
+    return false;
+  }
+}
+
+
 
 class RecordForUser extends StatefulWidget {
   @override
@@ -1753,7 +1713,7 @@ getCPos(cid,superid) async {
   var n = await positions.doc(superid).collection('poses').get().then((querySnapshot) async{
     for(var posi in querySnapshot.docs){
 
-      await pos.doc(posi.id).get().then((value){
+      await poscov.doc(posi.id).get().then((value){
         arr.add( new covrec(date:posi.id , rec:value.data()['count']));
       });
   }
@@ -1792,36 +1752,8 @@ getCEachDate() async {
 // print(arr);
   return arr;
 }
-Future addMessage(message,date) async {
-  CollectionReference messages =chats.doc(FirebaseAuth.instance.currentUser.uid).collection("messages");
-  return messages.doc().set({
-    'userid': FirebaseAuth.instance.currentUser.uid,
-    'date': date,
-    'message': message,
 
-  })
-      .then((value) => print("Message sent"))
-      .catchError((error) => print("Failed to send message: $error"));
-}
-Future addReply(userid,message,date) async {
-  CollectionReference messages =chats.doc(userid).collection("messages");
-  return messages.doc().set({
-    'userid': FirebaseAuth.instance.currentUser.uid,
-    'date': date,
-    'message': message,
-  })
-      .then((value) => print("Message sent"))
-      .catchError((error) => print("Failed to send message: $error"));
-}
-Future createChat(username) async {
-  return chats.doc(FirebaseAuth.instance.currentUser.uid).set({
-    'userid': FirebaseAuth.instance.currentUser.uid,
-    'isRead': 'false',
-    'drid': 'tHhZ73APULbOaF43qTx8IpVqDCi2',
-  })
-      .then((value) => print("Message sent"))
-      .catchError((error) => print("Failed to send message: $error"));
-}
+
 
 class covrec{
  final date,rec;
@@ -2134,3 +2066,41 @@ class _RecsEachCompanyState extends State<RecsEachCompany> {
 
 
 */
+Future addMessage(message,date) async {
+  CollectionReference messages =chats.doc(FirebaseAuth.instance.currentUser.uid).collection("messages");
+  return messages.doc().set({
+    'userid': FirebaseAuth.instance.currentUser.uid,
+    'date': date,
+    'message': message,
+
+  })
+      .then((value) => print("Message sent"))
+      .catchError((error) => print("Failed to send message: $error"));
+}
+Future addReply(userid,message,date) async {
+  CollectionReference messages =chats.doc(userid).collection("messages");
+  return messages.doc().set({
+    'userid': FirebaseAuth.instance.currentUser.uid,
+    'date': date,
+    'message': message,
+  })
+      .then((value) => print("Message sent"))
+      .catchError((error) => print("Failed to send message: $error"));
+}
+Future createChat(userid) async {
+  return chats.doc(FirebaseAuth.instance.currentUser.uid).set({
+    'userid': FirebaseAuth.instance.currentUser.uid,
+    'isRead': 'false',
+    'drid': ''
+  })
+      .then((value) => print("Message sent"))
+      .catchError((error) => print("Failed to send message: $error"));
+}
+Future updateChat(userid) async {
+  return chats.doc(userid).update({
+    'isRead': 'true',
+    'drid': FirebaseAuth.instance.currentUser.uid,
+  })
+      .then((value) => print("Message sent"))
+      .catchError((error) => print("Failed to send message: $error"));
+}

@@ -12,9 +12,8 @@ class MyDrawer extends StatelessWidget {
         builder: (context, AsyncSnapshot snapshot) {
           print(snapshot.data);
           return FutureBuilder(
-          future: getUserName(FirebaseAuth.instance.currentUser.uid),
+          future: getUserNameA(),
           builder: (context, s) {
-
           if (!s.hasData) {
              print('the data is ' + s.data.toString());
              return Loading();
@@ -38,10 +37,10 @@ class MyDrawer extends StatelessWidget {
                                   alignment: AlignmentDirectional.bottomStart,
                                 ),
                               ),
-                              Padding(
+                              (s.data!=false)?Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text('Welcome '+s.data.toString()),
-                              )
+                              ):Container()
                             ],
                           ),
                         ],
@@ -111,7 +110,9 @@ class MyDrawer extends StatelessWidget {
                       ),
               ),
               Container(
-                child: ListTile(
+                child: snapshot.data == 'nouser'
+                    ? null
+                    : ListTile(
                   title: Text("My Covid Records"),
                   leading: Image.asset(
                     "assets/images/covid-test.png",
@@ -124,7 +125,9 @@ class MyDrawer extends StatelessWidget {
                 ),
               ),
               Container(
-                child: ListTile(
+                child: snapshot.data != 'admin'
+                    ? null
+                    : ListTile(
                   title: Text("Admin Covid Records"),
                   leading: Image.asset(
                     "assets/images/chart.png",
@@ -152,7 +155,7 @@ class MyDrawer extends StatelessWidget {
                       ),
               ),
               Container(
-                child: snapshot.data == 'nouser' && snapshot.data == 'doctor'
+                child: snapshot.data != 'doctor'
                     ? null
                     : ListTile(
                         title: Text("New Questions"),
@@ -167,7 +170,7 @@ class MyDrawer extends StatelessWidget {
                       ),
               ),
               Container(
-                child: snapshot.data == 'nouser' && snapshot.data == 'doctor'
+                child: snapshot.data != 'doctor'
                     ? null
                     : ListTile(
                         title: Text("Questions History"),
@@ -182,7 +185,7 @@ class MyDrawer extends StatelessWidget {
                       ),
               ),
               Container(
-                child: snapshot.data == 'nouser' && snapshot.data == 'doctor'
+                child: snapshot.data == 'nouser' || snapshot.data == 'doctor'
                     ? null
                     : ListTile(
                         title: Text("Ask a Doctor"),

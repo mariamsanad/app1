@@ -72,7 +72,7 @@ class _ProfileState extends State<Profile> {
                       Padding(
                         padding: EdgeInsets.all(12),
                         child: !edit
-                            ? Text(_name.text)
+                            ? Text(_name.text,style: TextStyle(fontWeight: FontWeight.bold),)
                             : TextFormField(
                                 controller: _name,
                                 decoration: const InputDecoration(
@@ -89,7 +89,7 @@ class _ProfileState extends State<Profile> {
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: !edit
-                            ? Text(_email.text)
+                            ? Text(_email.text,style: TextStyle(fontWeight: FontWeight.bold),)
                             : TextFormField(
                                 enabled: false,
                                 controller: _email,
@@ -102,7 +102,7 @@ class _ProfileState extends State<Profile> {
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: !edit
-                            ? Text(_phone.text)
+                            ? Text(_phone.text,style: TextStyle(fontWeight: FontWeight.bold),)
                             : TextFormField(
                                 controller: _phone,
                                 decoration: const InputDecoration(
@@ -119,7 +119,7 @@ class _ProfileState extends State<Profile> {
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: !edit
-                            ? Text(_type.text)
+                            ? Text(_type.text,style: TextStyle(fontWeight: FontWeight.bold),)
                             : TextFormField(
                                 enabled: false,
                                 controller: _type,
@@ -484,7 +484,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                       Padding(
                         padding: EdgeInsets.all(12),
                         child: !edit
-                            ? Text(_name.text)
+                            ? Text(_name.text,style: TextStyle(fontWeight: FontWeight.bold),)
                             : TextFormField(
                           controller: _name,
                           decoration: const InputDecoration(
@@ -501,7 +501,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: !edit
-                            ? Text(_email.text)
+                            ? Text(_email.text,style: TextStyle(fontWeight: FontWeight.bold),)
                             : TextFormField(
                           enabled: false,
                           controller: _email,
@@ -514,7 +514,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: !edit
-                            ? Text(_phone.text)
+                            ? Text(_phone.text,style: TextStyle(fontWeight: FontWeight.bold),)
                             : TextFormField(
                           controller: _phone,
                           decoration: const InputDecoration(
@@ -532,7 +532,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: !edit
-                            ? Text(_type.text)
+                            ? Text(_type.text,style: TextStyle(fontWeight: FontWeight.bold),)
                             : TextFormField(
                           // enabled: false,
                           controller: _type,
