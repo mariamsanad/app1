@@ -345,7 +345,7 @@ class CompanyCovRec extends StatelessWidget {
                           columns: [
                             DataColumn(
                               label: Text(
-                                'Company Name',
+                                'Date',
                                 style: TextStyle(fontStyle: FontStyle.italic),
                               ),
                             ),
@@ -562,9 +562,8 @@ class SuperCovRec extends StatelessWidget {
                           sortAscending: true,
                           columns: [
                             DataColumn(
-                              tooltip:'The name of the company',
                               label: Text(
-                                'Name',
+                                'Date',
                                 style: TextStyle(fontStyle: FontStyle.italic),
                               ),
                             ),
