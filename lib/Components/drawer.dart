@@ -76,6 +76,7 @@ class MyDrawer extends StatelessWidget {
                           },
                         ),
                       ),
+<<<<<<< HEAD
                       Container(
                         child: snapshot.data!='admin'?null:ListTile(
                           title: Text("View All Users"),
@@ -101,6 +102,20 @@ class MyDrawer extends StatelessWidget {
                             Navigator.of(context).pushNamed("doctoradd");
                           },
                         ),
+=======
+                      onTap: () {
+                        Navigator.of(context).pushNamed("users");
+                      },
+                    ),
+                  ),
+                  Container(
+                    child: ListTile(
+                      title: Text("My Covid Records"),
+                      leading: Image.asset(
+                        "assets/images/covid-test.png",
+                        width: 40,
+                        height: 40,
+>>>>>>> parent of 1b6effa (Update drawer.dart)
                       ),
                       Container(
                         child: ListTile(
