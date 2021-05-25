@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:horizontal_card_pager/card_item.dart';
 import './Components/drawer.dart';
 import 'Services/crudUser.dart';
+import 'package:horizontal_card_pager/horizontal_card_pager.dart';
 
 
 //final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -13,6 +15,47 @@ class Home extends StatelessWidget {
   //final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
+
+    final List<String> titles = [
+      "RED",
+      "YELLOW",
+      "CYAN",
+      "BLUE",
+      "GREY",
+    ];
+    final List<Widget> images = [
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+      ),
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.yellow,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+      ),
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.cyan,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+      ),
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+      ),
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.grey,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+      ),
+    ];
+
    // final active_user = Provider.of<user>(context);
     //print(active_user);
     return StreamBuilder(
@@ -92,11 +135,91 @@ class Home extends StatelessWidget {
                             child: ListTile(
                               title: Image.asset("assets/images/calendar.png",width: 80, height: 80, ),
                               subtitle: Text("My Situation", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.w700),),
-                            ),),onTap: (){},
+        ),),onTap: (){},
                         ),
                       ] ,
                     ),
                   ),
+                  Container(
+                    margin: const EdgeInsets.all(15.0),
+                    // padding: EdgeInsets.all(15),
+                    height: 350,
+                    decoration: BoxDecoration(
+                      // border: Border.all(),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      /*color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: Offset(0, 3), // changes position of shadow
+                        ),
+                      ],*/
+                    ),
+                   /* decoration: BoxDecoration(
+                        // border: Border.all(),
+                        borderRadius: BorderRadius.all(Radius.circular(20))
+                    ),*/
+                    // width: 150,
+                    child: PageView(
+                      children: <Widget>[
+                        Container(
+                          margin: const EdgeInsets.only(top: 15,right: 8,left: 8,bottom: 18),
+                          decoration: BoxDecoration(
+                            // border: Border.all(),
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: Offset(0, 3), // changes position of shadow
+                              ),
+                            ],
+                          ),
+
+                        ),
+                        Container(
+                           margin: const EdgeInsets.only(top: 15,right: 8,left: 8,bottom: 18),
+                          decoration: BoxDecoration(
+                        // border: Border.all(),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: Offset(0, 3), // changes position of shadow
+                              ),
+                            ],
+                    ),
+
+                        ),
+                        Container(
+                           margin: const EdgeInsets.only(top: 15,right: 8,left: 8,bottom: 18),
+                          decoration: BoxDecoration(
+                        // border: Border.all(),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: Offset(0, 3), // changes position of shadow
+                              ),
+                            ],
+                    ),
+                          child: Column(
+
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
             )
