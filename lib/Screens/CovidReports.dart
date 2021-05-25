@@ -206,8 +206,8 @@ class AdminCovRec extends StatelessWidget {
                                                                             MainAxisSize.min,
                                                                         children: [
                                                                           !c
-                                                                              ? Text('No Symptoms')
-                                                                              : Container(),
+                                                                              ? Text('No Symptoms',style: TextStyle(fontWeight: FontWeight.bold),)
+                                                                              : Text('Symptoms',style: TextStyle(fontWeight: FontWeight.bold),),
                                                                           head
                                                                               ? Tooltip(
                                                                                   message: 'Headache',

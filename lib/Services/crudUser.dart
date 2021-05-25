@@ -1458,7 +1458,7 @@ class _RecordForUserState extends State<RecordForUser> {
                                                   children: [
                                                     !c
                                                         ? Text('No Symptoms')
-                                                        : Container(),
+                                                        : Text('Symptoms'),
                                                     head
                                                         ? Tooltip(
                                                             message: 'Headache',
