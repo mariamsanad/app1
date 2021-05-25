@@ -382,13 +382,13 @@ class UsersForS extends StatefulWidget {
 class _UsersForSState extends State<UsersForS> {
   bool isLoading = false;
 
+
   @override
   Widget build(BuildContext context) {
+    CollectionReference u = FirebaseFirestore.instance.collection('companies/${this.widget.cid}/supervisors/${this.widget.sid}/${this.widget.pos}');
+
     return StreamBuilder<QuerySnapshot>(
-      stream: companies
-          .doc(this.widget.cid)
-          .collection('supervisors/${this.widget.sid}/${this.widget.pos}')
-          .snapshots(includeMetadataChanges: true),
+      stream: u.snapshots(includeMetadataChanges: true),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return Text('Something went wrong,you may be not authenticated');
