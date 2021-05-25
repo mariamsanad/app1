@@ -1813,11 +1813,19 @@ Future addReply(userid,message,date) async {
       .then((value) => print("Message sent"))
       .catchError((error) => print("Failed to send message: $error"));
 }
-Future createChat(username) async {
+Future createChat() async {
   return chats.doc(FirebaseAuth.instance.currentUser.uid).set({
     'userid': FirebaseAuth.instance.currentUser.uid,
     'isRead': 'false',
-    'drid': 'tHhZ73APULbOaF43qTx8IpVqDCi2',
+    'drid': ''
+  })
+      .then((value) => print("Message sent"))
+      .catchError((error) => print("Failed to send message: $error"));
+}
+Future updateChat(userid) async {
+  return chats.doc(userid).update({
+    'isRead': 'true',
+    'drid': FirebaseAuth.instance.currentUser.uid,
   })
       .then((value) => print("Message sent"))
       .catchError((error) => print("Failed to send message: $error"));

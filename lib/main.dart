@@ -13,13 +13,15 @@ import 'Screens/Statistics.dart';
 import 'Screens/AddSupervisor.dart';
 import 'package:flutter/material.dart';
 import 'Home.dart';
-import 'Screens/ChatRoom.dart';
-import 'Screens/viewQuestions.dart';
 import 'Screens/Register.dart';
 import 'Screens/users.dart';
 import 'Screens/Details.dart';
 import 'Screens/CovidReports.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'Screens/ChatRoom.dart';
+import 'Screens/viewQuestions.dart';
+import 'Screens/ChatHistory.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -128,6 +130,9 @@ class MyApp extends StatelessWidget {
                 },
                 "viewquestions": (context) {
                   return ViewQuestions(FirebaseAuth.instance.currentUser.uid);
+                },
+                "chathistory": (context) {
+                  return ChatHistory(FirebaseAuth.instance.currentUser.uid);
                 },
              },
             ));

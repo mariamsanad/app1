@@ -27,7 +27,7 @@ class _ViewQuestionsState extends State<ViewQuestions> {
     body: Container(
 
       child: StreamBuilder<QuerySnapshot>(
-        stream: chats.snapshots(),
+        stream: chats.where('drid', isEqualTo: '').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
     if (snapshot.hasError) {
     return Text('Something went wrong,you may be not authenticated');
@@ -41,7 +41,7 @@ class _ViewQuestionsState extends State<ViewQuestions> {
     physics: BouncingScrollPhysics(),
     padding: EdgeInsets.only(top: 10, bottom: 10),
     children: snapshot.data!.docs.map((DocumentSnapshot document) {
-      return Container(
+       return Container(
           padding: EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
           child: Container(
             decoration: BoxDecoration(
@@ -50,11 +50,13 @@ class _ViewQuestionsState extends State<ViewQuestions> {
             ),
             padding: EdgeInsets.all(16),
             child: GestureDetector(
-      child:new Text( document.data()['userid'].toString()),
-
+      child:new Text( getUserName(document.data()['userid'].toString()).toString()),
       onTap:(){ Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => ChatRoomDr(document.data()['userid']
-      )));})
+        builder: (context) => ChatRoomDr(document.data()['userid'],
+      )));
+      updateChat(document.data()['userid']);
+      }
+      )
           )
       );
     }).toList(),
