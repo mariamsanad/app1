@@ -18,7 +18,8 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   bool edit = false, isLoading = false;
-  bool vac = false;
+  // bool vac = false;
+  bool vaccined = false;
   var _verticalGroupValue;
 
   @override
@@ -43,6 +44,7 @@ class _ProfileState extends State<Profile> {
             TextEditingController _type = TextEditingController(
                 text: snapshot.data!.data()['type'].toString());
              _verticalGroupValue = snapshot.data!.data()['work'];
+
 
             if (snapshot.hasError) {
               return Text('Something went wrong, you may be not authenticated');
@@ -134,10 +136,11 @@ class _ProfileState extends State<Profile> {
                             ? null
                             : CheckboxListTile(
                                 title: Text('Vaccined(two injections)'),
-                                value: vac,
+                                value: vaccined==true,
                                 onChanged: (v) {
+                                  print(v);
                                   setState(() {
-                                    vac = v!;
+                                    vaccined = v!;
                                   });
                                 },
                               ),
@@ -176,8 +179,8 @@ class _ProfileState extends State<Profile> {
                                   });
 
                                   this.widget.cid==null?updateProfile(this.widget.user_id, _name.text,
-                                      _phone.text, vac,_verticalGroupValue):updateUserProfile(this.widget.user_id, _name.text,
-                                      _phone.text, vac,_verticalGroupValue,this.widget.cid,this.widget.sid,this.widget.pos);
+                                      _phone.text, vaccined,_verticalGroupValue):updateUserProfile(this.widget.user_id, _name.text,
+                                      _phone.text, vaccined,_verticalGroupValue,this.widget.cid,this.widget.sid,this.widget.pos);
 
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -453,7 +456,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
             TextEditingController _phone = TextEditingController(
                 text: snapshot.data!.data()['phone'].toString());
             TextEditingController _type = TextEditingController(
-                text: snapshot.data!.data()['type'].toString());
+                text:'doctor');
 
             if (snapshot.hasError) {
               return Text('Something went wrong, you may be not authenticated');

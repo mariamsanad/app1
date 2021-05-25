@@ -97,7 +97,7 @@ class _PositionsState extends State<Positions> {
                             style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.blue),
+                                color: Theme.of(context).primaryColor),
                           )),
                       Container(
                         height: 110,
@@ -141,6 +141,7 @@ class _PositionsState extends State<Positions> {
           title: Text('Positions'),
           actions: [
             TextButton(
+                style:TextButton.styleFrom(primary: Colors.black),
                 onPressed: () {
                   _showmodal();
                 },
@@ -173,6 +174,7 @@ class _PositionsState extends State<Positions> {
                   return InkWell(
                     child: new ListTile(
                       trailing: TextButton(
+                        style: TextButton.styleFrom(primary: Color(0xffa45c6c)),
                         onPressed:() async {
                           showDialog(
                               context: context,

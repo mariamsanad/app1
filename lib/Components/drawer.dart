@@ -2,6 +2,8 @@ import 'package:app1/Services/crudUser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'loading.dart';
+
 class MyDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -9,231 +11,250 @@ class MyDrawer extends StatelessWidget {
         future: checkRole(),
         builder: (context,AsyncSnapshot snapshot) {
           print(snapshot.data);
-          return Drawer(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  DrawerHeader(
-                    child: (FirebaseAuth.instance.currentUser == null||FirebaseAuth.instance.currentUser.photoURL == null)
-                        ? null
-                        :/*(FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser.photoURL != null)? */Row(
-                      children: [
-                        ClipRRect(
-                          //borderRadius: BorderRadius.circular(30.0),
-                          child: Image.network(
-                            FirebaseAuth.instance.currentUser.photoURL,
-                            alignment: AlignmentDirectional.bottomStart,
-                          ),
+          return FutureBuilder(
+            future: getUserName(FirebaseAuth.instance.currentUser.uid),
+            builder: (context, s) {
+
+              if (!s.hasData) {
+                print('the data is ' + s.data.toString());
+                return Loading();
+              }
+
+              return Drawer(
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    children: [
+                      DrawerHeader(
+                        child: (FirebaseAuth.instance.currentUser == null||FirebaseAuth.instance.currentUser.photoURL == null)
+                            ? null
+                            :/*(FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser.photoURL != null)? */Row(
+                          children: [
+                            Column(
+                              children: [
+                                ClipRRect(
+                                  //borderRadius: BorderRadius.circular(30.0),
+                                  child: Image.network(
+                                    FirebaseAuth.instance.currentUser.photoURL,
+                                    alignment: AlignmentDirectional.bottomStart,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text('Welcome '+s.data.toString()),
+                                )
+                              ],
+                            ),
+                          ],
+                        )/*:Text('Welcome '+getUserName(id))*/,
+                        decoration: BoxDecoration(
+                          color:  Theme.of(context).primaryColor,
                         ),
-                      ],
-                    )/*:Text('Welcome '+getUserName(id))*/,
-                    decoration: BoxDecoration(
-                      color:  Theme.of(context).primaryColor,
-                    ),
-                  ),
-                  Container(
-                    child: snapshot.data!='nouser'?null:ListTile(
-                      title: Text("Sign in"),
-                      leading: Image.asset(
-                        "assets/images/user.png",
-                        width: 40,
-                        height: 40,
                       ),
-                      onTap: () {
-                        Navigator.of(context).pushNamed("login");
-                      },
-                    ),
-                  ),
-                  Container(
-                    child: snapshot.data!='admin'?null:ListTile(
-                      title: Text("Companies"),
-                      leading: Image.asset(
-                        "assets/images/company.png",
-                        width: 40,
-                        height: 40,
+                      Container(
+                        child: snapshot.data!='nouser'?null:ListTile(
+                          title: Text("Sign in"),
+                          leading: Image.asset(
+                            "assets/images/user.png",
+                            width: 40,
+                            height: 40,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed("login");
+                          },
+                        ),
                       ),
-                      onTap: () {
-                        Navigator.of(context).pushNamed("companies");
-                      },
-                    ),
-                  ),
-                  Container(
-                    child: snapshot.data!='admin'?null:ListTile(
-                      title: Text("View All Users"),
-                      leading: Image.asset(
-                        "assets/images/teamwork.png",
-                        width: 40,
-                        height: 40,
+                      Container(
+                        child: snapshot.data!='admin'?null:ListTile(
+                          title: Text("Companies"),
+                          leading: Image.asset(
+                            "assets/images/company.png",
+                            width: 40,
+                            height: 40,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed("companies");
+                          },
+                        ),
                       ),
-                      onTap: () {
-                        Navigator.of(context).pushNamed("users");
-                      },
-                    ),
-                  ),
-                  Container(
-                    child: snapshot.data!='admin'?null:ListTile(
-                      title: Text("Doctors"),
-                      leading: Image.asset(
-                        "assets/images/doctor.png",
-                        width: 40,
-                        height: 40,
+                      Container(
+                        child: snapshot.data!='admin'?null:ListTile(
+                          title: Text("View All Users"),
+                          leading: Image.asset(
+                            "assets/images/teamwork.png",
+                            width: 40,
+                            height: 40,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed("users");
+                          },
+                        ),
                       ),
-                      onTap: () {
-                        Navigator.of(context).pushNamed("doctoradd");
-                      },
-                    ),
-                  ),
-                  Container(
-                    child: ListTile(
-                      title: Text("My Covid Records"),
-                      leading: Image.asset(
-                        "assets/images/covid-test.png",
-                        width: 40,
-                        height: 40,
+                      Container(
+                        child: snapshot.data!='admin'?null:ListTile(
+                          title: Text("Doctors"),
+                          leading: Image.asset(
+                            "assets/images/doctor.png",
+                            width: 40,
+                            height: 40,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed("doctoradd");
+                          },
+                        ),
                       ),
-                      onTap: () {
-                        Navigator.of(context).pushNamed("reportforuser");
-                      },
-                    ),
-                  ),
-                  Container(
-                    child: ListTile(
-                      title: Text("Admin Covid Records"),
-                      leading: Image.asset(
-                        "assets/images/chart.png",
-                        width: 40,
-                        height: 40,
+                      Container(
+                        child: ListTile(
+                          title: Text("My Covid Records"),
+                          leading: Image.asset(
+                            "assets/images/covid-test.png",
+                            width: 40,
+                            height: 40,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed("reportforuser");
+                          },
+                        ),
                       ),
-                      onTap: () {
-                        Navigator.of(context).pushNamed("admincovedrec");
-                      },
-                    ),
-                  ),
-                  Container(
-                    child: snapshot.data=='nouser'?null:ListTile(
-                      title: Text("Profile"),
-                      leading: Image.asset(
-                        "assets/images/profile.png",
-                        width: 40,
-                        height: 40,
+                      Container(
+                        child: ListTile(
+                          title: Text("Admin Covid Records"),
+                          leading: Image.asset(
+                            "assets/images/chart.png",
+                            width: 40,
+                            height: 40,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed("admincovedrec");
+                          },
+                        ),
                       ),
-                      onTap: () {
-                        Navigator.of(context).pushNamed("profile");
-                      },
-                    ),
-                  ),
-                  Container(
-                    child:snapshot.data=='nouser' && snapshot.data=='doctor'?null:ListTile(
-                      title: Text("View Questions"),
-                      leading: Image.asset(
-                        "assets/images/chat.png",
-                        width: 40,
-                        height: 40,
+                      Container(
+                        child: snapshot.data=='nouser'?null:ListTile(
+                          title: Text("Profile"),
+                          leading: Image.asset(
+                            "assets/images/profile.png",
+                            width: 40,
+                            height: 40,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed("profile");
+                          },
+                        ),
                       ),
-                      onTap: () {
-                        Navigator.of(context).pushNamed("viewquestions");
-                      },
-                    ),
-                  ),
-                  Container(
-                    child: snapshot.data=='nouser' && snapshot.data=='doctor'?null:ListTile(
-                      title: Text("Ask a Doctor"),
-                      leading: Image.asset(
-                        "assets/images/chat.png",
-                        width: 40,
-                        height: 40,
+                      Container(
+                        child:snapshot.data=='nouser' && snapshot.data=='doctor'?null:ListTile(
+                          title: Text("View Questions"),
+                          leading: Image.asset(
+                            "assets/images/chat.png",
+                            width: 40,
+                            height: 40,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed("viewquestions");
+                          },
+                        ),
                       ),
-                      onTap: () {
-                        Navigator.of(context).pushNamed("chatroom");
-                      },
-                    ),
-                  ),
-                  Container(
-                    child: snapshot.data!='nouser'?null:ListTile(
-                      enabled: FirebaseAuth.instance.currentUser == null,
-                      title: Text("Register"),
-                      leading: Image.asset(
-                        "assets/images/document.png",
-                        width: 40,
-                        height: 40,
+                      Container(
+                        child: snapshot.data=='nouser' && snapshot.data=='doctor'?null:ListTile(
+                          title: Text("Ask a Doctor"),
+                          leading: Image.asset(
+                            "assets/images/chat.png",
+                            width: 40,
+                            height: 40,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed("chatroom");
+                          },
+                        ),
                       ),
-                      onTap: () {
-                        Navigator.of(context).pushNamed("register");
-                      },
-                    ),
-                  ),
-                  /*Container(
-                    child: snapshot.data!='admin'?null:ListTile(
-                      title: Text("Add a Company"),
-                      leading: Image.asset(
-                        "assets/images/company.png",
-                        width: 40,
-                        height: 40,
+                      Container(
+                        child: snapshot.data!='nouser'?null:ListTile(
+                          enabled: FirebaseAuth.instance.currentUser == null,
+                          title: Text("Register"),
+                          leading: Image.asset(
+                            "assets/images/document.png",
+                            width: 40,
+                            height: 40,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed("register");
+                          },
+                        ),
                       ),
-                      onTap: () {
-                        Navigator.of(context).pushNamed("companyadd");
-                      },
-                    ),
-                  ),*/
-                  Container(
-                    child: (/*snapshot.data!='admin' && */snapshot.data!='company')?null:ListTile(
-                      title: Text("Add a Supervisor"),
-                      leading: Image.asset(
-                        "assets/images/supervisor2.png",
-                        width: 40,
-                        height: 40,
+                      /*Container(
+                        child: snapshot.data!='admin'?null:ListTile(
+                          title: Text("Add a Company"),
+                          leading: Image.asset(
+                            "assets/images/company.png",
+                            width: 40,
+                            height: 40,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed("companyadd");
+                          },
+                        ),
+                      ),*/
+                      Container(
+                        child: (/*snapshot.data!='admin' && */snapshot.data!='company')?null:ListTile(
+                          title: Text("Add a Supervisor"),
+                          leading: Image.asset(
+                            "assets/images/supervisor2.png",
+                            width: 40,
+                            height: 40,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed("supervisoradd");
+                          },
+                        ),
                       ),
-                      onTap: () {
-                        Navigator.of(context).pushNamed("supervisoradd");
-                      },
-                    ),
-                  ),
-                  Container(
-                    child: snapshot.data!='company'?null:ListTile(
-                      title: Text("Supervisors"),
-                      leading: Image.asset(
-                        "assets/images/supervisor2.png",
-                        width: 40,
-                        height: 40,
+                      Container(
+                        child: snapshot.data!='company'?null:ListTile(
+                          title: Text("Supervisors"),
+                          leading: Image.asset(
+                            "assets/images/supervisor2.png",
+                            width: 40,
+                            height: 40,
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SupervisorsList(
+                                      FirebaseAuth.instance.currentUser.uid),
+                                ));
+                          },
+                        ),
                       ),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SupervisorsList(
-                                  FirebaseAuth.instance.currentUser.uid),
-                            ));
-                      },
-                    ),
-                  ),
-                  Container(
-                    child: ListTile(
-                      title: Text("Record My Situation"),
-                      leading: Image.asset(
-                        "assets/images/situation.png",
-                        width: 40,
-                        height: 40,
+                      Container(
+                        child: ListTile(
+                          title: Text("Record My Situation"),
+                          leading: Image.asset(
+                            "assets/images/situation.png",
+                            width: 40,
+                            height: 40,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed('recordsit');
+                          },
+                        ),
                       ),
-                      onTap: () {
-                        Navigator.of(context).pushNamed('recordsit');
-                      },
-                    ),
-                  ),
-                  Container(
-                    child: snapshot.data!='supervisor'?null:ListTile(
-                      title: Text("Record Users"),
-                      leading: Image.asset(
-                        "assets/images/userdata.png",
-                        width: 40,
-                        height: 40,
+                      Container(
+                        child: snapshot.data!='supervisor'?null:ListTile(
+                          title: Text("Record Users"),
+                          leading: Image.asset(
+                            "assets/images/userdata.png",
+                            width: 40,
+                            height: 40,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pushNamed('position');
+                          },
+                        ),
                       ),
-                      onTap: () {
-                        Navigator.of(context).pushNamed('position');
-                      },
-                    ),
-                  ),
-                ],
-              ));
+                    ],
+                  ));
+            }
+          );
         }
     );
   }}

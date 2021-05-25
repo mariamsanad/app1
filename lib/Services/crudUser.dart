@@ -384,12 +384,10 @@ class _UsersForSState extends State<UsersForS> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading?Loading():StreamBuilder<QuerySnapshot>(
+    return StreamBuilder<QuerySnapshot>(
       stream: companies
           .doc(this.widget.cid)
-          .collection('supervisors')
-          .doc(this.widget.sid)
-          .collection(this.widget.pos)
+          .collection('supervisors/${this.widget.sid}/${this.widget.pos}')
           .snapshots(includeMetadataChanges: true),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
@@ -487,7 +485,7 @@ class _UsersForSState extends State<UsersForS> {
         );
 
 
-        
+
       },
     );
   }
