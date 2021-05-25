@@ -382,13 +382,13 @@ class UsersForS extends StatefulWidget {
 class _UsersForSState extends State<UsersForS> {
   bool isLoading = false;
 
-
   @override
   Widget build(BuildContext context) {
-    CollectionReference u = FirebaseFirestore.instance.collection('companies/${this.widget.cid}/supervisors/${this.widget.sid}/${this.widget.pos}');
-
     return StreamBuilder<QuerySnapshot>(
-      stream: u.snapshots(includeMetadataChanges: true),
+      stream: companies
+          .doc(this.widget.cid)
+          .collection('supervisors/${this.widget.sid}/${this.widget.pos}')
+          .snapshots(includeMetadataChanges: true),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return Text('Something went wrong,you may be not authenticated');
@@ -1813,11 +1813,19 @@ Future addReply(userid,message,date) async {
       .then((value) => print("Message sent"))
       .catchError((error) => print("Failed to send message: $error"));
 }
-Future createChat(username) async {
+Future createChat() async {
   return chats.doc(FirebaseAuth.instance.currentUser.uid).set({
     'userid': FirebaseAuth.instance.currentUser.uid,
     'isRead': 'false',
-    'drid': 'tHhZ73APULbOaF43qTx8IpVqDCi2',
+    'drid': ''
+  })
+      .then((value) => print("Message sent"))
+      .catchError((error) => print("Failed to send message: $error"));
+}
+Future updateChat(userid) async {
+  return chats.doc(userid).update({
+    'isRead': 'true',
+    'drid': FirebaseAuth.instance.currentUser.uid,
   })
       .then((value) => print("Message sent"))
       .catchError((error) => print("Failed to send message: $error"));
