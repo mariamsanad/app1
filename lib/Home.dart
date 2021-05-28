@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import './Components/drawer.dart';
+import 'Components/loading.dart';
 import 'Services/crudUser.dart';
 import 'Screens/Statistics.dart';
 
@@ -14,12 +15,167 @@ class Home extends StatelessWidget {
   //final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
+
+
     // final active_user = Provider.of<user>(context);
-    //print(active_user);
     return StreamBuilder(
         stream: _auth.suser,
         builder: (context, AsyncSnapshot snapshot) {
-          print(snapshot.data);
+          var arr = [ InkWell(
+            onTap: (){
+              Navigator.of(context).pushNamed("statistics");
+            },
+            child: Container(
+              margin: const EdgeInsets.only(top: 15,right: 8,left: 8,bottom: 18),
+              decoration: BoxDecoration(
+                // border: Border.all(),
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: Offset(0, 3), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(40.0),
+                    child: Text('See Global Statistics',textScaleFactor:1.8,textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Mariam',fontWeight: FontWeight.bold),),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 0),
+                    child: Image.asset(
+                      "assets/images/Picture4.png",
+                      width: 200,
+                      height: 200,
+                    ),
+                  ),
+                ],
+              ),
+
+            ),
+          ),
+            InkWell(
+              onTap: (){
+                Navigator.of(context).pushNamed("news");
+              },
+              child: Container(
+                margin: const EdgeInsets.only(top: 15,right: 8,left: 8,bottom: 18),
+                decoration: BoxDecoration(
+                  // border: Border.all(),
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(40.0),
+                      child: Text('See Local News',textScaleFactor:1.8,textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Mariam',fontWeight: FontWeight.bold),),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 0),
+                      child: Image.asset(
+                        "assets/images/Picture5.png",
+                        width: 200,
+                        height: 200,
+                      ),
+                    ),
+                  ],
+                ),
+
+              ),
+            ),];
+          if( snapshot.data != 'nouser'){
+            arr.add( InkWell(
+              onTap: (){
+                Navigator.of(context).pushNamed('recordsit');
+              },
+              child: Container(
+                margin: const EdgeInsets.only(top: 15,right: 8,left: 8,bottom: 18),
+                decoration: BoxDecoration(
+                  // border: Border.all(),
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(40.0),
+                      child: Text('Record My Situation',textScaleFactor:1.8,textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Mariam',fontWeight: FontWeight.bold),),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 0),
+                      child: Image.asset(
+                        "assets/images/Picture1.png",
+                        width: 200,
+                        height: 200,
+                      ),
+                    ),
+                  ],
+                ),
+
+              ),
+            ),);
+            arr.add( InkWell(
+              onTap: (){
+                Navigator.of(context).pushNamed("chatroom");
+                createChat(FirebaseAuth.instance.currentUser.uid);
+              },
+              child: Container(
+                margin: const EdgeInsets.only(top: 15,right: 8,left: 8,bottom: 18),
+                decoration: BoxDecoration(
+                  // border: Border.all(),
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(40.0),
+                      child: Text('Ask a Doctor',textScaleFactor:1.8,textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Mariam',fontWeight: FontWeight.bold),),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 0),
+                      child: Image.asset(
+                        "assets/images/Picture2.png",
+                        width: 200,
+                        height: 200,
+                      ),
+                    ),
+                  ],
+                ),
+
+              ),
+            ),);
+          }
           return Scaffold(
             //key: scaffoldKey,
               drawer: MyDrawer(),
@@ -107,143 +263,16 @@ class Home extends StatelessWidget {
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                       ),
                       // width: 150,
-                      child: PageView(
-                        children: <Widget>[
-                          InkWell(
-                            onTap: (){
-                              Navigator.of(context).pushNamed('recordsit');
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(top: 15,right: 8,left: 8,bottom: 18),
-                              decoration: BoxDecoration(
-                                // border: Border.all(),
-                                borderRadius: BorderRadius.all(Radius.circular(20)),
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 5,
-                                    blurRadius: 7,
-                                    offset: Offset(0, 3), // changes position of shadow
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(40.0),
-                                    child: Text('Record My Situation',textScaleFactor:1.8,textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Mariam',fontWeight: FontWeight.bold),),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 0),
-                                    child: Image.asset(
-                                      "assets/images/Picture1.png",
-                                      width: 200,
-                                      height: 200,
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                            ),
-                          ),
-                          InkWell(
-                            onTap: (){
-                              Navigator.of(context).pushNamed("chatroom");
-                              createChat(FirebaseAuth.instance.currentUser.uid);
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(top: 15,right: 8,left: 8,bottom: 18),
-                              decoration: BoxDecoration(
-                                // border: Border.all(),
-                                borderRadius: BorderRadius.all(Radius.circular(20)),
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 5,
-                                    blurRadius: 7,
-                                    offset: Offset(0, 3), // changes position of shadow
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(40.0),
-                                    child: Text('Ask a Doctor',textScaleFactor:1.8,textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Mariam',fontWeight: FontWeight.bold),),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 0),
-                                    child: Image.asset(
-                                      "assets/images/Picture2.png",
-                                      width: 200,
-                                      height: 200,
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                            ),
-                          ),
-                          InkWell(
-                            onTap: (){
-                              Navigator.of(context).pushNamed("statistics");
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(top: 15,right: 8,left: 8,bottom: 18),
-                              decoration: BoxDecoration(
-                                // border: Border.all(),
-                                borderRadius: BorderRadius.all(Radius.circular(20)),
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 5,
-                                    blurRadius: 7,
-                                    offset: Offset(0, 3), // changes position of shadow
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(40.0),
-                                    child: Text('See Global Statistics',textScaleFactor:1.8,textAlign: TextAlign.center,style: TextStyle(fontFamily: 'Mariam',fontWeight: FontWeight.bold),),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 0),
-                                    child: Image.asset(
-                                      "assets/images/Picture4.png",
-                                      width: 200,
-                                      height: 200,
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(top: 15,right: 8,left: 8,bottom: 18),
-                            decoration: BoxDecoration(
-                              // border: Border.all(),
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset: Offset(0, 3), // changes position of shadow
-                                ),
-                              ],
-                            ),
-                            child: Column(
-
-                            ),
-                          ),
-                        ],
+                      child: FutureBuilder(
+                        future: checkRole(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return Loading();
+                          }
+                          return PageView(
+                            children: arr
+                          );
+                        }
                       ),
                     ),
                     dosom('bahrain'),

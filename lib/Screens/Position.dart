@@ -221,8 +221,6 @@ class _PositionsState extends State<Positions> {
                       subtitle: new Text(document.data()['position'].toString()),
                     ),
                     onTap:(){
-                      print('this.widget.sid: '+this.widget.sid);
-                      print('pos: '+document.data()['position'].toString());
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => UsersForSuper(this.widget.sid, document.data()['position'].toString()),

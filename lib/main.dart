@@ -1,8 +1,10 @@
 import 'Screens/AdminCovidReports.dart';
 import 'package:app1/Screens/viewQuestions.dart';
 import 'Screens/Companies.dart';
+import 'Screens/SuperCovidRecord.dart';
 import 'Screens/Position.dart';
 import 'Screens/Profile.dart';
+import 'Screens/CompanyCovidRecord.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'Screens/Login.dart';
@@ -52,8 +54,8 @@ class MyApp extends StatelessWidget {
           buttonColor:  Color(0xffa45c6c),
 
             buttonTheme: ButtonThemeData(
-              buttonColor: Color(0xffa45c6c),     //  <-- dark color
-             // textTheme: ButtonTextTheme.primary, //  <-- this auto selects the right color
+              buttonColor: Color(0xffe45b5e), //  <-- dark color
+              // textTheme: ButtonTextTheme.accent, //  <-- this auto selects the right color
             )
           // buttonColor: Colors.deepPurple,     //  <-- dark color
 
@@ -75,6 +77,12 @@ class MyApp extends StatelessWidget {
                 },
                 'admincovedrec': (context) {
                   return AdminCovidReports();
+                },
+                'companycovedrec': (context) {
+                  return CompanyCovidReports();
+                },
+                'supercovedrec': (context) {
+                  return SuperCovidReports();
                 },
                 'situation': (context) {
                   return RecordCovid();

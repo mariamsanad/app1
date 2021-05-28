@@ -273,7 +273,8 @@ Future<void> addUser(id, nome, name, type, phone, vac, workfrom) {
         'role': 'user',
         'phone': phone,
         'vac': vac,
-        'work': workfrom
+        'work': workfrom,
+    'infected':false
       })
       .then((value) => print("User Added"))
       .catchError((error) => print("Failed to add user: $error"));
@@ -382,116 +383,126 @@ class UsersForS extends StatefulWidget {
 
   UsersForS(this.sid, this.cid, this.pos);
 }
+getu(sid,cid,pos) async {
+  return await FirebaseFirestore.instance.collection('companies/${cid}/supervisors/${sid}/${pos}');
+}
 
 class _UsersForSState extends State<UsersForS> {
   bool isLoading = false;
 
+  var u;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
 
   @override
   Widget build(BuildContext context) {
-    CollectionReference u = FirebaseFirestore.instance.collection('companies/${this.widget.cid}/supervisors/${this.widget.sid}/${this.widget.pos}');
+  return StreamBuilder<QuerySnapshot>(
+    stream: FirebaseFirestore.instance.collection('companies/${this.widget.cid}/supervisors/${this.widget.sid}/${this.widget.pos}').snapshots(includeMetadataChanges: true),
+    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+      if (snapshot.hasError) {
+        return Text('Something went wrong,you may be not authenticated');
+      }
 
-    return StreamBuilder<QuerySnapshot>(
-      stream: u.snapshots(includeMetadataChanges: true),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasError) {
-          return Text('Something went wrong,you may be not authenticated');
-        }
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Loading();
+      }
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Loading();
-        }
-
-        return snapshot.hasData
-            ? SizedBox(
-          width: double.infinity,
-          child: DataTable(
-            showCheckboxColumn: false,
-            sortColumnIndex: 0,
-            sortAscending: true,
-            columns: [
-              DataColumn(
-                label: Text(
-                  'Name',
-                  style: TextStyle(fontStyle: FontStyle.italic),
-                ),
+      return snapshot.hasData
+          ? SizedBox(
+        width: double.infinity,
+        child: DataTable(
+          showCheckboxColumn: false,
+          sortColumnIndex: 0,
+          sortAscending: true,
+          columns: [
+            DataColumn(
+              label: Text(
+                'Name',
+                style: TextStyle(fontStyle: FontStyle.italic),
               ),
-              DataColumn(
-                numeric: true,
-                label: Text(
-                  'Phone',
-                  style: TextStyle(fontStyle: FontStyle.italic),
-                ),
+            ),
+            DataColumn(
+              numeric: true,
+              label: Text(
+                'Phone',
+                style: TextStyle(fontStyle: FontStyle.italic),
               ),
-              DataColumn(
-                label: Text(
-                  'Type',
-                  style: TextStyle(fontStyle: FontStyle.italic),
-                ),
+            ),
+            DataColumn(
+              label: Text(
+                'Type',
+                style: TextStyle(fontStyle: FontStyle.italic),
               ),
-            ],
-            rows: snapshot.data!.docs.map((DocumentSnapshot document) {
-              return DataRow(onSelectChanged: (b) {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          Profile(document.id,this.widget.cid,this.widget.sid,this.widget.pos),
-                    ));
+            ),
+          ],
+          rows: snapshot.data!.docs.map((DocumentSnapshot document) {
+            return DataRow(onSelectChanged: (b) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        Profile(document.id,this.widget.cid,this.widget.sid,this.widget.pos),
+                  ));
 
-              }, cells: [
-                DataCell(Text(document.data()['name'].toString()),showEditIcon: true),
-                DataCell(Text(document.data()['phone'].toString())),
-                /*TextButton(onPressed: (){
+            }, cells: [
+              DataCell(Text(document.data()['name'].toString()),showEditIcon: true),
+              DataCell(Text(document.data()['phone'].toString())),
+              /*TextButton(onPressed: (){
                       Navigator.of(context).pushNamed('reset');
                     }, child: Text('Forgot password?'))*/
-                DataCell(document.data()['type'] != 'supervisor'
-                    ? Text(document.data()['type'])
-                    : TextButton(
-                  child: Text(
-                    document.data()['type'],
-                    style: TextStyle(color: Colors.green),
-                  ),
-                  onPressed: () {
-                    if (document.data()['type'] == 'supervisor') {
-                      showDialog(
-                          context: context,
-                          builder: (context) => StreamBuilder<
-                              DocumentSnapshot>(
-                              stream: companies
-                                  .doc(
-                                  document.data()['company_id'])
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                return AlertDialog(
-                                  content: snapshot.hasData
-                                      ? Text('Company: ' +
-                                      snapshot.data!['name'])
-                                      : Loading(),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text("OK"))
-                                  ],
-                                );
-                              }));
-                    }
-                  },
-                )),
-              ]);
-            }).toList(),
-          ),
-        )
-            : Container(
-          child: Text('No Supervisors found'),
-        );
+              DataCell(document.data()['type'] != 'supervisor'
+                  ? Text(document.data()['type'])
+                  : TextButton(
+                child: Text(
+                  document.data()['type'],
+                  style: TextStyle(color: Colors.green),
+                ),
+                onPressed: () {
+                  if (document.data()['type'] == 'supervisor') {
+                    showDialog(
+                        context: context,
+                        builder: (context) => StreamBuilder<
+                            DocumentSnapshot>(
+                            stream: companies
+                                .doc(
+                                document.data()['company_id'])
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              return AlertDialog(
+                                content: snapshot.hasData
+                                    ? Text('Company: ' +
+                                    snapshot.data!['name'])
+                                    : Loading(),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text("OK"))
+                                ],
+                              );
+                            }));
+                  }
+                },
+              )),
+            ]);
+          }).toList(),
+        ),
+      )
+          : Container(
+        child: Text('No Supervisors found'),
+      );
 
 
 
-      },
-    );
+    },
+  );
+
   }
 }
 
@@ -750,67 +761,72 @@ class CompaniesListForCov extends StatelessWidget {
 
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: DataTable(
-            showCheckboxColumn: false,
-            // sortColumnIndex: 0,
-            // sortAscending: true,
-            columns: [
-              DataColumn(
-                tooltip: 'The name of company',
-                label: Text(
-                  'Name',
-                  style: TextStyle(fontStyle: FontStyle.italic),
-                ),
-              ),
-              /* DataColumn(
-                numeric: true,
-                label: Text(
-                  'Phone',
-                  style: TextStyle(fontStyle: FontStyle.italic),
-                ),
-              ),*/
-              DataColumn(
-                label: Text(
-                  'Type',
-                  style: TextStyle(fontStyle: FontStyle.italic),
-                ),
-              ),
-              DataColumn(
-                label: Text(
-                  'Supervisors',
-                  style: TextStyle(fontStyle: FontStyle.italic),
-                ),
-              ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              DataTable(
+                showCheckboxColumn: false,
+                // sortColumnIndex: 0,
+                // sortAscending: true,
+                columns: [
+                  DataColumn(
+                    tooltip: 'The name of company',
+                    label: Text(
+                      'Name',
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                  /* DataColumn(
+                    numeric: true,
+                    label: Text(
+                      'Phone',
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                  ),*/
+                  DataColumn(
+                    label: Text(
+                      'Type',
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                  DataColumn(
+                    label: Text(
+                      'Supervisors',
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                  ),
 
+                ],
+                rows: snapshot.data!.docs.map((DocumentSnapshot document) {
+                  return DataRow(
+                     /* onSelectChanged: (b) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  CompanyProfile(document.data()['company_id']),
+                            ));
+                      },*/
+                      cells: [
+                        DataCell(Text(document.data()['name'].toString()),/*showEditIcon:true*/),
+                        /*DataCell(Text(document.data()['phone'].toString())),*/
+                        DataCell(Text(document.data()['type'])),
+                        DataCell(ElevatedButton(
+                          style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
+                          child: Text('Show List'),
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SupervisorsListForCov(
+                                    document.data()['company_id'].toString()),
+                              )),
+                        ),
+
+                        ),
+                      ]);
+                }).toList(),
+              ),
             ],
-            rows: snapshot.data!.docs.map((DocumentSnapshot document) {
-              return DataRow(
-                 /* onSelectChanged: (b) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              CompanyProfile(document.data()['company_id']),
-                        ));
-                  },*/
-                  cells: [
-                    DataCell(Text(document.data()['name'].toString()),/*showEditIcon:true*/),
-                    /*DataCell(Text(document.data()['phone'].toString())),*/
-                    DataCell(Text(document.data()['type'])),
-                    DataCell(ElevatedButton(
-                      style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
-                      child: Text('Show List'),
-                      onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SupervisorsListForCov(
-                                document.data()['company_id'].toString()),
-                          )),
-                    ),
-
-                    ),
-                  ]);
-            }).toList(),
           ),
         );
       },
@@ -1036,6 +1052,88 @@ class SupervisorsListForCov extends StatelessWidget {
     );
   }
 }
+class SupervisorsListForCovCom extends StatelessWidget {
+  final cid;
+  SupervisorsListForCovCom(this.cid);
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+        stream: companies.doc(cid).collection('supervisors').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text('Something went wrong,you may be not authenticated');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: Loading());
+          }
+
+          return snapshot.hasData
+              ? SizedBox(
+            width: double.infinity,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                showCheckboxColumn: false,
+                sortColumnIndex: 0,
+                sortAscending: true,
+                columns: [
+                  DataColumn(
+                    label: Text(
+                      'Name',
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                  ),
+
+                  DataColumn(
+                    label: Text(
+                      'Type',
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                  ),
+
+                  DataColumn(
+                    label: Text(
+                      'Positions',
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                ],
+                rows: snapshot.data!.docs.map((DocumentSnapshot document) {
+                  return DataRow(
+                    /* onSelectChanged: (b) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        SupervisorProfile(document.id),
+                                  ));
+                            },*/
+                      cells: [
+                        DataCell(Text(document.data()['name'].toString()),showEditIcon: true),
+                        DataCell(Text(document.data()['position'])),
+                        DataCell(TextButton(
+                          child: Text('See Positions'),
+                          onPressed: (){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        SuperCovRec(this.cid,document.id.toString())));
+                          },
+                        )),
+                      ]);
+                }).toList(),
+              ),
+            ),
+          )
+              : Container(
+            child: Text('No Supervisors found'),
+          );
+        },
+      );
+  }
+}
 
   Future<void> addCompany(name, type, address, cpr, email, phone) async {
   final UserCredential userCredential =
@@ -1049,6 +1147,7 @@ class SupervisorsListForCov extends StatelessWidget {
         'phone': phone,
         'type': 'company',
         'role': 'company',
+    'infected':false
       })
       .then((value) => print("User Added"))
       .catchError((error) => print("Failed to add user: $error"));
@@ -1078,6 +1177,7 @@ Future<void> addDoctor(name, type, address, cpr, email, phone) async {
     'phone': phone,
     'type': 'doctor',
     'role': 'doctor',
+    'infected':false
   })
       .then((value) => print("User Added"))
       .catchError((error) => print("Failed to add user: $error"));
@@ -1112,7 +1212,8 @@ Future addSupervisor(String companyid, String name, String email, String pass,
         'company_id': companyid,
         'role': 'supervisor',
         'vac': vac,
-        'work': workfrom
+        'work': workfrom,
+    'infected':false
       })
       .then((value) => print("User Added"))
       .catchError((error) => print("Failed to add user: $error"));
@@ -1208,7 +1309,8 @@ Future UserAdd1(String companyid, String supervisorid, String name,
         'company_id': companyid,
         'supervisor_id': supervisorid,
         'role': 'user',
-        'vac': vac
+        'vac': vac,
+    'infected':false
       })
       .then((value) => print("User Added"))
       .catchError((error) => print("Failed to add user1: $error"));
@@ -1245,6 +1347,7 @@ Future<void> addCovidRecord(id, date, cough, headache, fever, infected) async {
   var i = await getUserName(id).then((v){
     return v;
   });
+  await users.doc(id).update({'infected':infected});
 
   var n = getCompanyid(id).then((v)async{
     if (v!=false){
@@ -1252,8 +1355,10 @@ Future<void> addCovidRecord(id, date, cough, headache, fever, infected) async {
         companiescov.doc(v).collection('recs').doc(id).get().then((b) async {
           if(b.exists){
             await getPosition(id).then((v)async{
+              await getUserName(id).then((n)async{
+                await poscov.doc(v).collection('infected').doc(id).set({'id':id,'name':n});
+              });
 
-              await poscov.doc(v).collection('infected').doc(id).set({'id':id});
               // await pos.doc(v).update({'count':FieldValue.increment(1)});
             });
           }else{
@@ -1942,7 +2047,6 @@ class _showDailyRadialGraphState extends State<showDailyRadialGraph> {
         builder: (BuildContext context, AsyncSnapshot snapshot){
           print(this.widget.date);
 
-          // print(snapshot.data);
 
           var dateRec=0;
           var headRec=0;
@@ -1950,7 +2054,6 @@ class _showDailyRadialGraphState extends State<showDailyRadialGraph> {
           var caughRec=0;
 
           if (!snapshot.hasData){
-            //print(snapshot.data);
             return Loading();
           }
 
@@ -1966,12 +2069,11 @@ class _showDailyRadialGraphState extends State<showDailyRadialGraph> {
                 dateRec++;
               print(v.data());
             });
-            // print('c= '+caughRec.toString()+' f = '+feverRec.toString()+' h= '+headRec.toString()+' d = '+dateRec.toString());
 
             final List<mrec> chartData = [
-              mrec(feverRec,'Fever',Color(0xffFCD570)),
-              mrec(caughRec,'Cough',Color(0xffFB88DB)),
-              mrec( headRec,'Headache',Color(0xff84DC77)),
+              mrec(feverRec,'Fever',Color(0xff048c74)),
+              mrec(caughRec,'Cough',Color(0xffa45c6c)),
+              mrec( headRec,'Headache',Color(0xfffc747c)),
               mrec( dateRec,'None',Color(0xffA0C5FD))
             ];
 
@@ -2001,23 +2103,6 @@ class _showDailyRadialGraphState extends State<showDailyRadialGraph> {
           ]
           );
 
-            /*  SfCircularChart(
-                tooltipBehavior: _tooltipBehavior,
-                legend: Legend(isVisible: true),
-                series: <CircularSeries>[
-                  // Renders radial bar chart
-                  RadialBarSeries<DateRec, String>(
-                    dataSource: chartData,
-                    xValueMapper: (DateRec data, _) => data.date,
-                    yValueMapper: (DateRec data, _) => data.cases,
-                cornerStyle: CornerStyle.bothCurve,
-                      dataLabelSettings: DataLabelSettings(
-                        // Renders the data label
-                          isVisible: true
-                      )
-                  )
-                ]
-            );*/
           }
           return Center(child: Loading());
 

@@ -138,7 +138,6 @@ class _ProfileState extends State<Profile> {
                                 title: Text('Vaccined(two injections)'),
                                 value: vaccined==true,
                                 onChanged: (v) {
-                                  print(v);
                                   setState(() {
                                     vaccined = v!;
                                   });

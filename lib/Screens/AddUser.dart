@@ -146,7 +146,6 @@ class _UserAddState extends State<UserAdd> {
 
                             try{
 
-                              print('the company id is '+comId);
                               await UserAdd1(comId,this.widget.sid,_name.text, _email.text, _cpr.text,_phone.text,this.widget.pos,vac).then((value){
                                 setState(() {
                                   isLoading = false;

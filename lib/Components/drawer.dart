@@ -10,12 +10,10 @@ class MyDrawer extends StatelessWidget {
     return FutureBuilder(
         future: checkRole(),
         builder: (context, AsyncSnapshot snapshot) {
-          print(snapshot.data);
           return FutureBuilder(
           future: getUserNameA(),
           builder: (context, s) {
           if (!s.hasData) {
-             print('the data is ' + s.data.toString());
              return Loading();
             }
           return Drawer(
@@ -26,7 +24,10 @@ class MyDrawer extends StatelessWidget {
                 child: (FirebaseAuth.instance.currentUser == null ||
                         FirebaseAuth.instance.currentUser.photoURL == null)
                     ? null
-                    : /*(FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser.photoURL != null)? */ Row(
+                    :(FirebaseAuth.instance.currentUser == null )?Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('Welcome '+s.data.toString()),
+                ): /*(FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser.photoURL != null)? */ Row(
                         children: [
                           Column(
                             children: [
@@ -37,10 +38,10 @@ class MyDrawer extends StatelessWidget {
                                   alignment: AlignmentDirectional.bottomStart,
                                 ),
                               ),
-                              (s.data!=false)?Padding(
+                              Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text('Welcome '+s.data.toString()),
-                              ):Container()
+                              )
                             ],
                           ),
                         ],
@@ -68,7 +69,7 @@ class MyDrawer extends StatelessWidget {
                 child: snapshot.data != 'admin'
                     ? null
                     : ListTile(
-                        title: Text("Companies"),
+                        title: Text("All Companies & Supervisors"),
                         leading: Image.asset(
                           "assets/images/company.png",
                           width: 40,
@@ -136,6 +137,36 @@ class MyDrawer extends StatelessWidget {
                   ),
                   onTap: () {
                     Navigator.of(context).pushNamed("admincovedrec");
+                  },
+                ),
+              ),
+              Container(
+                child: snapshot.data != 'company'
+                    ? null
+                    : ListTile(
+                  title: Text("Company Covid Records"),
+                  leading: Image.asset(
+                    "assets/images/chart.png",
+                    width: 40,
+                    height: 40,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pushNamed("companycovedrec");
+                  },
+                ),
+              ),
+              Container(
+                child: snapshot.data != 'supervisor'
+                    ? null
+                    : ListTile(
+                  title: Text("Supervisor Covid Records"),
+                  leading: Image.asset(
+                    "assets/images/chart.png",
+                    width: 40,
+                    height: 40,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pushNamed("supercovedrec");
                   },
                 ),
               ),
