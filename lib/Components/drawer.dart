@@ -1,3 +1,4 @@
+import 'package:app1/Screens/Companies.dart';
 import 'package:app1/Services/crudUser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class MyDrawer extends StatelessWidget {
                         FirebaseAuth.instance.currentUser.photoURL == null)
                     ? null
                     :(FirebaseAuth.instance.currentUser == null )?Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(7.0),
                   child: Text('Welcome '+s.data.toString()),
                 ): /*(FirebaseAuth.instance.currentUser != null && FirebaseAuth.instance.currentUser.photoURL != null)? */ Row(
                         children: [
@@ -39,7 +40,7 @@ class MyDrawer extends StatelessWidget {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(3.0),
                                 child: Text('Welcome '+s.data.toString()),
                               )
                             ],
@@ -247,35 +248,6 @@ class MyDrawer extends StatelessWidget {
                         },
                       ),
               ),
-              /*Container(
-                        child: snapshot.data!='admin'?null:ListTile(
-                          title: Text("Add a Company"),
-                          leading: Image.asset(
-                            "assets/images/company.png",
-                            width: 40,
-                            height: 40,
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pushNamed("companyadd");
-                          },
-                        ),
-                      ),*/
-              Container(
-                child:
-                    (/*snapshot.data!='admin' && */ snapshot.data != 'company')
-                        ? null
-                        : ListTile(
-                            title: Text("Add a Supervisor"),
-                            leading: Image.asset(
-                              "assets/images/supervisor2.png",
-                              width: 40,
-                              height: 40,
-                            ),
-                            onTap: () {
-                              Navigator.of(context).pushNamed("supervisoradd");
-                            },
-                          ),
-              ),
               Container(
                 child: snapshot.data != 'company'
                     ? null
@@ -290,14 +262,16 @@ class MyDrawer extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => SupervisorsList(
+                                builder: (context) => Supervisors(
                                     FirebaseAuth.instance.currentUser.uid),
                               ));
                         },
                       ),
               ),
               Container(
-                child: ListTile(
+                child: snapshot.data == 'nouser'
+                    ? null
+                    : ListTile(
                   title: Text("Record My Situation"),
                   leading: Image.asset(
                     "assets/images/situation.png",

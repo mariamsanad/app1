@@ -7,19 +7,14 @@ import 'Services/crudUser.dart';
 import 'Screens/Statistics.dart';
 
 
-//final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
-
 class Home extends StatelessWidget {
 
   final Auth _auth = Auth();
-  //final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
 
-
-    // final active_user = Provider.of<user>(context);
-    return StreamBuilder(
-        stream: _auth.suser,
+    return FutureBuilder(
+        future: checkRole(),
         builder: (context, AsyncSnapshot snapshot) {
           var arr = [ InkWell(
             onTap: (){
@@ -58,8 +53,7 @@ class Home extends StatelessWidget {
               ),
 
             ),
-          ),
-            InkWell(
+          ), InkWell(
               onTap: (){
                 Navigator.of(context).pushNamed("news");
               },
@@ -97,7 +91,8 @@ class Home extends StatelessWidget {
 
               ),
             ),];
-          if( snapshot.data != 'nouser'){
+          print(snapshot.data);
+          if( snapshot.data != 'nouser'||snapshot.data==null){
             arr.add( InkWell(
               onTap: (){
                 Navigator.of(context).pushNamed('recordsit');

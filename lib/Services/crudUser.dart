@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:app1/Components/loading.dart';
 import 'package:app1/Screens/Companies.dart';
 import 'package:app1/Screens/CovidReports.dart';
@@ -13,6 +12,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'User.dart';
+
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -34,11 +34,6 @@ checkRole() async {
 CollectionReference users = FirebaseFirestore.instance.collection('users');
 CollectionReference positions =
     FirebaseFirestore.instance.collection('positions');
-/*
-CollectionReference pos =
-FirebaseFirestore.instance.collection('pos');
-*/
-
 CollectionReference companies =
     FirebaseFirestore.instance.collection('companies');
 CollectionReference doctors =
@@ -2091,18 +2086,6 @@ class _showDailyRadialGraphState extends State<showDailyRadialGraph> {
           ]
           );
 
-
-              SfCartesianChart(
-          series: <ChartSeries>[
-          // Renders bar chart
-          BarSeries<mrec, num>(
-          dataSource: chartData,
-          xValueMapper: (mrec sales, _) => sales.name ,
-          yValueMapper: (mrec sales, _) => sales.num
-          )
-          ]
-          );
-
           }
           return Center(child: Loading());
 
@@ -2148,9 +2131,8 @@ class _RecsEachCompanyState extends State<RecsEachCompany> {
     );
   }
 }
-
-
 */
+
 Future addMessage(message,date) async {
   CollectionReference messages =chats.doc(FirebaseAuth.instance.currentUser.uid).collection("messages");
   return messages.doc().set({
@@ -2178,8 +2160,8 @@ Future createChat(userid) async {
     'isRead': 'false',
     'drid': ''
   })
-      .then((value) => print("Message sent"))
-      .catchError((error) => print("Failed to send message: $error"));
+.then((value) => print("Message sent"))
+.catchError((error) => print("Failed to send message: $error"));
 }
 Future updateChat(userid) async {
   return chats.doc(userid).update({
