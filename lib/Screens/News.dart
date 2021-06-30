@@ -1,8 +1,6 @@
 import 'package:app1/Components/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:web_scraper/web_scraper.dart';
-// import 'package:html/parser.dart' show parse;
-// import 'package:html/dom.dart';
 
 class News extends StatefulWidget {
   @override
@@ -12,7 +10,6 @@ class News extends StatefulWidget {
 getscrap() async {
   final webScraper = WebScraper('https://www.moh.gov.bh');
   if (await webScraper.loadWebPage('/COVID19/News')) {
-    /*List<Map<String, dynamic>> */
     final elements = webScraper.getElement('tbody#myTable', []);
     return elements;
   }

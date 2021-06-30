@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-class Mlist extends StatelessWidget {
+class AllUsersList extends StatelessWidget {
 
   final id;
   final fname;
@@ -8,7 +8,7 @@ class Mlist extends StatelessWidget {
   final dob;
   final type;
 
-  Mlist({this.id, this.fname, this.lname, this.email, this.dob, this.type});
+  AllUsersList({this.id, this.fname, this.lname, this.email, this.dob, this.type});
   @override
   Widget build(BuildContext context) {
     return InkWell(

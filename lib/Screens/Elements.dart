@@ -1,7 +1,7 @@
 import 'package:app1/Screens/AddCompany.dart';
 import 'package:app1/Screens/AddSupervisor.dart';
 import 'package:app1/Screens/AddDoctor.dart';
-import 'package:app1/Services/crudUser.dart';
+import 'package:app1/Services/CRUD.dart';
 import 'package:flutter/material.dart';
 
 import 'AddUser.dart';
@@ -14,7 +14,7 @@ class Companies extends StatelessWidget {
       appBar: AppBar(
         title: Text("Companies List: "),
         actions: [
-          FlatButton(onPressed: (){
+          TextButton(onPressed: (){
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) =>CompanyAdd()),
@@ -34,7 +34,7 @@ class Doctors extends StatelessWidget {
       appBar: AppBar(
         title: Text("Doctors List: "),
         actions: [
-          FlatButton(onPressed: (){
+          TextButton(onPressed: (){
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) =>DoctorAdd()),
@@ -74,7 +74,7 @@ class _UsersForSuperState extends State<UsersForSuper> {
       appBar: AppBar(
         title: Text('Users in '+ this.widget.position+' List: '),
         actions: [
-          FlatButton(onPressed: (){
+          TextButton(onPressed: (){
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => UserAdd(pos:this.widget.position,sid:this.widget.supervisor_id)),
@@ -104,7 +104,7 @@ class _SupervisorsState extends State<Supervisors> {
       appBar: AppBar(
         title: Text('Supervisors List: '),
         actions: [
-          FlatButton(onPressed: (){
+          TextButton(onPressed: (){
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => SupervisorAdd(this.widget.company_id)),

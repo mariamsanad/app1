@@ -1,6 +1,6 @@
 import 'package:app1/Components/loading.dart';
 import 'package:app1/Screens/Login.dart';
-import 'package:app1/Services/crudUser.dart';
+import 'package:app1/Services/CRUD.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

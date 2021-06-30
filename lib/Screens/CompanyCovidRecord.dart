@@ -1,9 +1,8 @@
-import 'package:app1/Services/crudUser.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:app1/Services/CRUD.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'CovidReports.dart';
 
 class CompanyCovidReports extends StatefulWidget {
   @override

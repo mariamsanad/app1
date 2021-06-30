@@ -1,5 +1,5 @@
-import 'package:app1/Screens/Companies.dart';
-import 'package:app1/Services/crudUser.dart';
+import 'package:app1/Screens/Elements.dart';
+import 'package:app1/Services/CRUD.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -14,14 +14,10 @@ class Positions extends StatefulWidget {
 }
 
 class _PositionsState extends State<Positions> {
-
-  // String this.widget.sid=this.widget.sid;
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
   }
 
   void _showmodal() {
@@ -46,8 +42,7 @@ class _PositionsState extends State<Positions> {
                     });
 
                     try {
-                      await addPosition(
-                              this.widget.sid, _name.text)
+                      await addPosition(this.widget.sid, _name.text)
                           .then((value) {
                         setState(() {
                           isLoading = false;
@@ -141,7 +136,7 @@ class _PositionsState extends State<Positions> {
           title: Text('Positions'),
           actions: [
             TextButton(
-                style:TextButton.styleFrom(primary: Colors.black),
+                style: TextButton.styleFrom(primary: Colors.black),
                 onPressed: () {
                   _showmodal();
                 },
@@ -149,10 +144,8 @@ class _PositionsState extends State<Positions> {
           ],
         ),
         body: StreamBuilder<QuerySnapshot>(
-          stream: positions
-              .doc(this.widget.sid)
-              .collection('poses')
-              .snapshots(),
+          stream:
+              positions.doc(this.widget.sid).collection('poses').snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
@@ -170,70 +163,78 @@ class _PositionsState extends State<Positions> {
             }
 
             return new ListView(
-                children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                  return InkWell(
-                    child: new ListTile(
-                      trailing: TextButton(
-                        style: TextButton.styleFrom(primary: Color(0xffa45c6c)),
-                        onPressed:() async {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(32.0))),
-                                  contentPadding: EdgeInsets.only(top: 10.0),
-                                  actions: [
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(primary: Color(0xffa45c6c)),
-                                      child: Text('Delete Position'),
-                                      onPressed: () async {
-                                        await deletePosition(this.widget.sid,document.id).then((value){
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                              duration: const Duration(seconds: 5),
-                                              content: Text('Position deleted successfully'),
-                                              backgroundColor: Colors.orangeAccent,
-                                              behavior: SnackBarBehavior.floating,
-                                              shape: StadiumBorder(),
-                                            ),
-                                          );
-                                          Navigator.of(context).pop();
-                                        }
+              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                return InkWell(
+                  child: new ListTile(
+                    trailing: TextButton(
+                      style: TextButton.styleFrom(primary: Color(0xffa45c6c)),
+                      onPressed: () async {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(32.0))),
+                                contentPadding: EdgeInsets.only(top: 10.0),
+                                actions: [
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Color(0xffa45c6c)),
+                                    child: Text('Delete Position'),
+                                    onPressed: () async {
+                                      await deletePosition(
+                                              this.widget.sid, document.id)
+                                          .then((value) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            duration:
+                                                const Duration(seconds: 5),
+                                            content: Text(
+                                                'Position deleted successfully'),
+                                            backgroundColor:
+                                                Colors.orangeAccent,
+                                            behavior: SnackBarBehavior.floating,
+                                            shape: StadiumBorder(),
+                                          ),
                                         );
-                                      },
-                                    ),
-                                  ],
-                                  content: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Text('Are you sure you want to delete the position '+document.data()['position']),
-                                  ) ,
-
-                                );
-                              });
-                        },
-                        child: Icon(Icons.delete, color: Colors.red,),
+                                        Navigator.of(context).pop();
+                                      });
+                                    },
+                                  ),
+                                ],
+                                content: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text(
+                                      'Are you sure you want to delete the position ' +
+                                          document.data()['position']),
+                                ),
+                              );
+                            });
+                      },
+                      child: Icon(
+                        Icons.delete,
+                        color: Colors.red,
                       ),
-                      title: new Text(
-                        document.id,
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      subtitle: new Text(document.data()['position'].toString()),
                     ),
-                    onTap:(){
-                      Navigator.push(
+                    title: new Text(
+                      document.id,
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    subtitle: new Text(document.data()['position'].toString()),
+                  ),
+                  onTap: () {
+                    Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => UsersForSuper(this.widget.sid, document.data()['position'].toString()),
-                      ));
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => UserAdd(pos: document.data()['position'].toString() ,)),
-                      // );
-                    },
-                  );
-                }).toList(),
-              );
-
+                        MaterialPageRoute(
+                          builder: (context) => UsersForSuper(this.widget.sid,
+                              document.data()['position'].toString()),
+                        ));
+                  },
+                );
+              }).toList(),
+            );
           },
         ));
   }

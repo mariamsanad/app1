@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class Cdetails extends StatelessWidget {
+class CountryDetails extends StatelessWidget {
 
   final code;
   final confirmed;
@@ -12,7 +12,7 @@ class Cdetails extends StatelessWidget {
   final country;
 
 
-  Cdetails({this.date,this.code, this.confirmed, this.deaths, this.recoverd, this.active, this.country});
+  CountryDetails({this.date,this.code, this.confirmed, this.deaths, this.recoverd, this.active, this.country});
 
 
   @override

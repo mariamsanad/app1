@@ -1,6 +1,6 @@
 import 'Screens/AdminCovidReports.dart';
 import 'package:app1/Screens/viewQuestions.dart';
-import 'Screens/Companies.dart';
+import 'Screens/Elements.dart';
 import 'Screens/SuperCovidRecord.dart';
 import 'Screens/Position.dart';
 import 'Screens/Profile.dart';

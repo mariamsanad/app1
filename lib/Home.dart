@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import './Components/drawer.dart';
 import 'Components/loading.dart';
-import 'Services/crudUser.dart';
+import 'Services/CRUD.dart';
 import 'Screens/Statistics.dart';
 
 
@@ -100,7 +100,6 @@ class Home extends StatelessWidget {
               child: Container(
                 margin: const EdgeInsets.only(top: 15,right: 8,left: 8,bottom: 18),
                 decoration: BoxDecoration(
-                  // border: Border.all(),
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                   color: Colors.white,
                   boxShadow: [
@@ -179,7 +178,7 @@ class Home extends StatelessWidget {
                 title: Text("Covid-19"),
                 actions: [
                   Container(
-                    child: FirebaseAuth.instance.currentUser==null?null:FlatButton(onPressed: ()async{
+                    child: FirebaseAuth.instance.currentUser==null?null:TextButton(onPressed: ()async{
                       await _auth.signout().then((value) => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         backgroundColor: Colors.green,
                         content: Text('Signed out successfully'),

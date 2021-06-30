@@ -1,5 +1,5 @@
 import 'package:app1/Components/loading.dart';
-import 'package:app1/Services/crudUser.dart';
+import 'package:app1/Services/CRUD.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:group_radio_button/group_radio_button.dart';

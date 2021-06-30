@@ -1,15 +1,15 @@
 import 'package:app1/Components/loading.dart';
-import 'package:app1/Services/crudUser.dart';
+import 'package:app1/Services/CRUD.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 
 class UserAdd extends StatefulWidget {
   final String pos,sid;
-
   const UserAdd({Key? key,required this.pos,required this.sid}) : super(key: key);
-
   @override
   _UserAddState createState() => _UserAddState();
 }

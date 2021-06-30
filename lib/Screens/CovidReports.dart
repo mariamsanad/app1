@@ -1,9 +1,8 @@
 import 'package:app1/Components/loading.dart';
-import 'package:app1/Services/User.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:app1/Services/crudUser.dart';
+import 'package:app1/Services/CRUD.dart';
 import 'package:intl/intl.dart';
 import 'package:connectivity/connectivity.dart';
 
@@ -42,7 +41,7 @@ class _CovidReportUserState extends State<CovidReportUser> {
       appBar: AppBar(
         title: Text('My situation'),
         actions: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 Navigator.of(context).pushNamed('situation');
               },
@@ -228,7 +227,8 @@ class AdminCovRec extends StatelessWidget {
                                                                     )
                                                                     /* : Loading(),*/,
                                                                     actions: [
-                                                                      FlatButton(
+                                                                      TextButton(
+
                                                                           onPressed:
                                                                               () {
                                                                             Navigator.pop(context);

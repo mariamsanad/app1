@@ -1,8 +1,11 @@
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:cloud_firestore/cloud_firestore.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:app1/Services/crudUser.dart';
+import 'package:app1/Services/CRUD.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:table_calendar/table_calendar.dart';
 
 class RecordCovid extends StatefulWidget {
@@ -345,6 +348,4 @@ class _RecordCovidState extends State<RecordCovid> {
           )),
     );
   }
-
-
 }

@@ -1,4 +1,4 @@
-import 'package:app1/Services/crudUser.dart';
+import 'package:app1/Services/CRUD.dart';
 import 'package:flutter/material.dart';
 
 import 'CovidReports.dart';
