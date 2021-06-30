@@ -1,11 +1,9 @@
-# app1
+# Covid Tracker
 
 A Flutter application.
-
-## Getting Started
 
 This project is a Flutter application.
 
 "# MariamSenior" 
-"# MariamSenior" 
+
 # MariamSenior
